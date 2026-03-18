@@ -63,37 +63,48 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
     }),
   [scans]);
 
-  // ─── Stats globales (de todos los scans, sin filtro de sentimiento) ────────
-  const stats = useMemo(() => {
-    if (allComments.length === 0) return { total: 0, pos: 0, neg: 0, neu: 0 };
-    const pos = allComments.filter(c => c.sentLabel === 'positive' || c.sentLabel === 'very_positive').length;
-    const neg = allComments.filter(c => c.sentLabel === 'negative' || c.sentLabel === 'very_negative').length;
-    const neu = allComments.filter(c => c.sentLabel === 'neutral').length;
-    return {
-      total: allComments.length,
-      pos:   Math.round(pos / allComments.length * 100),
-      neg:   Math.round(neg / allComments.length * 100),
-      neu:   Math.round(neu / allComments.length * 100),
-    };
-  }, [allComments]);
-
-  // ─── Filtros aplicados ────────────────────────────────────────────────────
+  // ─── Filtros aplicados ─────────────────────────────────────────────────────
+  // Se calcula ANTES que stats para que las scorecards reflejen la selección
   const filtered = useMemo(() => {
     setPage(1);
     return allComments.filter(c => {
-      if (selectedBrand    && c.brand    !== selectedBrand)                              return false;
+      if (selectedBrand    && c.brand    !== selectedBrand)                                 return false;
       if (selectedPlatform && c.platform?.toLowerCase() !== selectedPlatform.toLowerCase()) return false;
       if (sentimentFilter) {
-        // Filtro simple: 'positive' matchea positive Y very_positive
-        if (sentimentFilter === 'positive' && c.sentLabel !== 'positive' && c.sentLabel !== 'very_positive') return false;
-        if (sentimentFilter === 'negative' && c.sentLabel !== 'negative' && c.sentLabel !== 'very_negative') return false;
-        if (sentimentFilter === 'neutral'  && c.sentLabel !== 'neutral')  return false;
+        if (sentimentFilter === 'positive'      && c.sentLabel !== 'positive'      && c.sentLabel !== 'very_positive') return false;
+        if (sentimentFilter === 'negative'      && c.sentLabel !== 'negative'      && c.sentLabel !== 'very_negative') return false;
+        if (sentimentFilter === 'neutral'       && c.sentLabel !== 'neutral')       return false;
         if (sentimentFilter === 'very_positive' && c.sentLabel !== 'very_positive') return false;
         if (sentimentFilter === 'very_negative' && c.sentLabel !== 'very_negative') return false;
       }
       return true;
     });
   }, [allComments, selectedBrand, selectedPlatform, sentimentFilter]);
+
+  // ─── Stats reactivos al filtro de Marca + Canal (pero no al de sentimiento) ─
+  // Así los % muestran la distribución real del universo visible,
+  // y al filtrar por sentimiento se ve el subset pero con % del total filtrado
+  const baseForStats = useMemo(() =>
+    allComments.filter(c => {
+      if (selectedBrand    && c.brand    !== selectedBrand)                                 return false;
+      if (selectedPlatform && c.platform?.toLowerCase() !== selectedPlatform.toLowerCase()) return false;
+      return true;
+    }),
+  [allComments, selectedBrand, selectedPlatform]);
+
+  const stats = useMemo(() => {
+    const src = baseForStats;
+    if (src.length === 0) return { total: 0, pos: 0, neg: 0, neu: 0 };
+    const pos = src.filter(c => c.sentLabel === 'positive' || c.sentLabel === 'very_positive').length;
+    const neg = src.filter(c => c.sentLabel === 'negative' || c.sentLabel === 'very_negative').length;
+    const neu = src.filter(c => c.sentLabel === 'neutral').length;
+    return {
+      total: src.length,
+      pos:   Math.round(pos / src.length * 100),
+      neg:   Math.round(neg / src.length * 100),
+      neu:   Math.round(neu / src.length * 100),
+    };
+  }, [baseForStats]);
 
   // ─── Paginación ───────────────────────────────────────────────────────────
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
