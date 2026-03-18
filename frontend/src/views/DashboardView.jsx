@@ -83,10 +83,10 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
   // Share of Voice
   const getSOV = () => {
     if (!history || history.length < 2) return [
-      { name: 'BEMBOS', count: 450, color: '#98FFBC' },
-      { name: 'PAPA JOHNS', count: 280, color: '#FF53BA' },
-      { name: 'DUNKIN', count: 180, color: '#ff7700' },
-      { name: 'POPEYES', count: 120, color: '#0070f3' },
+      { name: 'DESPEGAR', count: 450, color: '#D3C4F6' },
+      { name: 'TURISMO CITY', count: 280, color: '#FF53BA' },
+      { name: 'BOOKING', count: 180, color: '#0070f3' },
+      { name: 'AIRBNB', count: 120, color: '#ccff00' },
     ];
     const brands = {};
     history.forEach(h => {
@@ -102,13 +102,13 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
   // Competitive Pulse
   const getPulse = () => {
     if (!history || history.length < 2) return [
-      { name: 'NGR Portfolio', score: 82 },
-      { name: "McDonald's Peru", score: 65 },
-      { name: 'Burger King', score: 58 },
-      { name: 'KFC Peru', score: 71 },
+      { name: 'Despegar Portfolio', score: 82 },
+      { name: 'Turismo City', score: 65 },
+      { name: 'Booking', score: 58 },
+      { name: 'Airbnb', score: 71 },
     ];
     const brands = {};
-    const owned = ['Bembos', 'Papa Johns', 'Popeyes', 'China Wok', 'Dunkin'];
+    const owned = ['Despegar', 'Despegar AR'];
     history.forEach(h => {
       const b = h.brand || 'Unknown';
       if (!brands[b]) brands[b] = { sum: 0, count: 0, isOwned: owned.includes(h.brand) };
@@ -118,11 +118,11 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
     const pulse = Object.entries(brands).map(([name, val]) => ({
       name, score: Math.round(val.sum / Math.max(1, val.count)), isOwned: val.isOwned,
     }));
-    const ngrItems = pulse.filter(p => p.isOwned);
-    const ngrScore = ngrItems.length > 0
-      ? Math.round(ngrItems.reduce((acc, p) => acc + p.score, 0) / ngrItems.length)
+    const ownedItems = pulse.filter(p => p.isOwned);
+    const ownedScore = ownedItems.length > 0
+      ? Math.round(ownedItems.reduce((acc, p) => acc + p.score, 0) / ownedItems.length)
       : 82;
-    return [{ name: 'NGR Portfolio', score: ngrScore, isOwned: true }, ...pulse.filter(p => !p.isOwned).slice(0, 3)];
+    return [{ name: 'Despegar Portfolio', score: ownedScore, isOwned: true }, ...pulse.filter(p => !p.isOwned).slice(0, 3)];
   };
 
   // Cuentas de mayor alcance reales de los comments_analyzed
@@ -160,11 +160,11 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
 
   // WordCloud del scan más reciente (o fallback)
   const wordCloudData = history[0]?.wordCloud?.length > 0 ? history[0].wordCloud : [
-    { word: 'SABOR', weight: 95 }, { word: 'PRECIO', weight: 80 },
-    { word: 'DEMORA', weight: 60 }, { word: 'DELIVERY', weight: 45 },
-    { word: 'PROMOS', weight: 90 }, { word: 'FRIO', weight: 30 },
+    { word: 'PRECIO', weight: 95 }, { word: 'VUELOS', weight: 90 },
+    { word: 'HOTEL', weight: 85 }, { word: 'RESERVA', weight: 80 },
+    { word: 'DEMORA', weight: 60 }, { word: 'REEMBOLSO', weight: 55 },
     { word: 'EXCELENTE', weight: 85 }, { word: 'RÁPIDO', weight: 70 },
-    { word: 'MALA ATENCIÓN', weight: 50 }, { word: 'ME ENCANTA', weight: 100 },
+    { word: 'ATENCIÓN', weight: 50 }, { word: 'ME ENCANTA', weight: 100 },
   ];
 
   // Breakdown de sentimiento del scan más reciente

@@ -47,15 +47,16 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
             </button>
           </div>
           <div className="flex flex-wrap gap-2 pt-2">
-            <span className="text-[9px] font-black uppercase text-fg/20 w-full mb-1">Quick Connect — Empresas NGR</span>
+            <span className="text-[9px] font-black uppercase text-fg/20 w-full mb-1">Quick Connect — Despegar</span>
             {(platform === 'tiktok' ? [
-              { label: 'Bembos', url: 'https://www.tiktok.com/@bembos_peru' },
-              { label: 'Papa Johns', url: 'https://www.tiktok.com/@papajohns_peru' },
+              { label: 'Despegar', url: 'https://www.tiktok.com/@despegar' },
+              { label: 'Turismo City', url: 'https://www.tiktok.com/@turismocity' },
+              { label: 'Booking', url: 'https://www.tiktok.com/@bookingcom' },
             ] : platform === 'instagram' ? [
-              { label: 'Popeyes', url: 'https://www.instagram.com/popeyesperu/' },
-              { label: 'Dunkin', url: 'https://www.instagram.com/dunkin_peru/' },
-            ] : platform === 'google-maps' ? [
-              { label: 'Bembos Surco', url: 'https://www.google.com/maps/search/bembos+surco' },
+              { label: 'Despegar', url: 'https://www.instagram.com/despegar/' },
+              { label: 'Despegar AR', url: 'https://www.instagram.com/despegar.ar/' },
+              { label: 'Turismo City', url: 'https://www.instagram.com/turismocity_ar/' },
+              { label: 'Airbnb', url: 'https://www.instagram.com/airbnb/' },
             ] : []).map(link => (
               <button key={link.label} onClick={() => { setUrl(link.url); setPlatform(platform); }}
                 className="px-3 py-1 bg-fg/5 border border-fg/10 rounded-full text-[8px] font-black uppercase tracking-widest text-fg/40 hover:text-accent-orange hover:border-accent-orange transition-all">
