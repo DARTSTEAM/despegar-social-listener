@@ -378,10 +378,10 @@ const PostsView = () => {
             </div>
 
             {/* Panel de detalle */}
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
               {selected && (
-                <div className="flex-[1.2] min-w-[280px] max-w-[400px]">
-                  <PostDetail post={selected} onClose={() => setSelected(null)} />
+                <div key={selected.id} className="flex-[1.2] min-w-[280px] max-w-[400px]">
+                  <PostDetail key={selected.id} post={selected} onClose={() => setSelected(null)} />
                 </div>
               )}
             </AnimatePresence>
