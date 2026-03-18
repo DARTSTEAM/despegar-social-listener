@@ -1,0 +1,1579 @@
+[
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-02-25T15:30:00.000Z",
+    "sentiment": {
+      "positive": 87,
+      "neutral": 10,
+      "negative": 3
+    },
+    "commentsCount": 5,
+    "topTopics": [
+      "Calidad",
+      "Ambiente",
+      "App Bembos",
+      "Salsas"
+    ],
+    "summary": "Comentarios del día reflejan alta satisfacción con la Carretillera y presencia viral en TikTok. Sentimiento positivo: 87%.",
+    "raw_comments": [
+      {
+        "author": "nat_comenta",
+        "text": "El Bembos Clásico nunca falla, es mi combo de siempre desde hace 10 años",
+        "followers": 930
+      },
+      {
+        "author": "ric_delivery",
+        "text": "Empaque sostenible de cartón me parece un gran detalle de la marca",
+        "followers": 460
+      },
+      {
+        "author": "ana_viral",
+        "text": "Vi el trend de Bembos en TikTok y tuve que ir ese mismo día jaja",
+        "followers": 17800
+      },
+      {
+        "author": "leo_review",
+        "text": "Precio justo para la calidad que ofrecen, sin dudas el mejor fast food peruano",
+        "followers": 1100
+      },
+      {
+        "author": "pablo_late",
+        "text": "A las 11pm todavía atienden perfecto, ideal para los noctámbulos",
+        "followers": 560
+      }
+    ],
+    "source": "seed"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-02-26T15:30:00.000Z",
+    "sentiment": {
+      "positive": 87,
+      "neutral": 10,
+      "negative": 3
+    },
+    "commentsCount": 5,
+    "topTopics": [
+      "TikTok Viral",
+      "Delivery",
+      "Papas fritas",
+      "Combo"
+    ],
+    "summary": "Comentarios del día reflejan alta satisfacción con la Carretillera y presencia viral en TikTok. Sentimiento positivo: 87%.",
+    "raw_comments": [
+      {
+        "author": "fernanda_bites",
+        "text": "El jueves a media tarde estaba casi vacío y el servicio fue rapidísimo",
+        "followers": 1440
+      },
+      {
+        "author": "omar_foodie",
+        "text": "La carne al punto exacto, ni muy cocida ni cruda. Top",
+        "followers": 720
+      },
+      {
+        "author": "silvia_chef",
+        "text": "Bembos demuestra que la calidad local puede competir con cualquier internacional",
+        "followers": 5200
+      },
+      {
+        "author": "pepe_critico",
+        "text": "La mesa estaba un poco sucia cuando llegué, pero después todo bien",
+        "followers": 280
+      },
+      {
+        "author": "martin_gamer",
+        "text": "Community manager de Bembos en TikTok está haciendo un trabajo excelente",
+        "followers": 8700
+      }
+    ],
+    "source": "seed"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-02-27T15:30:00.000Z",
+    "sentiment": {
+      "positive": 88,
+      "neutral": 4,
+      "negative": 8
+    },
+    "commentsCount": 5,
+    "topTopics": [
+      "Hamburguesa Carretillera",
+      "Atención al cliente",
+      "Precio",
+      "Sabor"
+    ],
+    "summary": "Comentarios del día reflejan alta satisfacción con la Carretillera y presencia viral en TikTok. Sentimiento positivo: 88%.",
+    "raw_comments": [
+      {
+        "author": "paola_ig",
+        "text": "Me pidió mi novio Bembos para ver la final y no me arrepiento",
+        "followers": 2100
+      },
+      {
+        "author": "jhonn_crispy",
+        "text": "Las alas de pollo Bembos son lo mejor que han lanzado últimamente",
+        "followers": 990
+      },
+      {
+        "author": "camila_tiktok",
+        "text": "Ese video del chef haciendo la Carretillera en el local me convenció al toque",
+        "followers": 31000
+      },
+      {
+        "author": "diego_eats",
+        "text": "La app de Bembos mejoró bastante, ahora el tracking de delivery es exacto",
+        "followers": 620
+      },
+      {
+        "author": "tony_grill",
+        "text": "Primera vez que como Bembos y ya soy fan, ¿dónde estaba toda mi vida?",
+        "followers": 175
+      }
+    ],
+    "source": "seed"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-02-28T15:30:00.000Z",
+    "sentiment": {
+      "positive": 83,
+      "neutral": 13,
+      "negative": 4
+    },
+    "commentsCount": 5,
+    "topTopics": [
+      "Campaña Digital",
+      "Personal",
+      "Empaque",
+      "Experiencia"
+    ],
+    "summary": "Comentarios del día reflejan alta satisfacción con la Carretillera y presencia viral en TikTok. Sentimiento positivo: 83%.",
+    "raw_comments": [
+      {
+        "author": "carlos_nomad",
+        "text": "Me gusta que tienen WiFi, puedo trabajar desde el local",
+        "followers": 550
+      },
+      {
+        "author": "gabi_foodlover",
+        "text": "La salsa BBQ de Bembos es adictiva, pido siempre doble",
+        "followers": 1200
+      },
+      {
+        "author": "rich_taste",
+        "text": "Ambiente limpio y cómodo, perfecto para ir en familia",
+        "followers": 870
+      },
+      {
+        "author": "yumi_peru",
+        "text": "Combiné el combo con su limonada frozen y fue un acierto total",
+        "followers": 4500
+      },
+      {
+        "author": "alex_hamb",
+        "text": "Se demoran un poco en hora punta pero el producto siempre sale bien",
+        "followers": 380
+      }
+    ],
+    "source": "seed"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-03-01T15:30:00.000Z",
+    "sentiment": {
+      "positive": 82,
+      "neutral": 13,
+      "negative": 5
+    },
+    "commentsCount": 5,
+    "topTopics": [
+      "Calidad",
+      "Ambiente",
+      "App Bembos",
+      "Salsas"
+    ],
+    "summary": "Comentarios del día reflejan alta satisfacción con la Carretillera y presencia viral en TikTok. Sentimiento positivo: 82%.",
+    "raw_comments": [
+      {
+        "author": "tomas_grill",
+        "text": "Probé el Bembos Gold por primera vez y no me decepcionó",
+        "followers": 430
+      },
+      {
+        "author": "andrea_taste",
+        "text": "Me sorprendió lo fresca que estaba la lechuga, se nota la calidad",
+        "followers": 1890
+      },
+      {
+        "author": "franco_comenta",
+        "text": "El precio subió un poco pero la porción también mejoró",
+        "followers": 670
+      },
+      {
+        "author": "luisa_review",
+        "text": "Atención al cliente de primera, me cambiaron una orden sin problema",
+        "followers": 310
+      },
+      {
+        "author": "pepito_viral",
+        "text": "¡el spot nuevo en tiktok! literalmente me hizo pedir un Bembos a las 11pm",
+        "followers": 22000
+      }
+    ],
+    "source": "seed"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-03-02T15:30:00.000Z",
+    "sentiment": {
+      "positive": 82,
+      "neutral": 14,
+      "negative": 4
+    },
+    "commentsCount": 5,
+    "topTopics": [
+      "TikTok Viral",
+      "Delivery",
+      "Papas fritas",
+      "Combo"
+    ],
+    "summary": "Comentarios del día reflejan alta satisfacción con la Carretillera y presencia viral en TikTok. Sentimiento positivo: 82%.",
+    "raw_comments": [
+      {
+        "author": "paty_eats",
+        "text": "Las papas Bembos son las mejores que he probado, ni McDonalds las supera",
+        "followers": 7800
+      },
+      {
+        "author": "elmago_chef",
+        "text": "Nueva campaña de TikTok de Bembos es fuego, ya me antojé",
+        "followers": 3100
+      },
+      {
+        "author": "kevin_delivery",
+        "text": "Pedí por app y llegó en 25 min, perfecto para el almuerzo",
+        "followers": 220
+      },
+      {
+        "author": "valeria_lc",
+        "text": "El sabor de la carne es consistente, siempre igual de bueno",
+        "followers": 900
+      },
+      {
+        "author": "mrfoodie_pe",
+        "text": "Bembos sigue siendo el rey de las hamburguesas en Lima",
+        "followers": 15600
+      }
+    ],
+    "source": "seed"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T15:30:00.000Z",
+    "sentiment": {
+      "positive": 88,
+      "neutral": 4,
+      "negative": 8
+    },
+    "commentsCount": 5,
+    "topTopics": [
+      "Hamburguesa Carretillera",
+      "Atención al cliente",
+      "Precio",
+      "Sabor"
+    ],
+    "summary": "Comentarios del día reflejan alta satisfacción con la Carretillera y presencia viral en TikTok. Sentimiento positivo: 88%.",
+    "raw_comments": [
+      {
+        "author": "carla_foodie",
+        "text": "La Hamburguesa Carretillera es de otro nivel, la salsa parrillera me voló la cabeza 🔥",
+        "followers": 4200
+      },
+      {
+        "author": "rodrigo_eater",
+        "text": "Fui a Bembos Miraflores y la atención fue excelente, volvería mañana mismo",
+        "followers": 810
+      },
+      {
+        "author": "miguelito_qr",
+        "text": "El combo triple viene bien servido, nada que ver con la competencia",
+        "followers": 290
+      },
+      {
+        "author": "sofiperu22",
+        "text": "Gracias Bembos por el descuento de cumpleaños! Muy detallistas",
+        "followers": 1350
+      },
+      {
+        "author": "juan_hambre",
+        "text": "Colas largas en la sucursal de San Isidro pero el resultado vale la espera",
+        "followers": 540
+      }
+    ],
+    "source": "seed"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:31:45.572Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "LkHQyRP3figUKmnje",
+    "datasetId": "UvnQSYxFA53FmR3a0"
+  },
+  {
+    "brand": "Papa Johns",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:32:26.596Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "vZgtYfOpCnk6tm7lM",
+    "datasetId": "abikNFhPxdEv8MPNO"
+  },
+  {
+    "brand": "McDonalds",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:33:08.045Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "dRWSkKfWGqOO8GfIa",
+    "datasetId": "p11QrsLWB28nuVF5v"
+  },
+  {
+    "brand": "Burger King",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:33:52.358Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "DHP6mXalX3WP6jZ8b",
+    "datasetId": "bcHBuFWvquDftFunx"
+  },
+  {
+    "brand": "KFC",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:34:33.610Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "fkcbA8NjgH8eaD2pA",
+    "datasetId": "C2AcUvCidg6uhn0EG"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:37:48.716Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "2gHtph2l12zxhTZon",
+    "datasetId": "2fcOgNIMVi4e6MyCC"
+  },
+  {
+    "brand": "Papa Johns",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:38:29.866Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "DZBpgkd0VEHOClz22",
+    "datasetId": "4gjvR5Vgewi3yEhjO"
+  },
+  {
+    "brand": "McDonalds",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:39:11.414Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "U2bXEgL3TI7POh7qe",
+    "datasetId": "GaCvBhcQyof9aHMcM"
+  },
+  {
+    "brand": "Burger King",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:39:52.852Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "uIjlhPWwFvbPdUcyd",
+    "datasetId": "OpNtsMAZyIqDURrsd"
+  },
+  {
+    "brand": "KFC",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:40:34.122Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "errorCode": "INVALID_INPUT",
+        "error": "Input must contain postURLs, hashtags, search queries, music references or profiles."
+      }
+    ],
+    "source": "apify",
+    "runId": "ZHPWm9G9EYQgzzUQ0",
+    "datasetId": "2u7lyjb6LjfeFEQAs"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:50:49.547Z",
+    "sentiment": {
+      "positive": 33,
+      "neutral": 33,
+      "negative": 34
+    },
+    "commentsCount": 2,
+    "topTopics": [
+      "Error en análisis"
+    ],
+    "summary": "Hubo un problema procesando los comentarios con la IA.",
+    "raw_comments": [
+      {
+        "videoWebUrl": "https://www.tiktok.com/@bembos.oficial/video/7611946199951658261",
+        "input": "bembos.oficial",
+        "cid": "7611950456578851604",
+        "createTime": 1772295435,
+        "createTimeISO": "2026-02-28T16:17:15.000Z",
+        "text": "primero",
+        "diggCount": 1,
+        "likedByAuthor": true,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7558620931280421906",
+        "uniqueId": "grau3452_4928",
+        "avatarThumbnail": "https://p19-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/af457fed9bf00fb3d86b75c04f0e5caf~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=4c87b099&x-expires=1772650800&x-signature=65bepR0sj1tXRmIdGKpHRbrk%2BCs%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@bembos.oficial/video/7611946199951658261",
+        "input": "bembos.oficial",
+        "cid": "7612843455081808658",
+        "createTime": 1772503258,
+        "createTimeISO": "2026-03-03T02:00:58.000Z",
+        "text": "atiendan bien a los delivery",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7302948622033978373",
+        "uniqueId": "reyes.srgm",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-maliva-avt-0068/fd280bfd215616d1190c3d6ffa91c32a~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=7b14496b&x-expires=1772650800&x-signature=TvEAJz2lPpkttBhKDqo%2F0h8jyes%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      }
+    ],
+    "source": "apify",
+    "runId": "Z54Dfur8jK2ZTcD5m",
+    "datasetId": "oYCOgtIz4NEYsm5jL"
+  },
+  {
+    "brand": "McDonalds",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:52:12.862Z",
+    "sentiment": {
+      "positive": 33,
+      "neutral": 33,
+      "negative": 34
+    },
+    "commentsCount": 17,
+    "topTopics": [
+      "Error en análisis"
+    ],
+    "summary": "Hubo un problema procesando los comentarios con la IA.",
+    "raw_comments": [
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610981429450867472",
+        "createTime": 1772069715,
+        "createTimeISO": "2026-02-26T01:35:15.000Z",
+        "text": "LA CAJITA FELIZ DE ADOPT MEE",
+        "diggCount": 13,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7022803811014607877",
+        "uniqueId": "_iluvkittyz_06",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/8f633fa48db706cf79ca41b990b350fb~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=3dbd0dd4&x-expires=1772650800&x-signature=dhXpiySjCN0cbr48PCh97DtrHZc%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7612106371417457415",
+        "createTime": 1772331641,
+        "createTimeISO": "2026-03-01T02:20:41.000Z",
+        "text": "Como q hole sabandija",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7344758038069003270",
+        "uniqueId": "mahtehoh",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/535b0a310e087c0eb36305b9e3f7e43a~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=11bd5ecf&x-expires=1772650800&x-signature=sYVYY%2FRzO5gk9EMrK1XsQUvYSi0%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7613023860183417621",
+        "createTime": 1772545254,
+        "createTimeISO": "2026-03-03T13:40:54.000Z",
+        "text": "los nuguets saben a vegetal 🗣🔥🔥 [sticker]",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7549313966837875719",
+        "uniqueId": "sevastian2555",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/ae27d0e5a6da992c3f09bc90bcd0667e~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=64b2dbd2&x-expires=1772650800&x-signature=RnXddTA9FbShNm7KMNWz3sJACtk%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611184470406513415",
+        "createTime": 1772116987,
+        "createTimeISO": "2026-02-26T14:43:07.000Z",
+        "text": "YA ESTAN LAS CAJITA FELIZ DE ADOPTME??",
+        "diggCount": 2,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7238067977789129733",
+        "uniqueId": "vennesia3_",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/e18eb58d18b8ac96d6bed25eea269cbf~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=899c9995&x-expires=1772650800&x-signature=0QBSVBb9nadXmMaINRjPF%2FIFSjE%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611198787465773844",
+        "createTime": 1772120322,
+        "createTimeISO": "2026-02-26T15:38:42.000Z",
+        "text": "McDonalds recomiendame una hamburguesa (sin tocino porfa)",
+        "diggCount": 1,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7215759854470726662",
+        "uniqueId": "rudie_is_real",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/639dc708c801748fefddcf0fa2c1b8d9~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=578df551&x-expires=1772650800&x-signature=rbL1iX8ey15uqhmhAtpvv0U89Ww%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611007361939243792",
+        "createTime": 1772075761,
+        "createTimeISO": "2026-02-26T03:16:01.000Z",
+        "text": "para cuando una cajita feliz de adopt me [sticker]",
+        "diggCount": 3,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "162475994941927424",
+        "uniqueId": "ruztchv",
+        "avatarThumbnail": "https://p19-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/182a7bb507b3f1136dc6efe8ad1c2e83~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=267379a3&x-expires=1772650800&x-signature=JNDRl05sdrmeAlz0kxl%2BIxi7sfg%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611796508459303698",
+        "createTime": 1772259495,
+        "createTimeISO": "2026-02-28T06:18:15.000Z",
+        "text": "Puedo ir con mi scooter a comer un helado?",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7023615287241425926",
+        "uniqueId": "signo.010",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/bcd39e625d70485b81b2edcf358b9654~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=14dfd43d&x-expires=1772650800&x-signature=6lwUd%2BzFEqS2aBfp3sKziiJ1y9Q%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611239208682865438",
+        "createTime": 1772129766,
+        "createTimeISO": "2026-02-26T18:16:06.000Z",
+        "text": "Sigo esperando la cajita de adopt me [sticker]",
+        "diggCount": 3,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7522551583470011406",
+        "uniqueId": "gin817222",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/f8392a1956ddb289d538b74d2685c1c8~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=a9de8316&x-expires=1772650800&x-signature=n7OkiwSm%2BEOUW7EGrNGubTTN78w%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611034979166798613",
+        "createTime": 1772082192,
+        "createTimeISO": "2026-02-26T05:03:12.000Z",
+        "text": "La cajita aaa feliz de adop. Meeee😭😭",
+        "diggCount": 1,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7506666400430425096",
+        "uniqueId": "kim_.berly20",
+        "avatarThumbnail": "https://p19-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/822b70dea034b97a159b8f45df2ff2cc~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=22ab6f47&x-expires=1772650800&x-signature=MEDgD%2BcwrQcA0XoxirQFXhVUyF8%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611254911778816786",
+        "createTime": 1772133391,
+        "createTimeISO": "2026-02-26T19:16:31.000Z",
+        "text": "y la cajita feliz de adopte mcdonald's? [sticker]",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7587687488669828112",
+        "uniqueId": "meowl12304",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/f2b5031c9b46d964f1112bee5f75a485~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=6585f351&x-expires=1772650800&x-signature=sxWNmyH78LfWES%2FIX10nk4LuRrY%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611035144887436053",
+        "createTime": 1772082224,
+        "createTimeISO": "2026-02-26T05:03:44.000Z",
+        "text": "mc donalds ayudaaa ns que pedir pa mañana 😭😭",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7551597661888578578",
+        "uniqueId": "eelpanasurge",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/23ab5c1bdd7c8c2c57243abc773184ad~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=e181e9ff&x-expires=1772650800&x-signature=NG%2FkDWYYoJH8rBRjO9ShneNsDso%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611218762582901524",
+        "createTime": 1772124976,
+        "createTimeISO": "2026-02-26T16:56:16.000Z",
+        "text": "hagan una cajita feliz de adopt me",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7505865084016215045",
+        "uniqueId": "bryana3409",
+        "avatarThumbnail": "https://p19-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/62dea51730586566caa2dc877736a5d6~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=626858f1&x-expires=1772650800&x-signature=2oYCeFf23weDvwbsGDDL3yPLiRM%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610993435655029522",
+        "createTime": 1772072514,
+        "createTimeISO": "2026-02-26T02:21:54.000Z",
+        "text": "estoy desde los inicios",
+        "diggCount": 1,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7363030560006374406",
+        "uniqueId": "cj484195",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-maliva-avt-0068/8e7034105246eaac1ab942b6bb567b73~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=9cefab44&x-expires=1772650800&x-signature=UODrtmxGPSNV5Gupak%2BdaU4lRF8%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610961119595922183",
+        "createTime": 1772064993,
+        "createTimeISO": "2026-02-26T00:16:33.000Z",
+        "text": "haganme un envio gratis pls",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7266472986461733893",
+        "uniqueId": "laureanodecima",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/52d1bc5f457b1d30cf6bf596c9f7581c~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=93678472&x-expires=1772650800&x-signature=3qeDE16rrCazYz9V%2BitcdJ9NEZs%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610971375717057301",
+        "createTime": 1772067381,
+        "createTimeISO": "2026-02-26T00:56:21.000Z",
+        "text": "café con vainilla lo es todo 😁",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7181965686822110213",
+        "uniqueId": "kirito_1027",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/fa54024c214f0a0067ca34be758c2df7~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=82685da3&x-expires=1772650800&x-signature=HClKomyJ%2Fz2vLHB5%2BUfjua36vn8%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611613948244886279",
+        "createTime": 1772216982,
+        "createTimeISO": "2026-02-27T18:29:42.000Z",
+        "text": "me explotaron bien feo en ese lugar [weep][weep]",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7503560540410676231",
+        "uniqueId": "user3729146214923",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/4622fb6c52ae8de51615587a293c590d~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=cedb0b58&x-expires=1772650800&x-signature=ucNCwtumtG3Xfr0h%2BHMiJf7fXBg%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610965849651004168",
+        "createTime": 1772066100,
+        "createTimeISO": "2026-02-26T00:35:00.000Z",
+        "text": "en que sede van a estar los juguetes de adopt me",
+        "diggCount": 3,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7339561184414925829",
+        "uniqueId": "aig_alee10l",
+        "avatarThumbnail": "https://p77-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/a0dc153e29bf81cd610af1fa53a4480a~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=b93a6252&x-expires=1772650800&x-signature=P%2FdisuHfKRFElP5GX0F3ow9abgc%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2",
+        "mentions": [],
+        "detailedMentions": []
+      }
+    ],
+    "source": "apify",
+    "runId": "qlXXALLu3Ntzj7UdU",
+    "datasetId": "HhJtxNFtgD8p1ZAWd"
+  },
+  {
+    "brand": "Burger King",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:52:55.625Z",
+    "sentiment": {
+      "positive": 33,
+      "neutral": 33,
+      "negative": 34
+    },
+    "commentsCount": 3,
+    "topTopics": [
+      "Error en análisis"
+    ],
+    "summary": "Hubo un problema procesando los comentarios con la IA.",
+    "raw_comments": [
+      {
+        "videoWebUrl": "https://www.tiktok.com/@burgerking_peru/video/7611977554425138450",
+        "input": "burgerking_peru",
+        "cid": "7611998008046224135",
+        "createTime": 1772306411,
+        "createTimeISO": "2026-02-28T19:20:11.000Z",
+        "text": "Pie de manzana",
+        "diggCount": 1,
+        "likedByAuthor": true,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "6806438550423864322",
+        "uniqueId": "al3.201419",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/061dcb38373a6bb552378a848b012c9c~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=e2cb8d74&x-expires=1772650800&x-signature=V4LvvxisJG0sngOecexYZm%2F3nMw%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@burgerking_peru/video/7611977554425138450",
+        "input": "burgerking_peru",
+        "cid": "7611979870529749780",
+        "createTime": 1772302322,
+        "createTimeISO": "2026-02-28T18:12:02.000Z",
+        "text": "Me regalas una hamburguesa 🍔 😋",
+        "diggCount": 1,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7588708721162224660",
+        "uniqueId": "ariananikolle",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/044df1d5d412dd11684c1d635a31678c~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=9420b09c&x-expires=1772650800&x-signature=FPJqBpU6o%2BgiMBJf3qaMHVfmPq4%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@burgerking_peru/video/7611977554425138450",
+        "input": "burgerking_peru",
+        "cid": "7612066034673517320",
+        "createTime": 1772322249,
+        "createTimeISO": "2026-02-28T23:44:09.000Z",
+        "text": "se rehúsa a el olvido el tio bk tik tok 🥺🥺🥺",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7006295210275865606",
+        "uniqueId": "pablovillab95",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/e298e772951ba3c1d2ce09cb2c6a4151~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=1138a36d&x-expires=1772650800&x-signature=hQqQ3KPOQj1T7ucniCmcL4j7CBU%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      }
+    ],
+    "source": "apify",
+    "runId": "fRqAO7HrdUtRiWfUU",
+    "datasetId": "0kbNVOxSXldmt5MON"
+  },
+  {
+    "brand": "KFC",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T19:53:36.741Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "authorMeta": {
+          "id": "6907315293275358213",
+          "name": "kfcperu",
+          "profileUrl": "https://www.tiktok.com/@kfcperu",
+          "nickName": "KFC",
+          "verified": false,
+          "signature": "",
+          "bioLink": null,
+          "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-maliva-avt-0068/3070cd06a0d5a8268535d96397231243~tplv-tiktokx-cropcenter:720:720.jpeg?dr=9640&refresh_token=d6fb2101&x-expires=1772737200&x-signature=%2BXfqs0ALsuANlWjLTbtNm41QUmw%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=useast8",
+          "commerceUserInfo": {
+            "commerceUser": false
+          },
+          "privateAccount": true,
+          "roomId": "",
+          "ttSeller": false,
+          "createTime": 1608253062,
+          "following": 2320,
+          "friends": 2,
+          "fans": 8,
+          "heart": 0,
+          "video": 0,
+          "digg": 0,
+          "followDatasetUrl": null,
+          "originalAvatarUrl": "https://p16-common-sign.tiktokcdn-us.com/tos-maliva-avt-0068/3070cd06a0d5a8268535d96397231243~tplv-tiktokx-cropcenter:720:720.jpeg?dr=9640&refresh_token=d6fb2101&x-expires=1772737200&x-signature=%2BXfqs0ALsuANlWjLTbtNm41QUmw%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=useast8"
+        },
+        "input": "kfcperu",
+        "note": "Profile is private"
+      }
+    ],
+    "source": "apify",
+    "runId": "wUH8ZgXe5pJCQOEKv",
+    "datasetId": "RQLP3reaQrXKZDaOC"
+  },
+  {
+    "brand": "Bembos",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T20:45:52.250Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 0,
+      "negative": 100
+    },
+    "commentsCount": 2,
+    "topTopics": [
+      "atención",
+      "delivery"
+    ],
+    "summary": "El comentario único expresa una necesidad de mejora en la atención al personal de entrega. No hay datos suficientes para un análisis más amplio.",
+    "raw_comments": [
+      {
+        "videoWebUrl": "https://www.tiktok.com/@bembos.oficial/video/7611946199951658261",
+        "input": "bembos.oficial",
+        "cid": "7611950456578851604",
+        "createTime": 1772295435,
+        "createTimeISO": "2026-02-28T16:17:15.000Z",
+        "text": "primero",
+        "diggCount": 1,
+        "likedByAuthor": true,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7558620931280421906",
+        "uniqueId": "grau3452_4928",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/af457fed9bf00fb3d86b75c04f0e5caf~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=05b84d58&x-expires=1772654400&x-signature=ymskz7%2BBkC4l4hLoWftNkAPOsrg%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@bembos.oficial/video/7611946199951658261",
+        "input": "bembos.oficial",
+        "cid": "7612843455081808658",
+        "createTime": 1772503258,
+        "createTimeISO": "2026-03-03T02:00:58.000Z",
+        "text": "atiendan bien a los delivery",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7302948622033978373",
+        "uniqueId": "reyes.srgm",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-maliva-avt-0068/fd280bfd215616d1190c3d6ffa91c32a~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=61d29112&x-expires=1772654400&x-signature=zqxwUbLYSBS4fxFImPmyuqY065w%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      }
+    ],
+    "source": "apify",
+    "runId": "i6B1qkDNyTCO0S9mR",
+    "datasetId": "jf7S64dZnhtV9VIBH"
+  },
+  {
+    "brand": "McDonalds",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T20:47:17.238Z",
+    "sentiment": {
+      "positive": 26.67,
+      "neutral": 53.33,
+      "negative": 20
+    },
+    "commentsCount": 17,
+    "topTopics": [
+      "Cajita Feliz Adopt Me",
+      "Recomendaciones de menú",
+      "Experiencia del cliente"
+    ],
+    "summary": "La principal demanda de los usuarios es la creación de una Cajita Feliz con temática de Adopt Me.  También solicitan recomendaciones de menú y expresan opiniones mixtas sobre la experiencia general, incluyendo quejas sobre el precio.",
+    "raw_comments": [
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610981429450867472",
+        "createTime": 1772069715,
+        "createTimeISO": "2026-02-26T01:35:15.000Z",
+        "text": "LA CAJITA FELIZ DE ADOPT MEE",
+        "diggCount": 13,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7022803811014607877",
+        "uniqueId": "_iluvkittyz_06",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/8f633fa48db706cf79ca41b990b350fb~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=c2473351&x-expires=1772654400&x-signature=Yha41073hkHE8cU%2BA1kFwgeODnY%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611239208682865438",
+        "createTime": 1772129766,
+        "createTimeISO": "2026-02-26T18:16:06.000Z",
+        "text": "Sigo esperando la cajita de adopt me [sticker]",
+        "diggCount": 3,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7522551583470011406",
+        "uniqueId": "gin817222",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/f8392a1956ddb289d538b74d2685c1c8~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=623db74e&x-expires=1772654400&x-signature=GsTRd%2FHb7nkj4eisk1OqA%2F6w8mw%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7613023860183417621",
+        "createTime": 1772545254,
+        "createTimeISO": "2026-03-03T13:40:54.000Z",
+        "text": "los nuguets saben a vegetal 🗣🔥🔥 [sticker]",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7549313966837875719",
+        "uniqueId": "sevastian2555",
+        "avatarThumbnail": "https://p19-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/ae27d0e5a6da992c3f09bc90bcd0667e~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=2bafa698&x-expires=1772654400&x-signature=ucI7iqHQt9FRSoTtCKzq9f3jAFg%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611184470406513415",
+        "createTime": 1772116987,
+        "createTimeISO": "2026-02-26T14:43:07.000Z",
+        "text": "YA ESTAN LAS CAJITA FELIZ DE ADOPTME??",
+        "diggCount": 2,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7238067977789129733",
+        "uniqueId": "vennesia3_",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/e18eb58d18b8ac96d6bed25eea269cbf~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=bd0040bc&x-expires=1772654400&x-signature=wVb4gnQZVucTLtO2D898g3Tg7YQ%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611007361939243792",
+        "createTime": 1772075761,
+        "createTimeISO": "2026-02-26T03:16:01.000Z",
+        "text": "para cuando una cajita feliz de adopt me [sticker]",
+        "diggCount": 3,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "162475994941927424",
+        "uniqueId": "ruztchv",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/182a7bb507b3f1136dc6efe8ad1c2e83~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=b8ee8c91&x-expires=1772654400&x-signature=FgN6Fd%2Bc2bocexPJjRbI%2BtOXn4c%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611034979166798613",
+        "createTime": 1772082192,
+        "createTimeISO": "2026-02-26T05:03:12.000Z",
+        "text": "La cajita aaa feliz de adop. Meeee😭😭",
+        "diggCount": 1,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7506666400430425096",
+        "uniqueId": "kim_.berly20",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/822b70dea034b97a159b8f45df2ff2cc~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=5066cd50&x-expires=1772654400&x-signature=xqwnTPl4WgCMd8A2fCbZYKqbwdU%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611198787465773844",
+        "createTime": 1772120322,
+        "createTimeISO": "2026-02-26T15:38:42.000Z",
+        "text": "McDonalds recomiendame una hamburguesa (sin tocino porfa)",
+        "diggCount": 1,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7215759854470726662",
+        "uniqueId": "rudie_is_real",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/639dc708c801748fefddcf0fa2c1b8d9~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=dca0d49c&x-expires=1772654400&x-signature=AwnPww6opgN7kJgogvg1Kb2pJLk%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611218762582901524",
+        "createTime": 1772124976,
+        "createTimeISO": "2026-02-26T16:56:16.000Z",
+        "text": "hagan una cajita feliz de adopt me",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7505865084016215045",
+        "uniqueId": "bryana3409",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/62dea51730586566caa2dc877736a5d6~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=8bf9dd76&x-expires=1772654400&x-signature=QOxgV4YBF7iQIwdN62W6TdmPofA%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7612106371417457415",
+        "createTime": 1772331641,
+        "createTimeISO": "2026-03-01T02:20:41.000Z",
+        "text": "Como q hole sabandija",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7344758038069003270",
+        "uniqueId": "mahtehoh",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/535b0a310e087c0eb36305b9e3f7e43a~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=ce5e00cb&x-expires=1772654400&x-signature=1W6x%2BACtDnqerHDIgMydOQ6cUzA%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611254911778816786",
+        "createTime": 1772133391,
+        "createTimeISO": "2026-02-26T19:16:31.000Z",
+        "text": "y la cajita feliz de adopte mcdonald's? [sticker]",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7587687488669828112",
+        "uniqueId": "meowl12304",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/f2b5031c9b46d964f1112bee5f75a485~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=9df56a3e&x-expires=1772654400&x-signature=eBbbAoFP6KHpgdJg1tJRFw%2BmgKI%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611796508459303698",
+        "createTime": 1772259495,
+        "createTimeISO": "2026-02-28T06:18:15.000Z",
+        "text": "Puedo ir con mi scooter a comer un helado?",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7023615287241425926",
+        "uniqueId": "signo.010",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/bcd39e625d70485b81b2edcf358b9654~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=70b32ba8&x-expires=1772654400&x-signature=H0NygUoZBHhIUSCNtxoc1ImgMx0%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611035144887436053",
+        "createTime": 1772082224,
+        "createTimeISO": "2026-02-26T05:03:44.000Z",
+        "text": "mc donalds ayudaaa ns que pedir pa mañana 😭😭",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7551597661888578578",
+        "uniqueId": "eelpanasurge",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/23ab5c1bdd7c8c2c57243abc773184ad~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=19aaaaa7&x-expires=1772654400&x-signature=HEufIns4fDut05DLLUTS3r95%2Br4%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610961119595922183",
+        "createTime": 1772064993,
+        "createTimeISO": "2026-02-26T00:16:33.000Z",
+        "text": "haganme un envio gratis pls",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7266472986461733893",
+        "uniqueId": "laureanodecima",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/52d1bc5f457b1d30cf6bf596c9f7581c~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=b26d7966&x-expires=1772654400&x-signature=6lCKlyLrVXo8ZNGtUlpidDLxMtc%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610993435655029522",
+        "createTime": 1772072514,
+        "createTimeISO": "2026-02-26T02:21:54.000Z",
+        "text": "estoy desde los inicios",
+        "diggCount": 1,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7363030560006374406",
+        "uniqueId": "cj484195",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-maliva-avt-0068/8e7034105246eaac1ab942b6bb567b73~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=a639c937&x-expires=1772654400&x-signature=kcQ5rl1CSMgo6gP%2Bbo8IWWv8OJo%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610971375717057301",
+        "createTime": 1772067381,
+        "createTimeISO": "2026-02-26T00:56:21.000Z",
+        "text": "café con vainilla lo es todo 😁",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7181965686822110213",
+        "uniqueId": "kirito_1027",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/fa54024c214f0a0067ca34be758c2df7~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=e1257317&x-expires=1772654400&x-signature=c0L6dc9%2FC8ME15xFSCJ4JmPhoY0%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7611613948244886279",
+        "createTime": 1772216982,
+        "createTimeISO": "2026-02-27T18:29:42.000Z",
+        "text": "me explotaron bien feo en ese lugar [weep][weep]",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7503560540410676231",
+        "uniqueId": "user3729146214923",
+        "avatarThumbnail": "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/4622fb6c52ae8de51615587a293c590d~tplv-tiktokx-cropcenter:100:100.jpg?dr=9640&refresh_token=1d8c3129&x-expires=1772654400&x-signature=2btTxpUor6aTN8J3tKXZFtR8eOU%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=useast8",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@mcdonaldsperu/video/7610960302762478868",
+        "input": "mcdonaldsperu",
+        "cid": "7610965849651004168",
+        "createTime": 1772066100,
+        "createTimeISO": "2026-02-26T00:35:00.000Z",
+        "text": "en que sede van a estar los juguetes de adopt me",
+        "diggCount": 3,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 0,
+        "uid": "7339561184414925829",
+        "uniqueId": "aig_alee10l",
+        "avatarThumbnail": "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/a0dc153e29bf81cd610af1fa53a4480a~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=9d2fd4cc&x-expires=1772654400&x-signature=URIiefdHQlq4omPOsG9JQJqJiuM%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2",
+        "mentions": [],
+        "detailedMentions": []
+      }
+    ],
+    "source": "apify",
+    "runId": "jBPSNyMrFzRYa3HfC",
+    "datasetId": "dB3sgNHUJmSdgAbn9"
+  },
+  {
+    "brand": "Burger King",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T20:48:00.583Z",
+    "sentiment": {
+      "positive": 33.3,
+      "neutral": 66.7,
+      "negative": 0
+    },
+    "commentsCount": 3,
+    "topTopics": [
+      "Hamburguesas",
+      "Postres",
+      "TikTok"
+    ],
+    "summary": "El sentimiento general es principalmente neutral, con algunas expresiones positivas relacionadas con hamburguesas y postres. Hay una mención a TikTok, sugiriendo contenido viral o interés en redes sociales.",
+    "raw_comments": [
+      {
+        "videoWebUrl": "https://www.tiktok.com/@burgerking_peru/video/7611977554425138450",
+        "input": "burgerking_peru",
+        "cid": "7612066034673517320",
+        "createTime": 1772322249,
+        "createTimeISO": "2026-02-28T23:44:09.000Z",
+        "text": "se rehúsa a el olvido el tio bk tik tok 🥺🥺🥺",
+        "diggCount": 0,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7006295210275865606",
+        "uniqueId": "pablovillab95",
+        "avatarThumbnail": "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/e298e772951ba3c1d2ce09cb2c6a4151~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=2e344df0&x-expires=1772654400&x-signature=X36uECzZB7E42g94b9MAqjNp7GY%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@burgerking_peru/video/7611977554425138450",
+        "input": "burgerking_peru",
+        "cid": "7611998008046224135",
+        "createTime": 1772306411,
+        "createTimeISO": "2026-02-28T19:20:11.000Z",
+        "text": "Pie de manzana",
+        "diggCount": 1,
+        "likedByAuthor": true,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "6806438550423864322",
+        "uniqueId": "al3.201419",
+        "avatarThumbnail": "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/061dcb38373a6bb552378a848b012c9c~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=617e8943&x-expires=1772654400&x-signature=yGcemUUGuUw%2BTsuLI4cudpjCMvc%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2",
+        "mentions": [],
+        "detailedMentions": []
+      },
+      {
+        "videoWebUrl": "https://www.tiktok.com/@burgerking_peru/video/7611977554425138450",
+        "input": "burgerking_peru",
+        "cid": "7611979870529749780",
+        "createTime": 1772302322,
+        "createTimeISO": "2026-02-28T18:12:02.000Z",
+        "text": "Me regalas una hamburguesa 🍔 😋",
+        "diggCount": 1,
+        "likedByAuthor": false,
+        "pinnedByAuthor": false,
+        "repliesToId": null,
+        "replyCommentTotal": 1,
+        "uid": "7588708721162224660",
+        "uniqueId": "ariananikolle",
+        "avatarThumbnail": "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/044df1d5d412dd11684c1d635a31678c~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=e893e608&x-expires=1772654400&x-signature=ryRUf8XJ56lp8HDTJLp0u5onvDY%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2",
+        "mentions": [],
+        "detailedMentions": []
+      }
+    ],
+    "source": "apify",
+    "runId": "MyDrLvueyHhD5clm2",
+    "datasetId": "LiA6mG5ucw59bbklF"
+  },
+  {
+    "brand": "KFC",
+    "platform": "tiktok",
+    "timestamp": "2026-03-03T20:48:41.640Z",
+    "sentiment": {
+      "positive": 0,
+      "neutral": 100,
+      "negative": 0
+    },
+    "commentsCount": 1,
+    "topTopics": [
+      "Sin datos"
+    ],
+    "summary": "No hay comentarios suficientes para analizar o falta API Key.",
+    "raw_comments": [
+      {
+        "authorMeta": {
+          "id": "6907315293275358213",
+          "name": "kfcperu",
+          "profileUrl": "https://www.tiktok.com/@kfcperu",
+          "nickName": "KFC",
+          "verified": false,
+          "signature": "",
+          "bioLink": null,
+          "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-maliva-avt-0068/3070cd06a0d5a8268535d96397231243~tplv-tiktokx-cropcenter:720:720.jpeg?dr=9640&refresh_token=d5d7cee3&x-expires=1772740800&x-signature=4pVB5kZjvQv8brV1v32BClux4vA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=useast8",
+          "commerceUserInfo": {
+            "commerceUser": false
+          },
+          "privateAccount": true,
+          "roomId": "",
+          "ttSeller": false,
+          "createTime": 1608253062,
+          "following": 2320,
+          "friends": 2,
+          "fans": 8,
+          "heart": 0,
+          "video": 0,
+          "digg": 0,
+          "followDatasetUrl": null,
+          "originalAvatarUrl": "https://p16-common-sign.tiktokcdn-us.com/tos-maliva-avt-0068/3070cd06a0d5a8268535d96397231243~tplv-tiktokx-cropcenter:720:720.jpeg?dr=9640&refresh_token=d5d7cee3&x-expires=1772740800&x-signature=4pVB5kZjvQv8brV1v32BClux4vA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=useast8"
+        },
+        "input": "kfcperu",
+        "note": "Profile is private"
+      }
+    ],
+    "source": "apify",
+    "runId": "OInDOOl2lwYpo1LSD",
+    "datasetId": "ijP8C8bcma5U4inlr"
+  }
+]

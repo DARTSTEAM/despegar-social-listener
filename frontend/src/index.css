@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #050505;
+  --fg: #ffffff;
+  --accent-orange: #ff7e4b;
+  --accent-blue: #0070f3;
+  --accent-pink: #ff0080;
+  --accent-lemon: #ccff00;
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+.light {
+  --bg: #f9f9fb;
+  --fg: #121212;
+  --glass: rgba(0, 0, 0, 0.02);
+  --glass-border: rgba(0, 0, 0, 0.06);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+@layer components {
+  .pwa-mesh {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--bg);
+    overflow: hidden;
+    transition: background-color 0.5s ease;
+  }
+
+  .mesh-orb-1 {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--accent-orange) 0%, transparent 70%);
+    filter: blur(80px);
+    top: -200px;
+    left: -100px;
+    opacity: 0.4;
+    animation: floating 20s infinite alternate;
+  }
+
+  .mesh-orb-2 {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--accent-blue) 0%, transparent 70%);
+    filter: blur(100px);
+    bottom: -100px;
+    right: -100px;
+    opacity: 0.3;
+    animation: floating 25s infinite alternate-reverse;
+  }
+
+  @keyframes floating {
+    from {
+      transform: translate(0, 0) scale(1);
+    }
+
+    to {
+      transform: translate(100px, 50px) scale(1.1);
+    }
+  }
+
+  .pwa-card {
+    background-color: var(--glass);
+    backdrop-filter: blur(40px);
+    border: 1px solid var(--glass-border);
+    @apply rounded-[32px] overflow-hidden transition-all duration-500;
+  }
+
+  .pwa-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.06);
+    transform: translateY(-4px);
+  }
+
+  .light .pwa-card:hover {
+    border-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  .pwa-btn {
+    @apply bg-black text-white dark:bg-white dark:text-black font-black uppercase tracking-widest text-[10px] px-8 py-4 rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2;
+  }
+
+  .light .pwa-btn {
+    @apply bg-black text-white rounded-full;
+  }
+
+  .pwa-title {
+    @apply font-black italic uppercase tracking-tighter leading-[0.85];
+    font-size: clamp(2.5rem, 8vw, 5rem);
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.rotate-x-2 {
+  transform: rotateX(2deg);
+}
+
+.rotate-x-0 {
+  transform: rotateX(0deg);
+}

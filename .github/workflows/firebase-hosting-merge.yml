@@ -1,0 +1,48 @@
+# Auto-deploy to Firebase on push to main
+# Builds frontend + deploys Hosting + Functions
+
+name: 🚀 Deploy to Firebase on Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    name: Build & Deploy
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 📦 Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: 🏗️ Build frontend (Vite)
+        run: npm run build
+        working-directory: frontend
+        env:
+          NODE_ENV: production
+
+      - name: 📦 Install functions dependencies
+        run: npm ci
+        working-directory: backend/functions
+
+      - name: 🔥 Deploy to Firebase (Hosting + Functions)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HIKE_AGENTIC_PLAYGROUND }}
+          channelId: live
+          projectId: hike-agentic-playground
+          entryPoint: '.'
