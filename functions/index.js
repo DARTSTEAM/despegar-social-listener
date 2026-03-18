@@ -727,12 +727,16 @@ app.use((req, res) => {
 });
 
 
-if (process.env.NODE_ENV !== 'production' && require.main === module) {
-    const PORT = 3001;
+// Cloud Run: arrancar directamente si es el módulo principal
+if (require.main === module) {
+    const PORT = process.env.PORT || 8080;
     app.listen(PORT, () => {
-        console.log(`[Backend] Servidor local corriendo en http://localhost:${PORT}`);
+        console.log(`[Backend] Servidor Cloud Run corriendo en puerto ${PORT}`);
     });
 }
+
+// Exportar app para uso en server.js o tests
+module.exports = { app };
 
 exports.apiServer = onRequest({
     region: 'us-central1',

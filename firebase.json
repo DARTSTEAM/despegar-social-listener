@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "despegar-social-listener",
     "public": "frontend/dist",
     "ignore": [
       "firebase.json",
@@ -8,17 +9,9 @@
     ],
     "rewrites": [
       {
-        "source": "/api/**",
-        "function": "apiServer"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }
     ]
-  },
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs20"
   }
 }

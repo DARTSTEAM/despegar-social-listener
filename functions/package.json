@@ -1,7 +1,11 @@
 {
-    "name": "functions",
-    "description": "Cloud Functions for NGR Social Listener",
+    "name": "despegar-social-listener-backend",
+    "description": "Cloud Run backend for Despegar Social Listener",
     "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "node index.js"
+    },
     "dependencies": {
         "@google-cloud/language": "^7.2.1",
         "@google-cloud/vertexai": "^1.10.0",
