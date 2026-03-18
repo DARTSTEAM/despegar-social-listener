@@ -66,6 +66,10 @@ const SentimentBar = ({ label, value, color }) => (
 
 const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
 
+  // ── Guardia: normalizar siempre a arrays ──────────────────────────────────
+  const history = Array.isArray(rawHistory) ? rawHistory : [];
+  const alerts  = Array.isArray(rawAlerts)  ? rawAlerts  : [];
+
   // ── Constante de marcas propias ───────────────────────────────────────────
   const OWNED_BRANDS = ['Despegar', 'Despegar AR'];
 
