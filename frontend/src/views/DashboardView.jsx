@@ -98,7 +98,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
   const getSOV = (group) => {
     if (!group.length) return [];
     const brands = {};
-    const colors = ['#D3C4F6', '#98FFBC', '#FF53BA', '#0070f3', '#ccff00', '#ff0080'];
+    const colors = ['#9B72F5', '#98FFBC', '#FF53BA', '#0070f3', '#ccff00', '#ff0080'];
     group.forEach(h => { const b = h.brand || 'Unknown'; brands[b] = (brands[b] || 0) + (h.commentsCount || 0); });
     return Object.entries(brands)
       .map(([name, count], i) => ({ name: name.toUpperCase(), count, color: colors[i % colors.length] }))
@@ -204,12 +204,12 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
       <div className="space-y-6">
         {/* Header zona owned */}
         <div className="flex items-center gap-4">
-          <div className="h-px flex-1 bg-[#D3C4F6]/20" />
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#D3C4F6]/30 bg-[#D3C4F6]/5">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#D3C4F6] animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-[#D3C4F6]">Owned — Despegar</span>
+          <div className="h-px flex-1 bg-[#9B72F5]/20" />
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#9B72F5]/30 bg-[#9B72F5]/5">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#9B72F5] animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-[#9B72F5]">Owned — Despegar</span>
           </div>
-          <div className="h-px flex-1 bg-[#D3C4F6]/20" />
+          <div className="h-px flex-1 bg-[#9B72F5]/20" />
         </div>
 
         {/* Scorecards owned */}
@@ -220,10 +220,10 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
             { label: 'Negativos',   value: ownedStats.comments ? `${ownedStats.neg}%`  : '–', color: 'text-accent-pink',  icon: AlertTriangle },
             { label: 'Neutrales',   value: ownedStats.comments ? `${ownedStats.neu}%`  : '–', color: 'text-fg/40',        icon: BarChart3 },
           ].map(({ label, value, color, icon: Icon }) => (
-            <div key={label} className="pwa-card p-5 bg-[#D3C4F6]/[0.03] border-[#D3C4F6]/10 space-y-2">
+            <div key={label} className="pwa-card p-5 bg-[#9B72F5]/[0.03] border-[#9B72F5]/10 space-y-2">
               <div className="flex items-center justify-between">
                 <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">{label}</p>
-                <Icon size={12} className="text-[#D3C4F6]/40" />
+                <Icon size={12} className="text-[#9B72F5]/40" />
               </div>
               <p className={`text-2xl font-black italic ${color}`}>{value}</p>
             </div>
@@ -233,8 +233,8 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
         {/* Pulse owned + Sentiment Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Pulse por cuenta propia */}
-          <section className="lg:col-span-5 pwa-card p-6 bg-[#D3C4F6]/[0.02] border-[#D3C4F6]/10 space-y-4">
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-[#D3C4F6]/80">Sentimiento por Cuenta</h3>
+          <section className="lg:col-span-5 pwa-card p-6 bg-[#9B72F5]/[0.02] border-[#9B72F5]/10 space-y-4">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-[#9B72F5]/80">Sentimiento por Cuenta</h3>
             <div className="space-y-4">
               {getOwnedPulse().map((item, i) => (
                 <div key={i} className="space-y-1.5">
@@ -312,7 +312,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
                     <p className="text-[10px] font-black uppercase text-accent-orange">@{c.author}</p>
                     <div className="flex items-center gap-2">
                       {c.category && <span className="text-[7px] font-black uppercase px-1.5 py-0.5 bg-fg/5 border border-fg/10 rounded-full text-fg/40">{categoryLabel[c.category] || c.category}</span>}
-                      <span className="text-[8px] font-black uppercase text-[#D3C4F6]/60">{c.brand}</span>
+                      <span className="text-[8px] font-black uppercase text-[#9B72F5]/60">{c.brand}</span>
                     </div>
                   </div>
                   <p className="text-[11px] text-fg/50 italic line-clamp-2">"{c.text_preview}"</p>
@@ -329,7 +329,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {ownedClusters.map((cluster, i) => (
                 <div key={i} className="p-4 bg-fg/[0.03] rounded-xl border border-fg/5 hover:bg-fg/[0.06] transition-all space-y-2">
-                  <div className={`w-2 h-2 rounded-full ${cluster.sentiment === 'negative' ? 'bg-accent-pink shadow-[0_0_8px_rgba(255,83,186,0.4)]' : 'bg-[#D3C4F6]'}`} />
+                  <div className={`w-2 h-2 rounded-full ${cluster.sentiment === 'negative' ? 'bg-accent-pink shadow-[0_0_8px_rgba(255,83,186,0.4)]' : 'bg-[#9B72F5]'}`} />
                   <p className="text-sm font-bold italic text-fg tracking-tight">{cluster.label}</p>
                   <p className="text-[9px] font-black uppercase text-fg/20">{cluster.count} menciones</p>
                 </div>
@@ -456,7 +456,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {allRecommendations.map((rec, i) => (
               <div key={i} className="flex items-start gap-3 p-4 bg-fg/[0.03] rounded-xl border border-fg/5">
-                <ChevronRight size={12} className="text-[#D3C4F6] mt-0.5 shrink-0" />
+                <ChevronRight size={12} className="text-[#9B72F5] mt-0.5 shrink-0" />
                 <p className="text-xs font-bold text-fg/70">{rec}</p>
               </div>
             ))}

@@ -6,7 +6,7 @@ const H = 500;
 // Color por rango de frecuencia
 const rankColor = (i, n) => {
   const p = i / Math.max(n - 1, 1);
-  if (p < 0.06) return '#D3C4F6';
+  if (p < 0.06) return '#9B72F5';
   if (p < 0.15) return '#ffffff';
   if (p < 0.28) return '#FF53BA';
   if (p < 0.45) return 'rgba(255,255,255,0.80)';
@@ -74,7 +74,7 @@ const CyberWordCloud = ({ words }) => {
   return (
     <div className="pwa-card overflow-hidden bg-fg/[0.02] border-fg/5">
       <div className="flex items-center gap-2 px-6 pt-5 pb-1">
-        <div className="w-1.5 h-1.5 bg-[#D3C4F6] rounded-full" />
+        <div className="w-1.5 h-1.5 bg-[#9B72F5] rounded-full" />
         <span className="text-[9px] font-black uppercase tracking-[0.25em] text-fg/40 italic">
           Word Cloud — Términos más frecuentes
         </span>
