@@ -736,13 +736,59 @@ registerRoute('get', '/api/admin/apify-usage', async (req, res) => {
 registerRoute('get', '/api/posts', async (req, res) => {
     try {
         const { brand, platform, sort = 'best', limit = 50 } = req.query;
-        let query = admin.firestore().collection('despegar_posts').orderBy('sentimentScore', sort === 'worst' ? 'asc' : 'desc');
-        if (brand)    query = query.where('brand', '==', brand);
-        if (platform) query = query.where('platform', '==', platform);
-        query = query.limit(parseInt(limit));
-        const snap = await query.get();
-        const posts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        res.json(posts);
+
+        // Traer todos y filtrar en memoria para evitar índice compuesto brand+sentimentScore
+        let query = admin.firestore().collection('despegar_posts');
+        const snap = await query.limit(300).get();
+        let posts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // Filtros en memoria
+        if (brand)    posts = posts.filter(p => p.brand    === brand);
+        if (platform) posts = posts.filter(p => p.platform === platform);
+
+        // Ordenar
+        posts.sort((a, b) => sort === 'worst'
+            ? (a.sentimentScore || 0) - (b.sentimentScore || 0)
+            : (b.sentimentScore || 0) - (a.sentimentScore || 0));
+
+        posts = posts.slice(0, parseInt(limit));
+
+        // Enriquecer con comments_analyzed del scan más reciente de ese post
+        // Buscamos por postId o por (brand + platform) ordenado por timestamp
+        const enriched = await Promise.all(posts.map(async (post) => {
+            try {
+                let scanSnap;
+                if (post.scanId) {
+                    // Si el post tiene referencia directa al scan
+                    const scanDoc = await admin.firestore().collection('despegar_scans').doc(post.scanId).get();
+                    if (scanDoc.exists) scanSnap = [scanDoc];
+                }
+                if (!scanSnap) {
+                    // Buscar el scan más reciente del mismo brand+platform
+                    const q = await admin.firestore().collection('despegar_scans')
+                        .where('brand',    '==', post.brand)
+                        .where('platform', '==', post.platform)
+                        .orderBy('timestamp', 'desc')
+                        .limit(1)
+                        .get();
+                    scanSnap = q.docs;
+                }
+                if (scanSnap && scanSnap.length > 0) {
+                    const scanData = (scanSnap[0].data ? scanSnap[0].data() : scanSnap[0].data);
+                    // Filtrar comentarios que corresponden a este post (por postId o por url)
+                    const allComments = scanData.comments_analyzed || [];
+                    const postComments = post.postId
+                        ? allComments.filter(c => c.postId === post.postId || c.post_url === post.url)
+                        : allComments.slice(0, 20); // si no hay postId, incluir los primeros del scan
+                    return { ...post, comments_analyzed: postComments };
+                }
+            } catch (err) {
+                console.warn('[Posts] Error enriching post', post.id, err.message);
+            }
+            return post;
+        }));
+
+        res.json(enriched);
     } catch (e) {
         console.error('[Posts]', e.message);
         res.status(500).json({ error: e.message });
@@ -750,6 +796,7 @@ registerRoute('get', '/api/posts', async (req, res) => {
 });
 
 // Final handler for 404s
+
 app.use((req, res) => {
     console.warn(`[404] No route found for ${req.method} ${req.path}`);
     res.status(404).json({ error: `Ruta no encontrada: ${req.method} ${req.path}` });
