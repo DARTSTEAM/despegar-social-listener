@@ -6,6 +6,8 @@ const SENTIMENTS = [
   { label: '✅ Positivo',           value: 'positive' },
   { label: '⚠️ Neutral',            value: 'neutral' },
   { label: '🔴 Negativo',           value: 'negative' },
+  { label: '⭐ Muy Positivo',       value: 'very_positive' },
+  { label: '🚨 Muy Negativo',       value: 'very_negative' },
 ];
 
 // Asigna etiqueta de sentimiento basada en cuál porcentaje domina
@@ -38,30 +40,34 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
   // ─── Extraer todos los comentarios aplanados ─────────────────────────────
   const allComments = useMemo(() =>
     scans.flatMap(scan => {
-      const comments = Array.isArray(scan.raw_comments)        ? scan.raw_comments
-                     : Array.isArray(scan.comments_analyzed)   ? scan.comments_analyzed
+      const comments = Array.isArray(scan.comments_analyzed) ? scan.comments_analyzed
+                     : Array.isArray(scan.raw_comments)      ? scan.raw_comments
                      : [];
-      const pos = scan.sentiment?.positive || 0;
-      const neg = scan.sentiment?.negative || 0;
-      const sentLabel = dominantSentiment(pos, neg, scan.sentiment?.neutral || 0);
 
-      return comments.map(c => ({
-        ...c,
-        brand:      scan.brand,
-        platform:   scan.platform,
-        sentLabel,
-        scanPos:    pos,
-        scanNeg:    neg,
-        scanNeu:    scan.sentiment?.neutral || 0,
-      }));
+      return comments.map(c => {
+        // Usar el sentiment individual del comentario que asignó Gemini
+        // Normalizar very_positive → positive, very_negative → negative para el filtro simple
+        const rawSent = c.sentiment || 'neutral';
+        const sentLabel = rawSent; // conservamos granular para mostrar
+
+        return {
+          ...c,
+          brand:    scan.brand,
+          platform: scan.platform,
+          sentLabel,
+          scanPos:  scan.sentiment?.positive  || 0,
+          scanNeg:  scan.sentiment?.negative  || 0,
+          scanNeu:  scan.sentiment?.neutral   || 0,
+        };
+      });
     }),
   [scans]);
 
   // ─── Stats globales (de todos los scans, sin filtro de sentimiento) ────────
   const stats = useMemo(() => {
     if (allComments.length === 0) return { total: 0, pos: 0, neg: 0, neu: 0 };
-    const pos = allComments.filter(c => c.sentLabel === 'positive').length;
-    const neg = allComments.filter(c => c.sentLabel === 'negative').length;
+    const pos = allComments.filter(c => c.sentLabel === 'positive' || c.sentLabel === 'very_positive').length;
+    const neg = allComments.filter(c => c.sentLabel === 'negative' || c.sentLabel === 'very_negative').length;
     const neu = allComments.filter(c => c.sentLabel === 'neutral').length;
     return {
       total: allComments.length,
@@ -73,11 +79,18 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
 
   // ─── Filtros aplicados ────────────────────────────────────────────────────
   const filtered = useMemo(() => {
-    setPage(1); // reset al cambiar filtros
+    setPage(1);
     return allComments.filter(c => {
       if (selectedBrand    && c.brand    !== selectedBrand)                              return false;
       if (selectedPlatform && c.platform?.toLowerCase() !== selectedPlatform.toLowerCase()) return false;
-      if (sentimentFilter  && c.sentLabel !== sentimentFilter)                           return false;
+      if (sentimentFilter) {
+        // Filtro simple: 'positive' matchea positive Y very_positive
+        if (sentimentFilter === 'positive' && c.sentLabel !== 'positive' && c.sentLabel !== 'very_positive') return false;
+        if (sentimentFilter === 'negative' && c.sentLabel !== 'negative' && c.sentLabel !== 'very_negative') return false;
+        if (sentimentFilter === 'neutral'  && c.sentLabel !== 'neutral')  return false;
+        if (sentimentFilter === 'very_positive' && c.sentLabel !== 'very_positive') return false;
+        if (sentimentFilter === 'very_negative' && c.sentLabel !== 'very_negative') return false;
+      }
       return true;
     });
   }, [allComments, selectedBrand, selectedPlatform, sentimentFilter]);
@@ -228,16 +241,16 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
                   {c.brand}
                 </td>
                 <td className="px-6 py-4">
-                  {c.sentLabel === 'positive' && (
+                  {(c.sentLabel === 'positive' || c.sentLabel === 'very_positive') && (
                     <div className="flex items-center gap-1.5 text-accent-lemon">
                       <div className="w-1.5 h-1.5 rounded-full bg-accent-lemon shadow-[0_0_6px_rgba(152,255,188,0.6)]" />
-                      <span className="text-[8px] font-black uppercase">Pos</span>
+                      <span className="text-[8px] font-black uppercase">{c.sentLabel === 'very_positive' ? 'Muy Pos' : 'Pos'}</span>
                     </div>
                   )}
-                  {c.sentLabel === 'negative' && (
+                  {(c.sentLabel === 'negative' || c.sentLabel === 'very_negative') && (
                     <div className="flex items-center gap-1.5 text-accent-pink">
                       <div className="w-1.5 h-1.5 rounded-full bg-accent-pink shadow-[0_0_6px_rgba(255,83,186,0.6)]" />
-                      <span className="text-[8px] font-black uppercase">Neg</span>
+                      <span className="text-[8px] font-black uppercase">{c.sentLabel === 'very_negative' ? 'Muy Neg' : 'Neg'}</span>
                     </div>
                   )}
                   {c.sentLabel === 'neutral' && (
