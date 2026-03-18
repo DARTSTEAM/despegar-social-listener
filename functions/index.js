@@ -732,7 +732,42 @@ registerRoute('get', '/api/admin/apify-usage', async (req, res) => {
     }
 });
 
+// ─── Endpoint: comentarios analizados del scan más reciente de una cuenta ──────
+registerRoute('get', '/api/scan-comments', async (req, res) => {
+    try {
+        const { brand, platform, date } = req.query;
+        if (!brand || !platform) return res.status(400).json({ error: 'brand y platform son requeridos' });
+
+        let snap;
+        if (date) {
+            // Buscar scan del día específico
+            const docId = `${brand}-${platform}-${date}`;
+            const doc = await admin.firestore().collection('despegar_scans').doc(docId).get();
+            snap = doc.exists ? [doc] : [];
+        } else {
+            // Buscar el scan más reciente
+            const q = await admin.firestore().collection('despegar_scans')
+                .where('brand',    '==', brand)
+                .where('platform', '==', platform)
+                .orderBy('timestamp', 'desc')
+                .limit(1)
+                .get();
+            snap = q.docs;
+        }
+
+        if (!snap.length) return res.json([]);
+
+        const scanData = snap[0].data ? snap[0].data() : snap[0].data;
+        const comments = scanData.comments_analyzed || [];
+        res.json(comments);
+    } catch (e) {
+        console.error('[ScanComments]', e.message);
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // ─── Endpoint: posts rankeados por sentimiento ────────────────────────────────
+
 registerRoute('get', '/api/posts', async (req, res) => {
     try {
         const { brand, platform, sort = 'best', limit = 50 } = req.query;

@@ -104,16 +104,39 @@ const PostCard = ({ post, rank, type, selected, onClick }) => {
 
 // ── PostDetail panel ───────────────────────────────────────────────────────────
 const PostDetail = ({ post, onClose }) => {
-  const pos = post.sentiment?.positive      || 0;
-  const neg = post.sentiment?.negative      || 0;
-  const neu = post.sentiment?.neutral       || 0;
+  const [scanComments, setScanComments] = useState([]);
+  const [loadingComments, setLoadingComments] = useState(false);
+
+  // Fetch comentarios del scan correspondiente a este post (brand+platform+date)
+  useEffect(() => {
+    let cancelled = false;
+    const fetchComments = async () => {
+      setLoadingComments(true);
+      setScanComments([]);
+      try {
+        const params = { brand: post.brand, platform: post.platform };
+        if (post.date) params.date = post.date;
+        const { data } = await axios.get(`${API_BASE}/api/scan-comments`, { params });
+        if (!cancelled) setScanComments(Array.isArray(data) ? data : []);
+      } catch {
+        if (!cancelled) setScanComments([]);
+      } finally {
+        if (!cancelled) setLoadingComments(false);
+      }
+    };
+    fetchComments();
+    return () => { cancelled = true; };
+  }, [post.id, post.brand, post.platform, post.date]);
+
+  const pos  = post.sentiment?.positive      || 0;
+  const neg  = post.sentiment?.negative      || 0;
+  const neu  = post.sentiment?.neutral       || 0;
   const vpos = post.sentiment?.very_positive || 0;
   const vneg = post.sentiment?.very_negative || 0;
 
-  const bar = sentimentBar(pos, neg);
-  const comments = Array.isArray(post.comments_analyzed) ? post.comments_analyzed : [];
-  const topPos = comments.filter(c => ['positive','very_positive'].includes(c.sentiment)).slice(0, 3);
-  const topNeg = comments.filter(c => ['negative','very_negative'].includes(c.sentiment)).slice(0, 3);
+  const bar    = sentimentBar(pos, neg);
+  const topPos = scanComments.filter(c => ['positive','very_positive'].includes(c.sentiment)).slice(0, 3);
+  const topNeg = scanComments.filter(c => ['negative','very_negative'].includes(c.sentiment)).slice(0, 3);
 
   const engagementRate = post.views > 0
     ? (((post.likes || 0) + (post.commentCount || 0)) / post.views * 100).toFixed(2)
@@ -143,6 +166,9 @@ const PostDetail = ({ post, onClose }) => {
             <span className={`px-1.5 py-0.5 rounded text-[7px] font-black uppercase border ${platformBadge[post.platform] || ''}`}>
               {post.platform}
             </span>
+            {post.date && (
+              <span className="text-[7px] text-fg/20 font-bold">{post.date}</span>
+            )}
           </div>
           <p className="text-[11px] text-fg/70 italic leading-snug line-clamp-3">{post.description || '(Sin descripción)'}</p>
         </div>
@@ -169,7 +195,7 @@ const PostDetail = ({ post, onClose }) => {
       )}
 
       <div className="px-5 space-y-5 pb-5">
-        {/* Métricas de alcance */}
+        {/* Métricas del post individual */}
         <div className="grid grid-cols-2 gap-2">
           {[
             { icon: Heart,         value: fmt(post.likes),        label: 'Likes'      },
@@ -187,20 +213,21 @@ const PostDetail = ({ post, onClose }) => {
           ))}
         </div>
 
-        {/* Sentiment breakdown */}
+        {/* Sentiment breakdown — del scan de la cuenta ese día */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">Sentiment Breakdown</p>
+            <div>
+              <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">Sentiment del scan</p>
+              <p className="text-[7px] text-fg/20 italic">{post.brand} · {post.platform} · {post.date || 'último scan'}</p>
+            </div>
             <span className={`text-[8px] font-black px-2 py-0.5 rounded-full border ${bar.pos > bar.neg ? 'text-accent-lemon border-accent-lemon/20 bg-accent-lemon/10' : 'text-accent-pink border-accent-pink/20 bg-accent-pink/10'}`}>
               {bar.pos > bar.neg ? `+${pos}% pos` : `-${neg}% neg`}
             </span>
           </div>
-          {/* Barra global */}
           <div className="h-2 w-full bg-fg/5 rounded-full overflow-hidden flex">
             <div className="h-full bg-accent-lemon transition-all" style={{ width: `${bar.pos}%` }} />
             <div className="h-full bg-accent-pink transition-all"  style={{ width: `${bar.neg}%` }} />
           </div>
-          {/* Barras por nivel */}
           <div className="space-y-2">
             {sentBars.map(({ label, value, color }) => (
               <div key={label} className="space-y-0.5">
@@ -221,42 +248,54 @@ const PostDetail = ({ post, onClose }) => {
           </div>
         </div>
 
-        {/* Top comentarios positivos */}
-        {topPos.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-[9px] font-black uppercase tracking-widest text-accent-lemon/70">💬 Top positivos</p>
-            {topPos.map((c, i) => (
-              <div key={i} className="p-2.5 bg-accent-lemon/[0.04] border border-accent-lemon/10 rounded-xl space-y-1">
-                <p className="text-[9px] font-black uppercase text-accent-lemon/60">@{c.author}</p>
-                <p className="text-[10px] text-fg/60 italic leading-snug">"{c.text_preview || c.message}"</p>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Comentarios del scan */}
+        <div className="space-y-2">
+          <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">
+            Comentarios del scan
+            <span className="text-fg/15 font-normal normal-case tracking-normal ml-1">({post.brand} · {post.date || 'último'})</span>
+          </p>
 
-        {/* Top comentarios negativos */}
-        {topNeg.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-[9px] font-black uppercase tracking-widest text-accent-pink/70">⚠ Top negativos</p>
-            {topNeg.map((c, i) => (
-              <div key={i} className="p-2.5 bg-accent-pink/[0.04] border border-accent-pink/10 rounded-xl space-y-1">
-                <p className="text-[9px] font-black uppercase text-accent-pink/60">@{c.author}</p>
-                <p className="text-[10px] text-fg/60 italic leading-snug">"{c.text_preview || c.message}"</p>
-              </div>
-            ))}
-          </div>
-        )}
+          {loadingComments && (
+            <div className="space-y-2">
+              {[1,2,3].map(i => <div key={i} className="h-10 rounded-xl bg-fg/[0.03] animate-pulse" />)}
+            </div>
+          )}
 
-        {/* Si no hay comentarios analizados */}
-        {comments.length === 0 && (
-          <p className="text-[9px] text-fg/20 italic text-center py-2">Sin comentarios analizados para este post</p>
-        )}
+          {!loadingComments && topPos.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-[8px] font-black uppercase tracking-widest text-accent-lemon/60">💚 Positivos</p>
+              {topPos.map((c, i) => (
+                <div key={i} className="p-2.5 bg-accent-lemon/[0.04] border border-accent-lemon/10 rounded-xl space-y-0.5">
+                  <p className="text-[8px] font-black uppercase text-accent-lemon/50">@{c.author}</p>
+                  <p className="text-[10px] text-fg/60 italic leading-snug">"{c.text_preview || c.message}"</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!loadingComments && topNeg.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-[8px] font-black uppercase tracking-widest text-accent-pink/60">⚠ Negativos</p>
+              {topNeg.map((c, i) => (
+                <div key={i} className="p-2.5 bg-accent-pink/[0.04] border border-accent-pink/10 rounded-xl space-y-0.5">
+                  <p className="text-[8px] font-black uppercase text-accent-pink/50">@{c.author}</p>
+                  <p className="text-[10px] text-fg/60 italic leading-snug">"{c.text_preview || c.message}"</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!loadingComments && scanComments.length === 0 && (
+            <p className="text-[9px] text-fg/20 italic text-center py-2">Sin comentarios analizados para esta cuenta</p>
+          )}
+        </div>
       </div>
     </motion.div>
   );
 };
 
 // ── PostsView ──────────────────────────────────────────────────────────────────
+
 const PostsView = () => {
   const [posts, setPosts]             = useState([]);
   const [loading, setLoading]         = useState(true);
