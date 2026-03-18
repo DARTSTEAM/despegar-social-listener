@@ -6,16 +6,17 @@ import { API_BASE } from '../config';
 // ─── Lista maestra de todas las cuentas posibles ────────────────────────────
 // IMPORTANTE: las keys deben coincidir con brand:platform en el backend
 const ALL_TARGETS = [
-  // Owned — Despegar y sus marcas
-  { key: 'Despegar:instagram',    brand: 'Despegar',      platform: 'Instagram', handle: '@despegar',            type: 'Owned',      url: 'https://www.instagram.com/despegar/' },
-  { key: 'Despegar:tiktok',       brand: 'Despegar',      platform: 'TikTok',    handle: '@despegar',            type: 'Owned',      url: 'https://www.tiktok.com/@despegar' },
-  { key: 'Viajes Falabella:instagram', brand: 'Viajes Falabella', platform: 'Instagram', handle: '@viajesfalabella', type: 'Owned', url: 'https://www.instagram.com/viajesfalabella/' },
-  // Competitors
-  { key: 'Despegar AR:instagram', brand: 'Despegar AR',   platform: 'Instagram', handle: '@despegarargentina',   type: 'Competitor', url: 'https://www.instagram.com/despegarargentina/' },
-  { key: 'Almundo:instagram',     brand: 'Almundo',       platform: 'Instagram', handle: '@almundo',             type: 'Competitor', url: 'https://www.instagram.com/almundo/' },
-  { key: 'Airbnb:instagram',      brand: 'Airbnb',        platform: 'Instagram', handle: '@airbnb',              type: 'Competitor', url: 'https://www.instagram.com/airbnb/' },
-  { key: 'Booking:instagram',     brand: 'Booking',       platform: 'Instagram', handle: '@bookingcom',          type: 'Competitor', url: 'https://www.instagram.com/bookingcom/' },
-  { key: 'LATAM:instagram',       brand: 'LATAM',         platform: 'Instagram', handle: '@latam',               type: 'Competitor', url: 'https://www.instagram.com/latam/' },
+  // ── Owned ────────────────────────────────────────────────────────────────
+  { key: 'Despegar:instagram',    brand: 'Despegar',      platform: 'Instagram', handle: '@despegar',         type: 'Owned',      url: 'https://www.instagram.com/despegar/' },
+  { key: 'Despegar AR:instagram', brand: 'Despegar AR',   platform: 'Instagram', handle: '@despegar.ar',      type: 'Owned',      url: 'https://www.instagram.com/despegar.ar/' },
+  { key: 'Despegar:tiktok',       brand: 'Despegar',      platform: 'TikTok',    handle: '@despegar',         type: 'Owned',      url: 'https://www.tiktok.com/@despegar' },
+  // ── Competitors ──────────────────────────────────────────────────────────
+  { key: 'Turismo City:instagram',brand: 'Turismo City',  platform: 'Instagram', handle: '@turismocity_ar',   type: 'Competitor', url: 'https://www.instagram.com/turismocity_ar/' },
+  { key: 'Booking:instagram',     brand: 'Booking',       platform: 'Instagram', handle: '@bookingcom',       type: 'Competitor', url: 'https://www.instagram.com/bookingcom/' },
+  { key: 'Airbnb:instagram',      brand: 'Airbnb',        platform: 'Instagram', handle: '@airbnb',           type: 'Competitor', url: 'https://www.instagram.com/airbnb/' },
+  { key: 'Turismo City:tiktok',   brand: 'Turismo City',  platform: 'TikTok',    handle: '@turismocity',      type: 'Competitor', url: 'https://www.tiktok.com/@turismocity' },
+  { key: 'Booking:tiktok',        brand: 'Booking',       platform: 'TikTok',    handle: '@bookingcom',       type: 'Competitor', url: 'https://www.tiktok.com/@bookingcom' },
+  { key: 'Airbnb:tiktok',         brand: 'Airbnb',        platform: 'TikTok',    handle: '@airbnb',           type: 'Competitor', url: 'https://www.tiktok.com/@airbnb' },
 ];
 
 const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart }) => {

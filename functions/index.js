@@ -355,14 +355,17 @@ registerRoute('post', '/api/admin/scout-all', async (req, res) => {
         // ─── Lista maestra de todas las cuentas posibles ─────────────────────
         // IMPORTANTE: las keys "brand:platform" deben coincidir con el frontend (SettingsView.jsx)
         const ALL_TARGETS = [
-            { brand: 'Despegar',         platform: 'instagram', url: 'https://www.instagram.com/despegar/',          type: 'owned' },
-            { brand: 'Despegar',         platform: 'tiktok',    url: 'https://www.tiktok.com/@despegar',             type: 'owned' },
-            { brand: 'Viajes Falabella', platform: 'instagram', url: 'https://www.instagram.com/viajesfalabella/',   type: 'owned' },
-            { brand: 'Despegar AR',      platform: 'instagram', url: 'https://www.instagram.com/despegarargentina/', type: 'competitor' },
-            { brand: 'Almundo',          platform: 'instagram', url: 'https://www.instagram.com/almundo/',           type: 'competitor' },
-            { brand: 'Airbnb',           platform: 'instagram', url: 'https://www.instagram.com/airbnb/',            type: 'competitor' },
-            { brand: 'Booking',          platform: 'instagram', url: 'https://www.instagram.com/bookingcom/',        type: 'competitor' },
-            { brand: 'LATAM',            platform: 'instagram', url: 'https://www.instagram.com/latam/',             type: 'competitor' },
+            // ── Owned ───────────────────────────────────────────────────────────
+            { brand: 'Despegar',     platform: 'instagram', url: 'https://www.instagram.com/despegar/',      type: 'owned' },
+            { brand: 'Despegar AR',  platform: 'instagram', url: 'https://www.instagram.com/despegar.ar/',   type: 'owned' },
+            { brand: 'Despegar',     platform: 'tiktok',    url: 'https://www.tiktok.com/@despegar',         type: 'owned' },
+            // ── Competitors ──────────────────────────────────────────────────────
+            { brand: 'Turismo City', platform: 'instagram', url: 'https://www.instagram.com/turismocity_ar/', type: 'competitor' },
+            { brand: 'Booking',      platform: 'instagram', url: 'https://www.instagram.com/bookingcom/',    type: 'competitor' },
+            { brand: 'Airbnb',       platform: 'instagram', url: 'https://www.instagram.com/airbnb/',        type: 'competitor' },
+            { brand: 'Turismo City', platform: 'tiktok',    url: 'https://www.tiktok.com/@turismocity',      type: 'competitor' },
+            { brand: 'Booking',      platform: 'tiktok',    url: 'https://www.tiktok.com/@bookingcom',       type: 'competitor' },
+            { brand: 'Airbnb',       platform: 'tiktok',    url: 'https://www.tiktok.com/@airbnb',           type: 'competitor' },
         ];
 
         // Filtrar según selección del frontend, o usar todos si no se especifica
@@ -430,8 +433,8 @@ registerRoute('post', '/api/admin/seed-history', async (req, res) => {
     try {
         console.log("[Admin] Seeding 7-day history for all brands...");
         const brands = [
-            'Despegar', 'Viajes Falabella',
-            'Despegar AR', 'Almundo', 'Airbnb', 'Booking', 'LATAM'
+            'Despegar', 'Despegar AR',
+            'Turismo City', 'Booking', 'Airbnb'
         ];
 
         const now = Date.now();
@@ -443,7 +446,7 @@ registerRoute('post', '/api/admin/seed-history', async (req, res) => {
             const dateStr = targetDate.toISOString().split('T')[0];
 
             for (const brand of brands) {
-                const isOwned = ['Despegar', 'Viajes Falabella'].includes(brand);
+                const isOwned = ['Despegar', 'Despegar AR'].includes(brand);
                 const basePos = isOwned ? 65 : 55;
                 const variance = Math.random() * 15;
 
@@ -526,7 +529,7 @@ registerRoute('get', '/api/admin/brands-status', async (req, res) => {
 registerRoute('get', '/api/cuantico/summary', async (req, res) => {
     try {
         const db = admin.firestore();
-        const brands = ['Despegar', 'Viajes Falabella'];
+        const brands = ['Despegar', 'Despegar AR'];
         const summaries = [];
 
         for (const brand of brands) {
@@ -760,17 +763,17 @@ exports.dailyScouting = onSchedule({
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
     const targets = [
-        // Owned Brands
-        { brand: 'Despegar',         platform: 'instagram', url: 'https://www.instagram.com/despegar/',          type: 'owned' },
-        { brand: 'Despegar',         platform: 'tiktok',    url: 'https://www.tiktok.com/@despegar',             type: 'owned' },
-        { brand: 'Viajes Falabella', platform: 'instagram', url: 'https://www.instagram.com/viajesfalabella/',   type: 'owned' },
-
+        // Owned
+        { brand: 'Despegar',     platform: 'instagram', url: 'https://www.instagram.com/despegar/',       type: 'owned' },
+        { brand: 'Despegar AR',  platform: 'instagram', url: 'https://www.instagram.com/despegar.ar/',    type: 'owned' },
+        { brand: 'Despegar',     platform: 'tiktok',    url: 'https://www.tiktok.com/@despegar',          type: 'owned' },
         // Competitors
-        { brand: 'Despegar AR',      platform: 'instagram', url: 'https://www.instagram.com/despegarargentina/', type: 'competitor' },
-        { brand: 'Almundo',          platform: 'instagram', url: 'https://www.instagram.com/almundo/',           type: 'competitor' },
-        { brand: 'Airbnb',           platform: 'instagram', url: 'https://www.instagram.com/airbnb/',            type: 'competitor' },
-        { brand: 'Booking',          platform: 'instagram', url: 'https://www.instagram.com/bookingcom/',        type: 'competitor' },
-        { brand: 'LATAM',            platform: 'instagram', url: 'https://www.instagram.com/latam/',             type: 'competitor' },
+        { brand: 'Turismo City', platform: 'instagram', url: 'https://www.instagram.com/turismocity_ar/', type: 'competitor' },
+        { brand: 'Booking',      platform: 'instagram', url: 'https://www.instagram.com/bookingcom/',     type: 'competitor' },
+        { brand: 'Airbnb',       platform: 'instagram', url: 'https://www.instagram.com/airbnb/',         type: 'competitor' },
+        { brand: 'Turismo City', platform: 'tiktok',    url: 'https://www.tiktok.com/@turismocity',       type: 'competitor' },
+        { brand: 'Booking',      platform: 'tiktok',    url: 'https://www.tiktok.com/@bookingcom',        type: 'competitor' },
+        { brand: 'Airbnb',       platform: 'tiktok',    url: 'https://www.tiktok.com/@airbnb',            type: 'competitor' },
     ];
 
     await performScouting(targets, db, processor, yesterday);
