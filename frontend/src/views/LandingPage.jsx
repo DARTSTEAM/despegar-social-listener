@@ -14,7 +14,7 @@ const LandingPage = ({ onEnter }) => (
       </div>
       <h1 className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.85]">
         Escucha lo que el <br />
-        <span className="text-accent-orange">mundo dice de NGR.</span>
+        <span className="text-accent-orange">mundo dice de Despegar.</span>
       </h1>
       <p className="text-fg/60 dark:text-fg/40 text-lg md:text-xl font-medium max-w-2xl mx-auto italic leading-relaxed">
         Transformamos miles de comentarios de TikTok, Instagram y Google Maps en insights estratégicos accionables para el Directorio.
@@ -29,7 +29,7 @@ const LandingPage = ({ onEnter }) => (
     >
       <button
         onClick={onEnter}
-        className="pwa-btn px-12 py-5 text-sm group relative overflow-hidden bg-accent-orange text-white dark:bg-accent-orange border-none shadow-[0_10px_40px_rgba(255,126,75,0.3)]"
+        className="pwa-btn px-12 py-5 text-sm group relative overflow-hidden bg-accent-orange text-black dark:bg-accent-orange border-none shadow-[0_10px_40px_rgba(211,196,246,0.4)]"
       >
         <span className="relative z-10 flex items-center gap-3">
           Ingresar al Dashboard
@@ -58,7 +58,7 @@ const LandingPage = ({ onEnter }) => (
       {[
         { title: 'Real-time Scrutiny', desc: 'Monitorea cada mención al instante en TikTok e Instagram.' },
         { title: 'IA Analysis', desc: 'Gemini Flash procesa el sentimiento y detecta crisis potenciales.' },
-        { title: 'Executive Data', desc: 'Reportes estratégicos listos para el management de NGR.' },
+        { title: 'Executive Data', desc: 'Reportes estratégicos listos para el management de Despegar.' },
       ].map((f, i) => (
         <motion.div
           key={i}
@@ -100,7 +100,7 @@ const LandingPage = ({ onEnter }) => (
                 <div className="w-2 h-2 rounded-full bg-accent-lemon" />
                 <div className="w-2 h-2 rounded-full bg-accent-orange" />
               </div>
-              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-fg/20 ml-4">NGR Intelligence Suite</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-fg/20 ml-4">Despegar Intelligence Suite</span>
             </div>
             <div className="px-4 py-1.5 bg-fg/5 rounded-lg text-[8px] font-black uppercase tracking-widest text-accent-lemon border border-accent-lemon/20">
               Live: Data Stream Active
@@ -155,7 +155,7 @@ const LandingPage = ({ onEnter }) => (
                     initial={{ height: 0 }}
                     animate={{ height: `${h}%` }}
                     transition={{ delay: 1.5 + (i * 0.05), duration: 1, ease: 'easeOut' }}
-                    className={`flex-1 rounded-t-lg transition-all duration-500 hover:scale-x-110 cursor-pointer ${i === 9 ? 'bg-gradient-to-t from-accent-orange to-accent-pink shadow-[0_0_20px_rgba(255,126,75,0.4)]' : 'bg-fg/10'}`}
+                    className={`flex-1 rounded-t-lg transition-all duration-500 hover:scale-x-110 cursor-pointer ${i === 9 ? 'bg-gradient-to-t from-accent-orange to-accent-pink shadow-[0_0_20px_rgba(211,196,246,0.4)]' : 'bg-fg/10'}`}
                   />
                 ))}
               </div>
@@ -163,9 +163,9 @@ const LandingPage = ({ onEnter }) => (
                 <h4 className="text-[9px] font-black uppercase tracking-widest text-fg/30">Sentiment Clusters</h4>
                 <div className="space-y-3">
                   {[
-                    { label: 'Sabor & Calidad', val: 85, color: 'accent-lemon' },
-                    { label: 'Tiempo de Entrega', val: 42, color: 'accent-orange' },
-                    { label: 'Atención Local', val: 78, color: 'accent-lemon' },
+                    { label: 'Precio & Valor', val: 85, color: 'accent-lemon' },
+                    { label: 'Tiempo de Respuesta', val: 42, color: 'accent-orange' },
+                    { label: 'Experiencia de Viaje', val: 78, color: 'accent-lemon' },
                   ].map(c => (
                     <div key={c.label} className="space-y-1">
                       <div className="flex justify-between text-[8px] font-black uppercase tracking-tighter opacity-60 text-fg">

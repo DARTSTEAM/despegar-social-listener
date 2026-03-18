@@ -9,7 +9,7 @@ export default {
     extend: {
       colors: {
         accent: {
-          orange: "#ff7e4b",
+          orange: "#D3C4F6",
           blue: "#0070f3",
           pink: "#ff0080",
           lemon: "#ccff00",
