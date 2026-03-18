@@ -244,7 +244,7 @@ registerRoute('post', '/api/youtube/analyze', async (req, res) => {
             videoUrl: canonicalUrl,
             ...insights
         };
-        await admin.firestore().collection('scans').doc(`youtube-${videoId}`).set(scanData);
+        await admin.firestore().collection('despegar_scans').doc(`youtube-${videoId}`).set(scanData);
 
         res.json({
             status: 'success',
@@ -298,7 +298,7 @@ registerRoute('post', '/api/scout', async (req, res) => {
 
         // Guardar en Firestore
         const docId = `scout-${platform}-${Date.now()}`;
-        await admin.firestore().collection('scans').doc(docId).set({
+        await admin.firestore().collection('despegar_scans').doc(docId).set({
             brand: brand || url, platform,
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             commentsCount: comments.length,
@@ -319,9 +319,9 @@ registerRoute('get', '/api/insights/:datasetId', async (req, res) => {
     const { datasetId } = req.params;
     try {
         const comments = [
-            { text: 'Me encanta la nueva hamburguesa de Bembos!', author: 'comidista', followers: 1200, likes: 45 },
-            { text: 'La promo de Papa Johns demoró una hora, mal ahí.', author: 'hambriento1', followers: 500, likes: 12 },
-            { text: 'El personal de NGR siempre es muy amable.', author: 'fan_fb', followers: 800, likes: 30 },
+            { text: 'Despegar me salvó las vacaciones, super fácil reservar!', author: 'viajero_ar', followers: 1200, likes: 45 },
+            { text: 'El precio que encontré en Despegar fue el más bajo de todos.', author: 'travel_hunter', followers: 500, likes: 12 },
+            { text: 'La app de Despegar es muy intuitiva, reservé en 2 minutos.', author: 'tech_traveler', followers: 800, likes: 30 },
         ];
         const insights = await processor.analyzeSentimentAndTrends(comments.slice(0, 30), datasetId, 'social');
         res.json({ comments: comments.length, comments_raw: comments, ...insights });
@@ -333,7 +333,7 @@ registerRoute('get', '/api/insights/:datasetId', async (req, res) => {
 
 registerRoute('get', '/api/history', async (req, res) => {
     try {
-        const snapshot = await admin.firestore().collection('scans')
+        const snapshot = await admin.firestore().collection('despegar_scans')
             .orderBy('timestamp', 'desc')
             .limit(10)
             .get();
@@ -385,7 +385,7 @@ registerRoute('post', '/api/admin/scout-all', async (req, res) => {
 
 
         // Inicializar estado de progreso en Firestore
-        await db.collection('meta').doc('scoutStatus').set({
+        await db.collection('despegar_meta').doc('scoutStatus').set({
             status: 'running',
             startedAt: admin.firestore.FieldValue.serverTimestamp(),
             total: targets.length,
@@ -399,7 +399,7 @@ registerRoute('post', '/api/admin/scout-all', async (req, res) => {
 
         performScouting(targets, db, p, yesterday).catch(err => {
             console.error("[scout-all async error]", err);
-            db.collection('meta').doc('scoutStatus').update({ status: 'error', error: err.message });
+            db.collection('despegar_meta').doc('scoutStatus').update({ status: 'error', error: err.message });
         });
 
         res.json({ status: "initiated", message: `Iniciando escaneo de ${targets.length} perfiles en segundo plano.`, total: targets.length });
@@ -414,7 +414,7 @@ registerRoute('post', '/api/admin/scout-all', async (req, res) => {
 // Consultar estado del escaneo masivo en curso
 registerRoute('get', '/api/admin/scout-status', async (req, res) => {
     try {
-        const doc = await admin.firestore().collection('meta').doc('scoutStatus').get();
+        const doc = await admin.firestore().collection('despegar_meta').doc('scoutStatus').get();
         if (!doc.exists) return res.json({ status: 'idle' });
         const data = doc.data();
         // Convertir Timestamps de Firestore a ISO strings
@@ -467,7 +467,7 @@ registerRoute('post', '/api/admin/seed-history', async (req, res) => {
                     alerts: sentiment.negative > 20 ? [`Alerta de sentimiento en ${brand}`] : []
                 };
 
-                await db.collection('scans').add({
+                await db.collection('despegar_scans').add({
                     brand,
                     platform: 'aggregate',
                     summary,
@@ -489,7 +489,7 @@ registerRoute('post', '/api/admin/seed-history', async (req, res) => {
 registerRoute('get', '/api/admin/brands-status', async (req, res) => {
     try {
         const db = admin.firestore();
-        const scansRef = db.collection('scans');
+        const scansRef = db.collection('despegar_scans');
         const snapshot = await scansRef.get();
 
         const statusMap = {};
@@ -533,7 +533,7 @@ registerRoute('get', '/api/cuantico/summary', async (req, res) => {
         const summaries = [];
 
         for (const brand of brands) {
-            const snapshot = await db.collection('scans')
+            const snapshot = await db.collection('despegar_scans')
                 .where('brand', '==', brand)
                 .orderBy('timestamp', 'desc')
                 .limit(1)
@@ -572,7 +572,7 @@ registerRoute('get', '/api/cuantico/summary', async (req, res) => {
 registerRoute('get', '/api/alerts', async (req, res) => {
     try {
         const db = admin.firestore();
-        const snapshot = await db.collection('scans')
+        const snapshot = await db.collection('despegar_scans')
             .orderBy('timestamp', 'desc')
             .limit(20)
             .get();
@@ -594,7 +594,7 @@ registerRoute('get', '/api/alerts', async (req, res) => {
 registerRoute('get', '/api/reports', async (req, res) => {
     try {
         const db = admin.firestore();
-        const snapshot = await db.collection('reports')
+        const snapshot = await db.collection('despegar_reports')
             .orderBy('createdAt', 'desc')
             .limit(1)
             .get();
@@ -614,7 +614,7 @@ registerRoute('get', '/api/historical', async (req, res) => {
     try {
         const { brand, platform } = req.query;
         const db = admin.firestore();
-        let query = db.collection('scans').orderBy('timestamp', 'desc').limit(30);
+        let query = db.collection('despegar_scans').orderBy('timestamp', 'desc').limit(30);
         if (brand) query = query.where('brand', '==', brand);
 
         const snapshot = await query.get();
@@ -671,7 +671,7 @@ registerRoute('get', '/api/admin/seed-bembos', async (req, res) => {
                 ]
             };
 
-            const scanRef = db.collection('scans').doc(scanId);
+            const scanRef = db.collection('despegar_scans').doc(scanId);
             batch.set(scanRef, data);
         }
 
@@ -710,7 +710,7 @@ registerRoute('get', '/api/admin/apify-usage', async (req, res) => {
 registerRoute('get', '/api/posts', async (req, res) => {
     try {
         const { brand, platform, sort = 'best', limit = 50 } = req.query;
-        let query = admin.firestore().collection('posts').orderBy('sentimentScore', sort === 'worst' ? 'asc' : 'desc');
+        let query = admin.firestore().collection('despegar_posts').orderBy('sentimentScore', sort === 'worst' ? 'asc' : 'desc');
         if (brand)    query = query.where('brand', '==', brand);
         if (platform) query = query.where('platform', '==', platform);
         query = query.limit(parseInt(limit));
@@ -752,7 +752,7 @@ exports.apiServer = onRequest({
 // Tareas Programadas - Daily Automation
 exports.dailyScouting = onSchedule({
     schedule: 'every day 01:00',
-    timeZone: 'America/Lima',
+    timeZone: 'America/Argentina/Buenos_Aires',
     memory: '1GiB',
     timeoutSeconds: 540
 }, async (event) => {
@@ -779,16 +779,16 @@ exports.dailyScouting = onSchedule({
     await performScouting(targets, db, processor, yesterday);
 
     // 4. Update Weekly Report
-    const scans = await db.collection('scans').where('timestamp', '>', admin.firestore.Timestamp.fromDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))).get();
+    const scans = await db.collection('despegar_scans').where('timestamp', '>', admin.firestore.Timestamp.fromDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))).get();
     const summaries = scans.docs.map(doc => doc.data().summary);
     const weeklyBrief = await processor.generateWeeklyExecutiveBriefing(summaries);
     if (weeklyBrief) {
-        await db.collection('reports').add({ ...weeklyBrief, timestamp: admin.firestore.FieldValue.serverTimestamp() });
+        await db.collection('despegar_reports').add({ ...weeklyBrief, timestamp: admin.firestore.FieldValue.serverTimestamp() });
     }
 });
 
 async function performScouting(targets, db, processor, yesterday) {
-    const statusRef = db.collection('meta').doc('scoutStatus');
+    const statusRef = db.collection('despegar_meta').doc('scoutStatus');
     let completed = 0;
     let failed = 0;
 
@@ -843,7 +843,7 @@ async function performScouting(targets, db, processor, yesterday) {
                     ...insights
                 };
 
-                await db.collection('scans').doc(`${target.brand}-${target.platform}-${yesterday}`).set(scanData);
+                await db.collection('despegar_scans').doc(`${target.brand}-${target.platform}-${yesterday}`).set(scanData);
 
                 // ── Guardar metadata por video/post en colección posts ──────────────────
                 if (videoMeta.length > 0) {
@@ -853,7 +853,7 @@ async function performScouting(targets, db, processor, yesterday) {
                     const batch = db.batch();
                     videoMeta.forEach((vm, vi) => {
                         const docId = `${target.brand}-${target.platform}-${yesterday}-post${vi}`;
-                        batch.set(db.collection('posts').doc(docId), {
+                        batch.set(db.collection('despegar_posts').doc(docId), {
                             brand:        target.brand,
                             platform:     target.platform,
                             date:         yesterday,
@@ -920,12 +920,12 @@ async function performScouting(targets, db, processor, yesterday) {
 
 exports.weeklyReport = onSchedule({
     schedule: 'every monday 08:00',
-    timeZone: 'America/Lima',
+    timeZone: 'America/Argentina/Buenos_Aires',
     memory: '1GiB'
 }, async (event) => {
     console.log("[WeeklyReport] Iniciando consolidación semanal...");
     const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const snapshot = await admin.firestore().collection('scans')
+    const snapshot = await admin.firestore().collection('despegar_scans')
         .where('timestamp', '>', lastWeek)
         .limit(20)
         .get();
@@ -939,7 +939,7 @@ exports.weeklyReport = onSchedule({
     if (summaries.length > 0) {
         const briefing = await processor.generateWeeklyExecutiveBriefing(summaries);
         if (briefing) {
-            await admin.firestore().collection('reports').add({
+            await admin.firestore().collection('despegar_reports').add({
                 ...briefing,
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
                 scanCount: summaries.length
@@ -952,7 +952,7 @@ exports.weeklyReport = onSchedule({
 
 registerRoute('get', '/api/reports', async (req, res) => {
     try {
-        const snapshot = await admin.firestore().collection('reports').orderBy('timestamp', 'desc').limit(1).get();
+        const snapshot = await admin.firestore().collection('despegar_reports').orderBy('timestamp', 'desc').limit(1).get();
         if (snapshot.empty) return res.json(null);
         res.json(snapshot.docs[0].data());
     } catch (e) {
@@ -962,7 +962,7 @@ registerRoute('get', '/api/reports', async (req, res) => {
 
 registerRoute('get', '/api/alerts', async (req, res) => {
     try {
-        const snapshot = await admin.firestore().collection('alerts').orderBy('timestamp', 'desc').limit(5).get();
+        const snapshot = await admin.firestore().collection('despegar_alerts').orderBy('timestamp', 'desc').limit(5).get();
         const logs = [];
         snapshot.forEach(doc => logs.push(doc.data()));
         res.json(logs);
@@ -972,7 +972,7 @@ registerRoute('get', '/api/alerts', async (req, res) => {
 registerRoute('get', '/api/historical', async (req, res) => {
     try {
         const { brand, platform } = req.query;
-        let query = admin.firestore().collection('scans').orderBy('timestamp', 'desc');
+        let query = admin.firestore().collection('despegar_scans').orderBy('timestamp', 'desc');
 
         if (brand) query = query.where('brand', '==', brand);
         if (platform) query = query.where('platform', '==', platform);
