@@ -206,7 +206,7 @@ class InsightProcessor {
     async _analyzeBatch(batch, brand, platform, batchNum, totalBatches) {
         const formattedComments = this._formatCommentsForPrompt(batch);
 
-        const prompt = `Eres un analista experto en Social Listening para la empresa NGR (operadora de ${brand} en Latinoamérica).
+        const prompt = `Eres un analista experto en Social Listening para Despegar, la plataforma de viajes online líder en Latinoamérica.
 Estás analizando comentarios de ${platform.toUpperCase()} sobre la marca "${brand}".
 ${totalBatches > 1 ? `Este es el batch ${batchNum} de ${totalBatches}.` : ''}
 
@@ -217,6 +217,21 @@ Analizá cada comentario teniendo en cuenta:
 - El texto del comentario
 - La cantidad de seguidores del autor (mayor = mayor impacto en la marca)
 - Los likes recibidos
+
+REGLAS DE CLASIFICACIÓN DE SENTIMIENTO (MUY IMPORTANTE):
+- "very_positive": elogios entusiastas, recomendaciones, experiencias excelentes
+- "positive": comentarios favorables, experiencias ok, agradecimientos genuinos
+- "neutral": preguntas de información, menciones sin opinión, consultas simples
+- "negative": quejas, pedidos de asistencia NO atendidos, frustraciones, críticas al servicio, cancelaciones mal gestionadas, falta de respuesta a DMs o mensajes, experiencias malas
+- "very_negative": crisis severas, amenazas de no volver, experiencias catastróficas, escaladas de reclamos
+
+ATENCIÓN: Las siguientes situaciones son SIEMPRE "negative" o "very_negative", NO positivas:
+- Pedir asistencia urgente ("I need help", "please respond", "no me responden")
+- Quejas sobre cancelaciones de vuelos, hotels, reservas
+- Pedidos de respuesta a DMs ignorados
+- Reembolsos no procesados
+- Falta de atención al cliente
+- Reclamos de cualquier tipo
 
 Devolvé ÚNICAMENTE un JSON con esta estructura exacta. Sin markdown, sin texto extra:
 {
@@ -232,19 +247,19 @@ Devolvé ÚNICAMENTE un JSON con esta estructura exacta. Sin markdown, sin texto
     "negative": 8,
     "very_negative": 2
   },
-  "topTopics": ["Sabor", "Atención al cliente", "Precios", "Delivery", "Ambiente"],
+  "topTopics": ["Vuelos", "Atención al cliente", "Precios", "Cancelaciones", "Hoteles"],
   "topicClusters": [
     {
-      "label": "Calidad de la comida",
+      "label": "Experiencia de reserva",
       "count": 8,
       "sentiment": "positive",
-      "representative_quote": "La hamburguesa Carretillera es increíble"
+      "representative_quote": "Reservé en 2 minutos y el precio era increíble"
     },
     {
-      "label": "Tiempo de espera",
+      "label": "Falta de respuesta",
       "count": 3,
       "sentiment": "negative",
-      "representative_quote": "Esperé 40 minutos y la comida llegó fría"
+      "representative_quote": "Llevo 3 días sin respuesta sobre mi cancelación"
     }
   ],
   "comments_analyzed": [
@@ -253,10 +268,10 @@ Devolvé ÚNICAMENTE un JSON con esta estructura exacta. Sin markdown, sin texto
       "followers": 4200,
       "impact": "medium",
       "text_preview": "Primeras 60 caracteres del comentario...",
-      "sentiment": "positive",
-      "category": "praise",
-      "topics": ["Sabor", "Calidad"],
-      "requires_response": false
+      "sentiment": "negative",
+      "category": "complaint",
+      "topics": ["Cancelación", "Atención"],
+      "requires_response": true
     }
   ],
   "alerts": [
@@ -264,7 +279,7 @@ Devolvé ÚNICAMENTE un JSON con esta estructura exacta. Sin markdown, sin texto
       "type": "high_follower_critical",
       "author": "@cuenta_grande",
       "followers": 50000,
-      "message": "Account con alto alcance publicó critica negativa sobre delivery"
+      "message": "Cuenta con alto alcance publicó crítica negativa sobre cancelación de vuelo"
     }
   ],
   "summary": "Resumen ejecutivo de 2-3 lineas sobre el panorama general de los comentarios analizados",
@@ -281,21 +296,21 @@ Devolvé ÚNICAMENTE un JSON con esta estructura exacta. Sin markdown, sin texto
     }
   ],
   "wordCloud": [
-    {"word": "hamburguesa", "weight": 95},
-    {"word": "delivery", "weight": 60},
+    {"word": "vuelo", "weight": 95},
+    {"word": "cancelación", "weight": 60},
     {"word": "atención", "weight": 45}
   ]
 }
 
-REGLAS IMPORTANTES:
+REGLAS ADICIONALES:
 - "sentiment" debe sumar exactamente 100
 - "sentiment_breakdown" debe sumar exactamente 100
 - Categorías válidas para "category": "praise" | "complaint" | "question" | "suggestion" | "neutral_mention" | "crisis" | "viral_potential"
 - "impact" según seguidores: "high" (>10k), "medium" (1k-10k), "low" (<1k)
-- "requires_response": true solo si es queja directa, pregunta sin respuesta, o crítica de impacto alto
+- "requires_response": true si es queja directa, pedido de asistencia, pregunta sin respuesta, o crítica de impacto alto
 - Incluir en "alerts" SOLO cuentas con >5000 followers que postean algo negativo o con alto potencial viral
-- "wordCloud": 15-20 palabras clave de mayor impacto, weight de 10 a 100, excluir preposiciones
-- Todos los textos en español
+- "wordCloud": 15-20 palabras clave de mayor impacto, weight de 10 a 100, excluir preposiciones y artículos
+- Todos los textos del análisis en español
 - SOLO JSON. Sin explicaciones.`;
 
         const result = await this.model.generateContent(prompt);
@@ -325,7 +340,7 @@ REGLAS IMPORTANTES:
     async generateWeeklyExecutiveBriefing(scanSummaries) {
         if (!this.model || !scanSummaries || scanSummaries.length === 0) return null;
 
-        const prompt = `Sos el Chief Strategy Officer de NGR (operadora de Bembos, Papa Johns, Popeyes, Dunkin, China Wok en Perú).
+        const prompt = `Sos el Chief Strategy Officer de Despegar, plataforma líder de viajes online en Latinoamérica.
 Analizá estos datos de la semana y generá un "Briefing Ejecutivo Semanal" para el Directorio.
 
 DATOS DE LA SEMANA:
@@ -333,12 +348,12 @@ ${JSON.stringify(scanSummaries.slice(0, 20), null, 2)}
 
 Devolvé ÚNICAMENTE este JSON:
 {
-  "executiveBrief": "Resumen estratégico en 2-3 oraciones. Mencionar la marca con mejor y peor semana.",
+  "executiveBrief": "Resumen estratégico en 2-3 oraciones. Mencionar la marca con mejor y peor performance.",
   "brandPerformance": [
     {
-      "brand": "Bembos",
+      "brand": "Despegar",
       "status": "Growing",
-      "keyFinding": "Hallazgo principal concreto y accionable",
+      "keyFinding": "Hallazgo principal concreto y accionable sobre la marca",
       "sentiment_delta": "+5%"
     }
   ],
@@ -350,7 +365,7 @@ Devolvé ÚNICAMENTE este JSON:
 
 REGLAS:
 - "status" válidos: "Growing" | "Stable" | "At Risk" | "Crisis" | "Recovering"
-- Ser específico con nombres de marcas y datos concretos
+- Ser específico con nombres de marcas y datos concretos del sector viajes
 - SOLO JSON. Sin markdown.`;
 
         try {
