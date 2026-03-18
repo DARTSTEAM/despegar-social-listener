@@ -61,7 +61,6 @@ const CyberWordCloud = ({ words }) => {
       .font("'Outfit', sans-serif")
       .fontSize(d => d.size)
       .spiral('archimedean')
-      .timeLimit(8000)          // más tiempo = menos solapamientos
       .on('end', result => setPlaced(result))
       .start();
   }, [words, width]);
