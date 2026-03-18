@@ -66,100 +66,105 @@ const SentimentBar = ({ label, value, color }) => (
 
 const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
 
-  // ── Guardia: normalizar siempre a arrays para evitar .map()/.flatMap() crash ──
-  const history = Array.isArray(rawHistory) ? rawHistory : [];
-  const alerts = Array.isArray(rawAlerts) ? rawAlerts : [];
+  // ── Constante de marcas propias ───────────────────────────────────────────
+  const OWNED_BRANDS = ['Despegar', 'Despegar AR'];
 
-  // ── Datos agregados del historial ──────────────────────────────────────────
-  const totalComments = history.reduce((acc, h) => acc + (h.commentsCount || 0), 0);
-  const avgSentimentPos = history.length > 0
-    ? Math.round(history.reduce((acc, h) => acc + (h.sentiment?.positive || 0), 0) / history.length)
-    : 0;
+  // ── Separar historial en owned vs competencia ──────────────────────────────
+  const ownedHistory = history.filter(h => OWNED_BRANDS.includes(h.brand));
+  const compHistory  = history.filter(h => !OWNED_BRANDS.includes(h.brand));
 
-  // Alertas reales de Gemini (de todos los scans) + alertas del backend
+  // ── Stats por grupo ────────────────────────────────────────────────────────
+  const groupStats = (group) => {
+    if (!group.length) return { comments: 0, pos: 0, neg: 0, neu: 0, brands: [] };
+    const comments = group.reduce((a, h) => a + (h.commentsCount || 0), 0);
+    const pos = Math.round(group.reduce((a, h) => a + (h.sentiment?.positive || 0), 0) / group.length);
+    const neg = Math.round(group.reduce((a, h) => a + (h.sentiment?.negative || 0), 0) / group.length);
+    const neu = Math.round(group.reduce((a, h) => a + (h.sentiment?.neutral  || 0), 0) / group.length);
+    const brands = [...new Set(group.map(h => h.brand))];
+    return { comments, pos, neg, neu, brands };
+  };
+  const ownedStats = groupStats(ownedHistory);
+  const compStats  = groupStats(compHistory);
+
+  // ── Alertas reales de Gemini (de todos los scans) + alertas del backend ────
   const geminiAlerts = history.flatMap(h => h.alerts || []);
   const allAlerts = [...alerts, ...geminiAlerts];
 
-  // Share of Voice
-  const getSOV = () => {
-    if (!history || history.length < 2) return [
-      { name: 'DESPEGAR', count: 450, color: '#D3C4F6' },
-      { name: 'TURISMO CITY', count: 280, color: '#FF53BA' },
-      { name: 'BOOKING', count: 180, color: '#0070f3' },
-      { name: 'AIRBNB', count: 120, color: '#ccff00' },
-    ];
+  // ── Share of Voice por grupo ───────────────────────────────────────────────
+  const getSOV = (group) => {
+    if (!group.length) return [];
     const brands = {};
-    history.forEach(h => {
-      const b = h.brand || 'Unknown';
-      brands[b] = (brands[b] || 0) + (h.commentsCount || 0);
-    });
-    const colors = ['#98FFBC', '#FF53BA', '#ff7700', '#0070f3', '#ccff00', '#ff0080'];
+    const colors = ['#D3C4F6', '#98FFBC', '#FF53BA', '#0070f3', '#ccff00', '#ff0080'];
+    group.forEach(h => { const b = h.brand || 'Unknown'; brands[b] = (brands[b] || 0) + (h.commentsCount || 0); });
     return Object.entries(brands)
       .map(([name, count], i) => ({ name: name.toUpperCase(), count, color: colors[i % colors.length] }))
-      .sort((a, b) => b.count - a.count).slice(0, 4);
+      .sort((a, b) => b.count - a.count);
   };
 
-  // Competitive Pulse
+  // ── Competitive Pulse (solo para competencia) ──────────────────────────────
   const getPulse = () => {
-    if (!history || history.length < 2) return [
-      { name: 'Despegar Portfolio', score: 82 },
+    if (!compHistory.length) return [
       { name: 'Turismo City', score: 65 },
       { name: 'Booking', score: 58 },
       { name: 'Airbnb', score: 71 },
     ];
     const brands = {};
-    const owned = ['Despegar', 'Despegar AR'];
-    history.forEach(h => {
+    compHistory.forEach(h => {
       const b = h.brand || 'Unknown';
-      if (!brands[b]) brands[b] = { sum: 0, count: 0, isOwned: owned.includes(h.brand) };
+      if (!brands[b]) brands[b] = { sum: 0, count: 0 };
       brands[b].sum += h.sentiment?.positive || 0;
       brands[b].count++;
     });
-    const pulse = Object.entries(brands).map(([name, val]) => ({
-      name, score: Math.round(val.sum / Math.max(1, val.count)), isOwned: val.isOwned,
-    }));
-    const ownedItems = pulse.filter(p => p.isOwned);
-    const ownedScore = ownedItems.length > 0
-      ? Math.round(ownedItems.reduce((acc, p) => acc + p.score, 0) / ownedItems.length)
-      : 82;
-    return [{ name: 'Despegar Portfolio', score: ownedScore, isOwned: true }, ...pulse.filter(p => !p.isOwned).slice(0, 3)];
+    return Object.entries(brands)
+      .map(([name, val]) => ({ name, score: Math.round(val.sum / Math.max(1, val.count)) }))
+      .sort((a, b) => b.score - a.score);
   };
 
-  // Cuentas de mayor alcance reales de los comments_analyzed
-  const topInfluencers = (() => {
-    const all = history.flatMap(h => (h.comments_analyzed || []).map(c => ({ ...c, brand: h.brand })));
-    const seen = new Set();
-    return all
-      .filter(c => c.followers > 0 && !seen.has(c.author) && seen.add(c.author))
-      .sort((a, b) => (b.followers || 0) - (a.followers || 0))
-      .slice(0, 5);
-  })();
+  // ── Owned Pulse (por cada cuenta propia) ──────────────────────────────────
+  const getOwnedPulse = () => {
+    if (!ownedHistory.length) return [
+      { name: 'Despegar',    score: 29, platform: 'instagram' },
+      { name: 'Despegar AR', score: 9,  platform: 'instagram' },
+      { name: 'Despegar',    score: 20, platform: 'tiktok'    },
+    ];
+    const entries = {};
+    ownedHistory.forEach(h => {
+      const key = `${h.brand}|${h.platform}`;
+      if (!entries[key]) entries[key] = { name: h.brand, platform: h.platform, sum: 0, count: 0 };
+      entries[key].sum += h.sentiment?.positive || 0;
+      entries[key].count++;
+    });
+    return Object.values(entries).map(e => ({ ...e, score: Math.round(e.sum / Math.max(1, e.count)) }));
+  };
 
-  // Comentarios que requieren respuesta
-  const needsReply = history.flatMap(h =>
+  // ── Comentarios que requieren respuesta (solo owned) ──────────────────────
+  const needsReply = ownedHistory.flatMap(h =>
     (h.comments_analyzed || [])
       .filter(c => c.requires_response)
-      .map(c => ({ ...c, brand: h.brand }))
-  ).slice(0, 5);
+      .map(c => ({ ...c, brand: h.brand, platform: h.platform }))
+  ).slice(0, 6);
 
-  // Suggested replies
-  const allReplies = history.flatMap(h => (h.suggestedReplies || []).map(r => ({ ...r, brand: h.brand }))).slice(0, 4);
+  // ── Suggested replies (solo owned) ────────────────────────────────────────
+  const allReplies = ownedHistory.flatMap(h => (h.suggestedReplies || []).map(r => ({ ...r, brand: h.brand }))).slice(0, 4);
 
-  // Topic clusters agregados
-  const allClusters = (() => {
+  // ── Topic clusters por grupo ───────────────────────────────────────────────
+  const getClusters = (group) => {
     const map = {};
-    history.flatMap(h => h.topicClusters || []).forEach(c => {
+    group.flatMap(h => h.topicClusters || []).forEach(c => {
       if (!map[c.label]) map[c.label] = { ...c };
       else map[c.label].count += c.count;
     });
-    return Object.values(map).sort((a, b) => b.count - a.count).slice(0, 8);
-  })();
+    return Object.values(map).sort((a, b) => b.count - a.count).slice(0, 4);
+  };
+  const ownedClusters = getClusters(ownedHistory);
+  const compClusters  = getClusters(compHistory);
 
-  // Recomendaciones únicas
-  const allRecommendations = [...new Set(history.flatMap(h => h.recommendations || []))].slice(0, 5);
+  // ── Recomendaciones (solo owned) ──────────────────────────────────────────
+  const allRecommendations = [...new Set(ownedHistory.flatMap(h => h.recommendations || []))].slice(0, 5);
 
-  // WordCloud del scan más reciente (o fallback)
-  const wordCloudData = history[0]?.wordCloud?.length > 0 ? history[0].wordCloud : [
+  // ── WordCloud del scan owned más reciente ─────────────────────────────────
+  const latestOwned = ownedHistory[0];
+  const wordCloudData = latestOwned?.wordCloud?.length > 0 ? latestOwned.wordCloud : [
     { word: 'PRECIO', weight: 95 }, { word: 'VUELOS', weight: 90 },
     { word: 'HOTEL', weight: 85 }, { word: 'RESERVA', weight: 80 },
     { word: 'DEMORA', weight: 60 }, { word: 'REEMBOLSO', weight: 55 },
@@ -167,309 +172,236 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
     { word: 'ATENCIÓN', weight: 50 }, { word: 'ME ENCANTA', weight: 100 },
   ];
 
-  // Breakdown de sentimiento del scan más reciente
-  const breakdown = history[0]?.sentiment_breakdown;
+  // ── Breakdown de sentimiento (owned más reciente) ─────────────────────────
+  const breakdown = latestOwned?.sentiment_breakdown;
 
   return (
-    <div className="space-y-10 pb-20">
+    <div className="space-y-12 pb-20">
 
-      {/* ── Metric Cards ────────────────────────────────────────────── */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <MetricCard
-          title="Menciones Totales"
-          value={history.length > 0 ? (totalComments > 999 ? `${(totalComments / 1000).toFixed(1)}k` : totalComments) : '–'}
-          change={history.length > 0 ? '+12' : '0'}
-          icon={MessageSquare}
-        />
-        <MetricCard
-          title="Sentiment Health"
-          value={history.length > 0 ? `${avgSentimentPos}%` : '–'}
-          change={history.length > 0 ? '+5' : '0'}
-          icon={BarChart3}
-        />
-        <MetricCard
-          title="Riesgos Activos"
-          value={allAlerts.length || '0'}
-          change={allAlerts.length > 0 ? String(allAlerts.length) : '0'}
-          icon={AlertTriangle}
-        />
-      </section>
-
-      {/* ── Alertas Reales de Alto Impacto ──────────────────────────── */}
-      {allAlerts.length > 0 && (
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="pwa-card p-6 bg-accent-pink/5 border-accent-pink/20 space-y-4"
-        >
-          <div className="flex items-center gap-3">
-            <AlertTriangle size={14} className="text-accent-pink" />
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-accent-pink">Alertas de Alto Impacto</h3>
+      {/* ══════════════════ ZONA OWNED — DESPEGAR ══════════════════ */}
+      <div className="space-y-6">
+        {/* Header zona owned */}
+        <div className="flex items-center gap-4">
+          <div className="h-px flex-1 bg-[#D3C4F6]/20" />
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#D3C4F6]/30 bg-[#D3C4F6]/5">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#D3C4F6] animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-[#D3C4F6]">Owned — Despegar</span>
           </div>
-          <div className="space-y-3">
-            {allAlerts.slice(0, 4).map((alert, i) => (
-              <div key={i} className="flex items-start gap-4 p-3 bg-fg/[0.02] rounded-xl border border-fg/5">
-                <div className="w-1.5 h-1.5 bg-accent-pink rounded-full mt-1.5 shrink-0 animate-pulse" />
-                <div>
-                  <p className="text-[10px] font-black uppercase text-accent-pink">{alert.author}
-                    {alert.followers && <span className="ml-2 text-fg/30 normal-case font-medium">{(alert.followers / 1000).toFixed(1)}k seguidores</span>}
-                  </p>
-                  <p className="text-xs text-fg/60 mt-0.5">{alert.message}</p>
-                </div>
+          <div className="h-px flex-1 bg-[#D3C4F6]/20" />
+        </div>
+
+        {/* Scorecards owned */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'Comentarios', value: ownedStats.comments || '–', color: 'text-fg', icon: MessageSquare },
+            { label: 'Positivos',   value: ownedStats.comments ? `${ownedStats.pos}%`  : '–', color: 'text-accent-lemon', icon: TrendingUp },
+            { label: 'Negativos',   value: ownedStats.comments ? `${ownedStats.neg}%`  : '–', color: 'text-accent-pink',  icon: AlertTriangle },
+            { label: 'Neutrales',   value: ownedStats.comments ? `${ownedStats.neu}%`  : '–', color: 'text-fg/40',        icon: BarChart3 },
+          ].map(({ label, value, color, icon: Icon }) => (
+            <div key={label} className="pwa-card p-5 bg-[#D3C4F6]/[0.03] border-[#D3C4F6]/10 space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">{label}</p>
+                <Icon size={12} className="text-[#D3C4F6]/40" />
               </div>
-            ))}
-          </div>
-        </motion.section>
-      )}
+              <p className={`text-2xl font-black italic ${color}`}>{value}</p>
+            </div>
+          ))}
+        </section>
 
-      {/* ── Executive Report ─────────────────────────────────────────── */}
-      {report && (
-        <section className="pwa-card p-10 bg-gradient-to-br from-fg/[0.03] to-transparent border-fg/10 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-accent-lemon/5 blur-[100px] rounded-full -mr-20 -mt-20 group-hover:bg-accent-lemon/10 transition-all duration-700" />
-          <div className="relative z-10 space-y-8">
+        {/* Pulse owned + Sentiment Breakdown */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Pulse por cuenta propia */}
+          <section className="lg:col-span-5 pwa-card p-6 bg-[#D3C4F6]/[0.02] border-[#D3C4F6]/10 space-y-4">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-[#D3C4F6]/80">Sentimiento por Cuenta</h3>
+            <div className="space-y-4">
+              {getOwnedPulse().map((item, i) => (
+                <div key={i} className="space-y-1.5">
+                  <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest">
+                    <span className="text-fg/50">{item.name} <span className="text-fg/25 normal-case font-medium">{item.platform}</span></span>
+                    <span className={item.score > 30 ? 'text-accent-lemon' : 'text-accent-pink'}>{item.score}%</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-fg/5 rounded-full overflow-hidden flex">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${item.score}%` }}
+                      transition={{ duration: 0.8, ease: 'easeOut', delay: i * 0.1 }}
+                      className={`h-full rounded-full ${item.score > 30 ? 'bg-accent-lemon shadow-[0_0_6px_rgba(152,255,188,0.4)]' : 'bg-accent-pink shadow-[0_0_6px_rgba(255,83,186,0.3)]'}`}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Breakdown 5 niveles del scan más reciente owned */}
+          <section className="lg:col-span-4 pwa-card p-6 bg-fg/[0.02] border-fg/5 space-y-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="px-4 py-1.5 bg-accent-lemon text-black font-black text-[10px] uppercase italic rounded-full shadow-[0_0_20px_rgba(152,255,188,0.4)]">Executive Report</div>
-                <h2 className="text-2xl font-black italic uppercase tracking-tighter text-fg">Strategic Management Briefing</h2>
-                {report._isDemo && (
-                  <span className="px-3 py-1 bg-accent-orange/20 border border-accent-orange/40 text-accent-orange text-[9px] font-black uppercase tracking-widest rounded-full">Demo</span>
-                )}
-              </div>
-              <span className="text-[10px] font-black uppercase text-fg/20 tracking-widest">{report.week_label || getWeekLabel()}</span>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-fg/40">Sentiment Breakdown</h3>
+              <TrendingUp size={12} className="text-fg/20" />
             </div>
-
-            <p className="text-lg font-bold text-fg/90 italic leading-relaxed max-w-4xl">"{report.executiveBrief}"</p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {report.brandPerformance?.map((bp, i) => (
-                <div key={i} className="space-y-1">
-                  <p className="text-[10px] font-black uppercase text-fg/30">{bp.brand}</p>
-                  <p className={`font-black uppercase italic text-sm ${bp.status === 'Crisis' ? 'text-accent-pink' : bp.status === 'At Risk' ? 'text-accent-orange' : 'text-accent-lemon'}`}>
-                    {bp.status}{bp.sentiment_delta && <span className="text-[9px] ml-1 text-fg/40 normal-case">{bp.sentiment_delta}</span>}
-                  </p>
-                  <p className="text-[11px] font-medium text-fg/60 leading-tight">{bp.keyFinding}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="pt-6 border-t border-fg/5 grid grid-cols-1 md:grid-cols-3 gap-10">
+            {breakdown ? (
               <div className="space-y-3">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-accent-pink">Top Strategic Risk</h4>
-                <p className="text-xs font-bold text-fg/80">{report.topStrategicRisk}</p>
+                <SentimentBar label="Muy Positivo" value={breakdown.very_positive || 0} color="text-accent-lemon" />
+                <SentimentBar label="Positivo"     value={breakdown.positive      || 0} color="text-accent-lemon" />
+                <SentimentBar label="Neutral"      value={breakdown.neutral       || 0} color="text-fg/30" />
+                <SentimentBar label="Negativo"     value={breakdown.negative      || 0} color="text-accent-pink" />
+                <SentimentBar label="Muy Negativo" value={breakdown.very_negative || 0} color="text-accent-pink" />
               </div>
-              {report.opportunities?.length > 0 && (
-                <div className="space-y-3">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-accent-lemon">Opportunities</h4>
-                  <ul className="space-y-1">
-                    {report.opportunities.map((o, i) => (
-                      <li key={i} className="text-[10px] font-medium text-fg/60 flex items-start gap-1.5">
-                        <ChevronRight size={10} className="mt-0.5 shrink-0 text-accent-lemon" />{o}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div className="space-y-3">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-accent-lemon">Action Plan</h4>
-                <div className="flex flex-wrap gap-2">
-                  {report.nextSteps?.map((step, i) => (
-                    <span key={i} className="text-[9px] font-black uppercase px-3 py-1 bg-fg/5 border border-fg/10 rounded-full">{step}</span>
-                  ))}
-                </div>
+            ) : (
+              <p className="text-[9px] text-fg/20 italic text-center pt-4">Ejecutá un scan para ver datos reales</p>
+            )}
+          </section>
+
+          {/* Alertas */}
+          <section className="lg:col-span-3 space-y-3">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-accent-pink/80">Alertas Activas</h3>
+            {allAlerts.length > 0 ? (
+              <div className="space-y-2">
+                {allAlerts.slice(0, 3).map((alert, i) => (
+                  <div key={i} className="pwa-card p-3 bg-accent-pink/5 border-accent-pink/20 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent-pink rounded-full animate-pulse shrink-0" />
+                      <p className="text-[9px] font-black uppercase text-accent-pink truncate">{alert.author}</p>
+                    </div>
+                    <p className="text-[9px] text-fg/50 leading-tight line-clamp-2">{alert.message}</p>
+                  </div>
+                ))}
               </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── SOV / Pulse / Sentiment Breakdown ───────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <section className="lg:col-span-4 space-y-6">
-          <ShareOfVoiceChart data={getSOV()} />
-        </section>
-
-        <section className="lg:col-span-4 pwa-card p-8 bg-fg/[0.02] border-fg/5 space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black uppercase italic tracking-widest text-fg/40">Competitive Pulse</h3>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 bg-accent-lemon rounded-full animate-pulse" />
-              <span className="text-[9px] font-black uppercase text-accent-lemon tracking-widest">Live</span>
-            </div>
-          </div>
-          <div className="space-y-5 pt-2">
-            {getPulse().map(c => (
-              <div key={c.name} className="space-y-2">
-                <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                  <span className="opacity-40">{c.name}</span>
-                  <span className={c.score > 70 ? 'text-accent-lemon' : 'opacity-40'}>{c.score}pts</span>
-                </div>
-                <div className="h-1 w-full bg-fg/5 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${c.score}%` }}
-                    transition={{ duration: 0.8, ease: 'easeOut' }}
-                    className={`h-full ${c.score > 75 ? 'bg-accent-lemon shadow-[0_0_8px_rgba(152,255,188,0.4)]' : 'bg-fg/20'}`}
-                  />
-                </div>
+            ) : (
+              <div className="pwa-card p-4 bg-fg/[0.02] border-fg/5 text-center">
+                <p className="text-[9px] text-fg/20 italic">Sin alertas críticas</p>
               </div>
-            ))}
-          </div>
-        </section>
+            )}
+          </section>
+        </div>
 
-        {/* Sentiment Breakdown 5 niveles */}
-        <section className="lg:col-span-4 pwa-card p-8 bg-fg/[0.02] border-fg/5 space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black uppercase italic tracking-widest text-fg/40">Sentiment Breakdown</h3>
-            <TrendingUp size={14} className="text-fg/20" />
-          </div>
-          {breakdown ? (
-            <div className="space-y-4 pt-2">
-              <SentimentBar label="Muy Positivo" value={breakdown.very_positive || 0} color="text-accent-lemon" />
-              <SentimentBar label="Positivo" value={breakdown.positive || 0} color="text-accent-lemon" />
-              <SentimentBar label="Neutral" value={breakdown.neutral || 0} color="text-fg/30" />
-              <SentimentBar label="Negativo" value={breakdown.negative || 0} color="text-accent-pink" />
-              <SentimentBar label="Muy Negativo" value={breakdown.very_negative || 0} color="text-accent-pink" />
+        {/* Requieren Respuesta (solo owned) */}
+        {needsReply.length > 0 && (
+          <section className="pwa-card p-6 bg-fg/[0.02] border-fg/5 space-y-4">
+            <div className="flex items-center gap-3">
+              <Zap size={13} className="text-accent-orange" />
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-accent-orange">Requieren Respuesta — Cuentas Propias</h3>
             </div>
-          ) : (
-            <div className="space-y-4 pt-2 opacity-30">
-              {['Muy Positivo', 'Positivo', 'Neutral', 'Negativo', 'Muy Negativo'].map(l => (
-                <SentimentBar key={l} label={l} value={0} color="text-fg/20" />
-              ))}
-              <p className="text-[9px] text-fg/30 italic text-center pt-2">Ejecutá un scan para ver datos reales</p>
-            </div>
-          )}
-        </section>
-      </div>
-
-      {/* ── Topic Clusters ───────────────────────────────────────────── */}
-      {allClusters.length > 0 && (
-        <section className="pwa-card p-8 bg-fg/[0.02] border-fg/5 space-y-6">
-          <h3 className="text-xs font-black uppercase italic tracking-widest text-fg/40">Topic Clusters</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {allClusters.map((cluster, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="p-4 bg-fg/[0.03] rounded-xl border border-fg/5 hover:bg-fg/[0.06] transition-all space-y-2"
-              >
-                <div className={`w-2 h-2 rounded-full ${cluster.sentiment === 'negative' ? 'bg-accent-pink shadow-[0_0_8px_rgba(255,83,186,0.4)]' : cluster.sentiment === 'positive' ? 'bg-accent-lemon' : 'bg-fg/20'}`} />
-                <p className="text-sm font-bold italic text-fg tracking-tight">{cluster.label}</p>
-                <p className="text-[9px] font-black uppercase text-fg/20">{cluster.count} menciones</p>
-                {cluster.representative_quote && (
-                  <p className="text-[9px] text-fg/30 italic leading-tight">"{cluster.representative_quote.substring(0, 50)}..."</p>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Ambassador Hub (Cuentas reales) + Requires Reply ─────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-        <section className="lg:col-span-5 space-y-5">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black italic uppercase tracking-widest text-fg/40">Ambassador Hub</h3>
-            <div className="flex items-center gap-2">
-              <Users size={12} className="text-accent-lemon" />
-              <span className="text-[9px] font-black uppercase text-accent-lemon">Top Reach</span>
-            </div>
-          </div>
-          {topInfluencers.length > 0 ? (
-            <div className="space-y-3">
-              {topInfluencers.map((fan, i) => {
-                const badge = impactBadge[fan.impact] || impactBadge.low;
-                return (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.06 }}
-                    className="pwa-card p-4 bg-fg/[0.02] border-fg/5 flex items-center gap-4 hover:bg-fg/[0.04] transition-all"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-fg/10 flex items-center justify-center shrink-0">
-                      <span className="text-[10px] font-black text-fg/40">{fan.author?.charAt(1)?.toUpperCase() || '?'}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-black italic uppercase text-[10px] text-fg truncate">@{fan.author}</p>
-                      <p className="text-[8px] font-black uppercase text-fg/30 tracking-widest">{fan.brand}</p>
-                    </div>
-                    <div className="flex flex-col items-end gap-1.5 shrink-0">
-                      <span className="text-[9px] font-black text-accent-lemon uppercase">
-                        {fan.followers >= 1000 ? `${(fan.followers / 1000).toFixed(1)}k` : fan.followers}
-                      </span>
-                      <span className={`text-[7px] font-black px-1.5 py-0.5 rounded border uppercase ${badge.cls}`}>
-                        {badge.label}
-                      </span>
-                    </div>
-                    {fan.sentiment && (
-                      <div className={`w-2 h-2 rounded-full shrink-0 ${sentimentDot(fan.sentiment)}`} />
-                    )}
-                  </motion.div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="pwa-card p-8 bg-fg/[0.02] border-fg/5 flex items-center justify-center">
-              <p className="text-[10px] font-black uppercase text-fg/20 italic text-center">
-                Los usuarios con mayor alcance aparecerán<br />después del primer scan real
-              </p>
-            </div>
-          )}
-        </section>
-
-        {/* Comentarios que Requieren Respuesta */}
-        <section className="lg:col-span-7 space-y-5">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black italic uppercase tracking-widest text-fg/40">Requieren Respuesta</h3>
-            <div className="flex items-center gap-2">
-              <Zap size={12} className="text-accent-orange" />
-              <span className="text-[9px] font-black uppercase text-accent-orange">Action Required</span>
-            </div>
-          </div>
-          {needsReply.length > 0 ? (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {needsReply.map((c, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.06 }}
-                  className="pwa-card p-4 bg-fg/[0.02] border-fg/5 space-y-2 hover:bg-fg/[0.04] transition-all"
-                >
+                <motion.div key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                  className="p-4 bg-fg/[0.03] rounded-xl border border-fg/5 space-y-1.5 hover:bg-fg/[0.05] transition-all">
                   <div className="flex items-center justify-between">
+                    <p className="text-[10px] font-black uppercase text-accent-orange">@{c.author}</p>
                     <div className="flex items-center gap-2">
-                      <p className="text-[10px] font-black uppercase text-accent-orange">@{c.author}</p>
-                      {c.followers > 0 && (
-                        <span className="text-[8px] text-fg/30">· {c.followers >= 1000 ? `${(c.followers / 1000).toFixed(1)}k` : c.followers} seguidores</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {c.category && (
-                        <span className="text-[8px] font-black uppercase px-2 py-0.5 bg-fg/5 border border-fg/10 rounded-full text-fg/40">
-                          {categoryLabel[c.category] || c.category}
-                        </span>
-                      )}
-                      {c.brand && <span className="text-[8px] font-black uppercase text-accent-lemon">{c.brand}</span>}
+                      {c.category && <span className="text-[7px] font-black uppercase px-1.5 py-0.5 bg-fg/5 border border-fg/10 rounded-full text-fg/40">{categoryLabel[c.category] || c.category}</span>}
+                      <span className="text-[8px] font-black uppercase text-[#D3C4F6]/60">{c.brand}</span>
                     </div>
                   </div>
-                  <p className="text-xs text-fg/60 italic">"{c.text_preview}"</p>
+                  <p className="text-[11px] text-fg/50 italic line-clamp-2">"{c.text_preview}"</p>
                 </motion.div>
               ))}
             </div>
-          ) : (
-            <div className="pwa-card p-8 bg-fg/[0.02] border-fg/5 flex items-center justify-center">
-              <p className="text-[10px] font-black uppercase text-fg/20 italic text-center">
-                Ningún comentario crítico detectado<br />o aún no hay datos reales cargados
-              </p>
+          </section>
+        )}
+
+        {/* Topic Clusters owned */}
+        {ownedClusters.length > 0 && (
+          <section className="pwa-card p-6 bg-fg/[0.02] border-fg/5 space-y-4">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-fg/40">Topic Clusters — Owned</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {ownedClusters.map((cluster, i) => (
+                <div key={i} className="p-4 bg-fg/[0.03] rounded-xl border border-fg/5 hover:bg-fg/[0.06] transition-all space-y-2">
+                  <div className={`w-2 h-2 rounded-full ${cluster.sentiment === 'negative' ? 'bg-accent-pink shadow-[0_0_8px_rgba(255,83,186,0.4)]' : 'bg-[#D3C4F6]'}`} />
+                  <p className="text-sm font-bold italic text-fg tracking-tight">{cluster.label}</p>
+                  <p className="text-[9px] font-black uppercase text-fg/20">{cluster.count} menciones</p>
+                </div>
+              ))}
             </div>
-          )}
-        </section>
+          </section>
+        )}
       </div>
 
-      {/* ── AI Responder ─────────────────────────────────────────────── */}
+      {/* ══════════════════ ZONA COMPETENCIA ══════════════════════ */}
+      <div className="space-y-6">
+        {/* Header zona competencia */}
+        <div className="flex items-center gap-4">
+          <div className="h-px flex-1 bg-accent-pink/20" />
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent-pink/30 bg-accent-pink/5">
+            <div className="w-1.5 h-1.5 rounded-full bg-accent-pink" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-accent-pink">Competencia</span>
+          </div>
+          <div className="h-px flex-1 bg-accent-pink/20" />
+        </div>
+
+        {/* Scorecards competencia */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'Comentarios', value: compStats.comments || '–', color: 'text-fg' },
+            { label: 'Positivos',   value: compStats.comments ? `${compStats.pos}%`  : '–', color: 'text-accent-lemon' },
+            { label: 'Negativos',   value: compStats.comments ? `${compStats.neg}%`  : '–', color: 'text-accent-pink'  },
+            { label: 'Marcas',      value: compStats.brands.length || '–',                  color: 'text-fg/50'        },
+          ].map(({ label, value, color }) => (
+            <div key={label} className="pwa-card p-5 bg-accent-pink/[0.02] border-accent-pink/10 space-y-2">
+              <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">{label}</p>
+              <p className={`text-2xl font-black italic ${color}`}>{value}</p>
+            </div>
+          ))}
+        </section>
+
+        {/* SOV competencia + Competitive Pulse */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <section className="lg:col-span-5">
+            <ShareOfVoiceChart data={getSOV(compHistory).length ? getSOV(compHistory) : [
+              { name: 'TURISMO CITY', count: 280, color: '#FF53BA' },
+              { name: 'BOOKING',      count: 180, color: '#0070f3' },
+              { name: 'AIRBNB',       count: 120, color: '#ccff00' },
+            ]} />
+          </section>
+
+          <section className="lg:col-span-7 pwa-card p-6 bg-accent-pink/[0.02] border-accent-pink/10 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-accent-pink/80">Competitive Pulse</h3>
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-accent-pink rounded-full animate-pulse" />
+                <span className="text-[9px] font-black uppercase text-accent-pink tracking-widest">Live</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {getPulse().map((c, i) => (
+                <div key={c.name} className="space-y-1.5">
+                  <div className="flex justify-between text-[9px] font-black uppercase tracking-widest">
+                    <span className="text-fg/40">{c.name}</span>
+                    <span className={c.score > 25 ? 'text-accent-lemon' : 'text-accent-pink'}>{c.score}%</span>
+                  </div>
+                  <div className="h-1 w-full bg-fg/5 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${c.score}%` }}
+                      transition={{ duration: 0.8, ease: 'easeOut', delay: i * 0.1 }}
+                      className={`h-full ${c.score > 25 ? 'bg-accent-lemon' : 'bg-accent-pink'} rounded-full`}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Topic Clusters competencia */}
+            {compClusters.length > 0 && (
+              <div className="border-t border-fg/5 pt-4 space-y-2">
+                <p className="text-[9px] font-black uppercase tracking-widest text-fg/25">Temas destacados</p>
+                <div className="flex flex-wrap gap-2">
+                  {compClusters.map((c, i) => (
+                    <span key={i} className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase border ${
+                      c.sentiment === 'negative' ? 'border-accent-pink/20 text-accent-pink/60 bg-accent-pink/5'
+                        : 'border-fg/10 text-fg/30 bg-fg/5'
+                    }`}>{c.label}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        </div>
+      </div>
+
+      {/* ══════════ SECCIONES COMPARTIDAS ══════════════════════════ */}
+
+      {/* AI Responder */}
       {allReplies.length > 0 && (
         <section className="pwa-card p-8 bg-accent-lemon/[0.03] border-accent-lemon/10 space-y-6">
           <div className="flex items-center gap-3">
@@ -478,18 +410,11 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {allReplies.map((r, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.07 }}
-                className="p-5 bg-fg/[0.03] rounded-xl border border-fg/5 space-y-3"
-              >
+              <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
+                className="p-5 bg-fg/[0.03] rounded-xl border border-fg/5 space-y-3">
                 <div className="flex items-center justify-between">
                   <p className="text-[9px] font-black uppercase text-accent-orange">@{r.author}</p>
-                  {r.priority === 'high' && (
-                    <span className="text-[7px] font-black uppercase px-2 py-0.5 bg-accent-pink/20 border border-accent-pink/30 text-accent-pink rounded-full">⚡ Urgente</span>
-                  )}
+                  {r.priority === 'high' && <span className="text-[7px] font-black uppercase px-2 py-0.5 bg-accent-pink/20 border border-accent-pink/30 text-accent-pink rounded-full">⚡ Urgente</span>}
                   {r.brand && <span className="text-[8px] font-black uppercase text-fg/20">{r.brand}</span>}
                 </div>
                 <p className="text-[10px] text-fg/40 italic leading-relaxed">"{r.comment}"</p>
@@ -502,14 +427,14 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
         </section>
       )}
 
-      {/* ── Recommendations ──────────────────────────────────────────── */}
+      {/* Recomendaciones */}
       {allRecommendations.length > 0 && (
         <section className="pwa-card p-8 bg-fg/[0.02] border-fg/5 space-y-5">
-          <h3 className="text-xs font-black uppercase italic tracking-widest text-fg/40">Recomendaciones Estratégicas</h3>
+          <h3 className="text-xs font-black uppercase italic tracking-widest text-fg/40">Recomendaciones Estratégicas — Despegar</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {allRecommendations.map((rec, i) => (
               <div key={i} className="flex items-start gap-3 p-4 bg-fg/[0.03] rounded-xl border border-fg/5">
-                <ChevronRight size={12} className="text-accent-lemon mt-0.5 shrink-0" />
+                <ChevronRight size={12} className="text-[#D3C4F6] mt-0.5 shrink-0" />
                 <p className="text-xs font-bold text-fg/70">{rec}</p>
               </div>
             ))}
@@ -517,10 +442,37 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
         </section>
       )}
 
-      {/* ── Word Cloud ───────────────────────────────────────────────── */}
+      {/* Word Cloud */}
       <section className="w-full">
         <CyberWordCloud words={wordCloudData} />
       </section>
+
+      {/* Executive Report */}
+      {report && (
+        <section className="pwa-card p-10 bg-gradient-to-br from-fg/[0.03] to-transparent border-fg/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-accent-lemon/5 blur-[100px] rounded-full -mr-20 -mt-20" />
+          <div className="relative z-10 space-y-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="px-4 py-1.5 bg-accent-lemon text-black font-black text-[10px] uppercase italic rounded-full shadow-[0_0_20px_rgba(152,255,188,0.4)]">Executive Report</div>
+                <span className="text-[10px] font-black uppercase text-fg/20 tracking-widest">{report.week_label || getWeekLabel()}</span>
+              </div>
+            </div>
+            <p className="text-lg font-bold italic text-fg/80 leading-relaxed max-w-3xl">{report.executiveBrief}</p>
+            {report.brandPerformance?.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {report.brandPerformance.map((bp, i) => (
+                  <div key={i} className="p-4 bg-fg/[0.03] rounded-xl border border-fg/5 space-y-2">
+                    <p className="text-[10px] font-black uppercase text-fg/30">{bp.brand}</p>
+                    <p className="text-sm font-black italic text-fg">{bp.status}{bp.sentiment_delta && <span className="text-[9px] ml-1 text-fg/40 normal-case">{bp.sentiment_delta}</span>}</p>
+                    <p className="text-[11px] font-medium text-fg/60 leading-tight">{bp.keyFinding}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
     </div>
   );
