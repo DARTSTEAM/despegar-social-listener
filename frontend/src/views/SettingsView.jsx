@@ -197,7 +197,7 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
               <button
                 onClick={() => showConfirm(
                   'Cold Start',
-                  'Esto generará datos sintéticos realistas para los últimos 7 días de Bembos TikTok. ¿Continuar?',
+                  'Esto generará datos sintéticos realistas para los últimos 7 días de Despegar. ¿Continuar?',
                   async () => {
                     try {
                       const res = await axios.post(`${API_BASE}/api/admin/seed-history`);

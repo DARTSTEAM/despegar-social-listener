@@ -90,7 +90,7 @@ const PostsView = () => {
   const [platformFilter, setPlatform] = useState('');
   const [tab, setTab]             = useState('best'); // 'best' | 'worst'
 
-  const brandOptions    = [{ value: '', label: 'Todas las marcas' }, ...['Bembos','Papa Johns','Dunkin','Popeyes','China Wok','McDonalds','KFC','Starbucks','Pizza Hut'].map(b => ({ value: b, label: b }))];
+  const brandOptions    = [{ value: '', label: 'Todas las marcas' }, ...['Despegar','Despegar AR','Turismo City','Booking','Airbnb'].map(b => ({ value: b, label: b }))];
   const platformOptions = [{ value: '', label: 'Todas las plataformas' }, { value: 'tiktok', label: 'TikTok' }, { value: 'instagram', label: 'Instagram' }];
 
   const fetchPosts = async () => {

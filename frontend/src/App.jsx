@@ -90,12 +90,11 @@ export default function App() {
       // /api/scout ahora es síncrono — espera hasta recibir los resultados completos
       const res = await axios.post(`${API_BASE}/api/scout`, {
         url, platform,
-        brand: url.includes('bembos') ? 'Bembos'
-             : url.includes('popeyes') ? 'Popeyes'
-             : url.includes('papajohns') ? 'Papa Johns'
-             : url.includes('dunkin') ? 'Dunkin'
-             : url.includes('kfc') ? 'KFC'
-             : url.includes('starbucks') ? 'Starbucks'
+        brand: url.includes('despegar.ar') || url.includes('despegar_ar') ? 'Despegar AR'
+             : url.includes('despegar')    ? 'Despegar'
+             : url.includes('turismocity') ? 'Turismo City'
+             : url.includes('bookingcom') || url.includes('booking.com') ? 'Booking'
+             : url.includes('airbnb')      ? 'Airbnb'
              : platform,
       }, { timeout: 280000 }); // 280 segundos (por debajo del timeout de Cloud Run de 300s)
 
