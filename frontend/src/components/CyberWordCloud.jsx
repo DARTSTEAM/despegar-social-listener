@@ -1,69 +1,67 @@
 import { useState, useEffect, useRef } from 'react';
 import cloud from 'd3-cloud';
 
-const H = 480; // altura fija — d3-cloud necesita valor real
+const H = 500;
 
-// Color por rango (posición en ranking de frecuencia)
-const rankColor = (rank, total) => {
-  const p = rank / Math.max(total - 1, 1);
-  if (p < 0.07) return '#D3C4F6';            // lavanda — top
-  if (p < 0.18) return '#ffffff';            // blanco
-  if (p < 0.33) return '#FF53BA';            // rosa
-  if (p < 0.50) return 'rgba(255,255,255,0.75)';
-  if (p < 0.68) return '#98FFBC';            // verde lima
-  if (p < 0.82) return 'rgba(255,255,255,0.45)';
-  return 'rgba(255,255,255,0.25)';
+// Color por rango de frecuencia
+const rankColor = (i, n) => {
+  const p = i / Math.max(n - 1, 1);
+  if (p < 0.06) return '#D3C4F6';
+  if (p < 0.15) return '#ffffff';
+  if (p < 0.28) return '#FF53BA';
+  if (p < 0.45) return 'rgba(255,255,255,0.80)';
+  if (p < 0.60) return '#98FFBC';
+  if (p < 0.75) return 'rgba(255,255,255,0.50)';
+  return 'rgba(255,255,255,0.28)';
 };
 
-const rankWeight = (rank, total) => {
-  const p = rank / Math.max(total - 1, 1);
-  if (p < 0.1)  return 900;
-  if (p < 0.3)  return 700;
-  if (p < 0.6)  return 500;
+const rankWeight = (i, n) => {
+  const p = i / Math.max(n - 1, 1);
+  if (p < 0.08) return 900;
+  if (p < 0.25) return 700;
+  if (p < 0.55) return 500;
   return 400;
 };
 
 const CyberWordCloud = ({ words }) => {
-  const [placed, setPlaced]   = useState([]);
-  const [width, setWidth]     = useState(0);
+  const [placed, setPlaced]  = useState([]);
+  const [width, setWidth]    = useState(0);
   const containerRef = useRef(null);
 
-  // Solo trackear ancho — altura es fija
   useEffect(() => {
     if (!containerRef.current) return;
-    const update = () => {
-      if (containerRef.current) setWidth(containerRef.current.offsetWidth);
-    };
+    const update = () => containerRef.current && setWidth(containerRef.current.offsetWidth);
     update();
     const ro = new ResizeObserver(update);
     ro.observe(containerRef.current);
     return () => ro.disconnect();
   }, []);
 
-  // Recomputar layout cuando cambian palabras o ancho
   useEffect(() => {
     if (!words?.length || width < 50) return;
+    setPlaced([]); // reset mientras recalcula
 
     const sorted = [...words]
       .sort((a, b) => (b.weight || 0) - (a.weight || 0))
-      .slice(0, 50);
+      .slice(0, 65);
 
     const maxW = Math.max(...sorted.map(w => w.weight || 1));
     const minW = Math.min(...sorted.map(w => w.weight || 1));
     const span = maxW - minW || 1;
 
-    // Escala de tamaño: 13-68px. Potencia 0.55 para no aplastar las pequeñas
+    // Fuentes: 13-44px. Tamaño moderado para que d3-cloud pueda resolver el layout
     const fontSize = ({ weight }) =>
-      13 + Math.pow((weight - minW) / span, 0.55) * 55;
+      13 + Math.pow((weight - minW) / span, 0.6) * 31;
 
     cloud()
       .size([width, H])
       .words(sorted.map(w => ({ text: w.word, size: fontSize(w), weight: w.weight })))
-      .padding(5)
-      .rotate(() => (Math.random() < 0.3 ? 90 : 0))   // 30% vertical como en la ref
+      .padding(6)
+      .rotate(() => (Math.random() < 0.28 ? 90 : 0))
       .font("'Outfit', sans-serif")
       .fontSize(d => d.size)
       .spiral('archimedean')
+      .timeLimit(8000)          // más tiempo = menos solapamientos
       .on('end', result => setPlaced(result))
       .start();
   }, [words, width]);
@@ -76,54 +74,37 @@ const CyberWordCloud = ({ words }) => {
 
   return (
     <div className="pwa-card overflow-hidden bg-fg/[0.02] border-fg/5">
-      {/* Header */}
-      <div className="flex items-center gap-2 px-6 pt-5 pb-2">
+      <div className="flex items-center gap-2 px-6 pt-5 pb-1">
         <div className="w-1.5 h-1.5 bg-[#D3C4F6] rounded-full" />
         <span className="text-[9px] font-black uppercase tracking-[0.25em] text-fg/40 italic">
           Word Cloud — Términos más frecuentes
         </span>
       </div>
 
-      {/* SVG canvas */}
       <div ref={containerRef} style={{ width: '100%' }}>
         {width > 0 && (
-          <svg
-            width={width}
-            height={H}
-            aria-label="Word cloud de términos frecuentes"
-          >
-            {placed.map((w, i) => (
-              <text
-                key={`${w.text}-${i}`}
-                textAnchor="middle"
-                x={cx + (w.x || 0)}
-                y={cy + (w.y || 0)}
-                fontSize={w.size}
-                fontWeight={rankWeight(i, n)}
-                fontFamily="'Outfit', sans-serif"
-                fontStyle={i < Math.ceil(n * 0.08) ? 'italic' : 'normal'}
-                fill={rankColor(i, n)}
-                transform={`rotate(${w.rotate || 0},${cx + (w.x || 0)},${cy + (w.y || 0)})`}
-                style={{
-                  cursor: 'default',
-                  userSelect: 'none',
-                  opacity: 0,
-                  animation: `wc-fade 0.4s ease forwards ${i * 18}ms`,
-                }}
-              >
-                {(w.text || '').toUpperCase()}
-              </text>
-            ))}
-
-            {/* Animación CSS inline para el fade-in escalonado */}
-            <defs>
-              <style>{`
-                @keyframes wc-fade {
-                  from { opacity: 0; transform-origin: inherit; }
-                  to   { opacity: 1; }
-                }
-              `}</style>
-            </defs>
+          <svg width={width} height={H} aria-label="Word cloud">
+            <g transform={`translate(${cx},${cy})`}>
+              {placed.map((w, i) => (
+                <text
+                  key={`${w.text}-${i}`}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  x={w.x || 0}
+                  y={w.y || 0}
+                  fontSize={w.size}
+                  fontWeight={rankWeight(i, n)}
+                  fontFamily="'Outfit', sans-serif"
+                  fontStyle={i < Math.ceil(n * 0.07) ? 'italic' : 'normal'}
+                  fill={rankColor(i, n)}
+                  transform={`rotate(${w.rotate || 0})`}
+                  style={{ cursor: 'default', userSelect: 'none' }}
+                  opacity={0.92}
+                >
+                  {(w.text || '').toUpperCase()}
+                </text>
+              ))}
+            </g>
           </svg>
         )}
       </div>

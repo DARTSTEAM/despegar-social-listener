@@ -169,11 +169,29 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
   // ── WordCloud del scan owned más reciente ─────────────────────────────────
   const latestOwned = ownedHistory[0];
   const wordCloudData = latestOwned?.wordCloud?.length > 0 ? latestOwned.wordCloud : [
-    { word: 'PRECIO', weight: 95 }, { word: 'VUELOS', weight: 90 },
-    { word: 'HOTEL', weight: 85 }, { word: 'RESERVA', weight: 80 },
-    { word: 'DEMORA', weight: 60 }, { word: 'REEMBOLSO', weight: 55 },
-    { word: 'EXCELENTE', weight: 85 }, { word: 'RÁPIDO', weight: 70 },
-    { word: 'ATENCIÓN', weight: 50 }, { word: 'ME ENCANTA', weight: 100 },
+    { word: 'vuelos',       weight: 100 }, { word: 'reembolso',   weight: 92 },
+    { word: 'cancelación',  weight: 88  }, { word: 'hotel',       weight: 85 },
+    { word: 'reserva',      weight: 82  }, { word: 'atención',    weight: 78 },
+    { word: 'precio',       weight: 75  }, { word: 'cliente',     weight: 72 },
+    { word: 'respuesta',    weight: 68  }, { word: 'demora',      weight: 65 },
+    { word: 'excelente',    weight: 62  }, { word: 'servicio',    weight: 60 },
+    { word: 'rápido',       weight: 57  }, { word: 'problema',    weight: 55 },
+    { word: 'necesito',     weight: 52  }, { word: 'paquete',     weight: 49 },
+    { word: 'destino',      weight: 47  }, { word: 'viaje',       weight: 45 },
+    { word: 'asistencia',   weight: 43  }, { word: 'días',        weight: 40 },
+    { word: 'compré',       weight: 38  }, { word: 'resolver',    weight: 36 },
+    { word: 'oferta',       weight: 34  }, { word: 'equipaje',    weight: 32 },
+    { word: 'check-in',     weight: 30  }, { word: 'aeropuerto',  weight: 28 },
+    { word: 'pasajes',      weight: 27  }, { word: 'urgente',     weight: 26 },
+    { word: 'ayuda',        weight: 25  }, { word: 'cobro',       weight: 24 },
+    { word: 'descuento',    weight: 23  }, { word: 'turismo',     weight: 22 },
+    { word: 'confirmación', weight: 21  }, { word: 'maleta',      weight: 20 },
+    { word: 'espera',       weight: 19  }, { word: 'tarjeta',     weight: 18 },
+    { word: 'alojamiento',  weight: 17  }, { word: 'cupón',       weight: 16 },
+    { word: 'soporte',      weight: 15  }, { word: 'online',      weight: 14 },
+    { word: 'app',          weight: 13  }, { word: 'itinerario',  weight: 12 },
+    { word: 'retiro',       weight: 11  }, { word: 'devolución',  weight: 10 },
+    { word: 'booking',      weight: 9   },
   ];
 
   // ── Breakdown de sentimiento (owned más reciente) ─────────────────────────
