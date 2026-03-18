@@ -533,11 +533,20 @@ registerRoute('get', '/api/cuantico/summary', async (req, res) => {
         const summaries = [];
 
         for (const brand of brands) {
-            const snapshot = await db.collection('despegar_scans')
+            let query = db.collection('despegar_scans')
                 .where('brand', '==', brand)
                 .orderBy('timestamp', 'desc')
-                .limit(1)
-                .get();
+                .limit(1);
+
+            let snapshot;
+            try {
+                snapshot = await query.get();
+            } catch (e) {
+                // Si falla por índice compuesto, fallback sin orderBy
+                const fallback = await db.collection('despegar_scans').where('brand', '==', brand).get();
+                const docs = fallback.docs.sort((a, b) => (b.data().timestamp?.seconds || 0) - (a.data().timestamp?.seconds || 0));
+                snapshot = { empty: docs.length === 0, docs };
+            }
 
             if (!snapshot.empty) {
                 const data = snapshot.docs[0].data();
@@ -615,9 +624,26 @@ registerRoute('get', '/api/historical', async (req, res) => {
         const { brand, platform } = req.query;
         const db = admin.firestore();
         let query = db.collection('despegar_scans').orderBy('timestamp', 'desc').limit(30);
-        if (brand) query = query.where('brand', '==', brand);
-
-        const snapshot = await query.get();
+        let snapshot;
+        try {
+            if (brand) {
+                // where + orderBy requiere índice compuesto — hacemos where primero
+                const rawSnap = await db.collection('despegar_scans')
+                    .where('brand', '==', brand)
+                    .orderBy('timestamp', 'desc')
+                    .limit(30)
+                    .get();
+                snapshot = rawSnap;
+            } else {
+                snapshot = await query.get();
+            }
+        } catch (e) {
+            // Fallback: traer todo y filtrar en memoria
+            console.warn('[Historical] Index missing, filtering in memory:', e.message);
+            const all = await db.collection('despegar_scans').orderBy('timestamp', 'desc').limit(50).get();
+            const docs = brand ? all.docs.filter(d => d.data().brand === brand) : all.docs;
+            snapshot = { docs };
+        }
         const rows = [];
         snapshot.forEach(doc => {
             const d = doc.data();
