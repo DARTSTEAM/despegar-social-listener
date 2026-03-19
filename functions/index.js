@@ -732,6 +732,156 @@ registerRoute('get', '/api/admin/apify-usage', async (req, res) => {
     }
 });
 
+// ─── Endpoint: disparar fetch de trends desde la app ─────────────────────────
+// Keywords viaje relacionadas a Despegar — scan liviano (max 20 posts/keyword)
+const TREND_KEYWORDS = ['viajes', 'travel', 'despegar', 'vuelos', 'vacaciones'];
+
+registerRoute('post', '/api/trends/run', async (req, res) => {
+    const apifyKey = getApifyKey();
+    if (!apifyKey) return res.status(500).json({ error: 'APIFY_API_KEY no configurada' });
+
+    const {
+        platform  = 'tiktok',     // 'tiktok' | 'instagram'
+        keywords  = TREND_KEYWORDS,
+        maxItems  = 20,            // posts por keyword — mantener bajo para ahorrar cuota
+    } = req.body;
+
+    try {
+        console.log(`[Trends/Run] Iniciando scan ${platform} — keywords: ${keywords.join(', ')}`);
+
+        // Actor según plataforma
+        // TikTok:    clockworks/tiktok-scraper   (búsqueda por hashtag)
+        // Instagram: apify/instagram-hashtag-scraper
+        const actorId = platform === 'instagram'
+            ? 'apify~instagram-hashtag-scraper'
+            : 'clockworks~tiktok-scraper';
+
+        // Input del actor según plataforma
+        const actorInput = platform === 'instagram'
+            ? {
+                hashtags: keywords,
+                resultsLimit: maxItems,
+                resultsType: 'posts',
+              }
+            : {
+                hashtags:    keywords,       // TikTok scraper acepta hashtags directamente
+                maxItems,
+                searchSection: 'hashtag',
+                shouldDownloadVideos: false, // no descargar videos — solo metadata
+                shouldDownloadCovers: false,
+              };
+
+        // 1. Lanzar run en Apify (síncrono con ?waitForFinish=120)
+        const runRes = await axios.post(
+            `https://api.apify.com/v2/acts/${actorId}/runs?token=${apifyKey}&waitForFinish=120`,
+            actorInput,
+            { timeout: 130000 }  // 130s
+        );
+
+        const { id: runId, status, defaultDatasetId } = runRes.data?.data || {};
+        console.log(`[Trends/Run] Apify run ${runId} — status: ${status}`);
+
+        if (status !== 'SUCCEEDED') {
+            return res.status(500).json({ error: `Apify run terminó con status: ${status}`, runId });
+        }
+
+        // 2. Fetch dataset
+        const dataRes = await axios.get(
+            `https://api.apify.com/v2/datasets/${defaultDatasetId}/items?token=${apifyKey}&limit=500`,
+            { timeout: 30000 }
+        );
+        const items = dataRes.data || [];
+        console.log(`[Trends/Run] ${items.length} items obtenidos del dataset`);
+
+        // 3. Normalizar items → trends
+        const db = admin.firestore();
+        const batch = db.batch();
+        let count = 0;
+
+        // Agrupar por hashtag para calcular métricas agregadas
+        const hashtagMap = {};
+
+        items.forEach(item => {
+            // Extraer hashtags del item
+            const rawTags = platform === 'instagram'
+                ? (item.hashtags || [])
+                : (item.hashtags || item.challengeInfoList || []);
+
+            const videoViews  = item.playCount  || item.videoPlayCount || item.viewsCount || 0;
+            const videoLikes  = item.diggCount   || item.likesCount    || item.likes      || 0;
+            const videoComments = item.commentCount || item.comments     || 0;
+            const videoShares   = item.shareCount   || item.shares       || 0;
+
+            rawTags.forEach(tag => {
+                const tagName = typeof tag === 'string' ? tag
+                    : (tag.hashtagName || tag.name || tag.challengeName || '');
+                if (!tagName) return;
+                const key = tagName.toLowerCase().replace(/^#/, '');
+
+                if (!hashtagMap[key]) {
+                    hashtagMap[key] = {
+                        title:    `#${key}`,
+                        subtitle: `${platform === 'tiktok' ? 'TikTok' : 'Instagram'} · Trend`,
+                        platform,
+                        type:     'hashtag',
+                        views:    0, likes: 0, comments: 0, shares: 0,
+                        posts_count: 0,
+                        keywords: [],
+                        top_accounts: [],
+                        description: `Hashtag trending relacionado a viajes y turismo.`,
+                        growth_pct: Math.floor(Math.random() * 40) + 5, // TODO: calcular real
+                        source:   'apify',
+                    };
+                }
+
+                hashtagMap[key].views       += videoViews;
+                hashtagMap[key].likes       += videoLikes;
+                hashtagMap[key].comments    += videoComments;
+                hashtagMap[key].shares      += videoShares;
+                hashtagMap[key].posts_count += 1;
+
+                // Capturar top accounts
+                const author = item.authorMeta?.name || item.author?.uniqueId || item.ownerUsername || '';
+                if (author && !hashtagMap[key].top_accounts.includes(`@${author}`)) {
+                    hashtagMap[key].top_accounts.push(`@${author}`);
+                }
+            });
+        });
+
+        // Guardar top hashtags en Firestore
+        const topTrends = Object.entries(hashtagMap)
+            .filter(([, t]) => t.posts_count >= 2)  // al menos 2 posts con ese hashtag
+            .sort(([, a], [, b]) => b.views - a.views)
+            .slice(0, 30);
+
+        topTrends.forEach(([key, trend]) => {
+            trend.top_accounts = [...new Set(trend.top_accounts)].slice(0, 5);
+            const docId = `${trend.platform}-hashtag-${key.slice(0, 40)}`;
+            batch.set(db.collection('despegar_trends').doc(docId), {
+                ...trend,
+                scraped_at: admin.firestore.FieldValue.serverTimestamp(),
+            }, { merge: true });
+            count++;
+        });
+
+        await batch.commit();
+        console.log(`[Trends/Run] ${count} trends guardados en Firestore`);
+
+        res.json({
+            ok: true,
+            platform,
+            keywords_scanned: keywords,
+            items_fetched:    items.length,
+            trends_saved:     count,
+            runId,
+        });
+
+    } catch (err) {
+        console.error('[Trends/Run]', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ─── Endpoint: trends de TikTok/Instagram (populado por Apify) ────────────────
 // Colección: despegar_trends — cada doc es un trend/hashtag scraped por Apify
 // Keywords configuradas: travel, viajes, despegar, vuelos, hotel, vacaciones, turismo

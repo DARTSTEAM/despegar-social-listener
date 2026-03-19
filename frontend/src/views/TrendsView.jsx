@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import {
   TrendingUp, Eye, Heart, MessageCircle, Hash, Flame,
-  RefreshCw, ExternalLink, Play, Music, Globe, Filter
+  RefreshCw, ExternalLink, Play, Music, Globe, Filter, Zap, CheckCircle, AlertCircle
 } from 'lucide-react';
 import { API_BASE } from '../config';
 
@@ -298,6 +298,27 @@ const TrendsView = () => {
   const [selected, setSelected]     = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [isLive, setIsLive]         = useState(false);
+  const [scanning, setScanning]     = useState(false);
+  const [scanPlatform, setScanPlatform] = useState('tiktok');
+  const [scanResult, setScanResult] = useState(null); // { ok, trends_saved, error }
+
+  const runTrendsScan = async () => {
+    setScanning(true);
+    setScanResult(null);
+    try {
+      const { data } = await axios.post(`${API_BASE}/api/trends/run`, {
+        platform: scanPlatform,
+        maxItems: 25, // liviano — ajustar según cuota
+      }, { timeout: 150000 });
+      setScanResult({ ok: true, saved: data.trends_saved, fetched: data.items_fetched });
+      // Refrescar lista después del scan
+      await fetchTrends();
+    } catch (err) {
+      setScanResult({ ok: false, error: err.response?.data?.error || err.message });
+    } finally {
+      setScanning(false);
+    }
+  };
 
   const fetchTrends = async () => {
     setLoading(true);
@@ -373,13 +394,67 @@ const TrendsView = () => {
             </p>
           )}
         </div>
-        <button
-          onClick={fetchTrends}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-fg/[0.03] border border-fg/10 hover:bg-fg/[0.06] transition-all text-[9px] font-black uppercase tracking-widest text-fg/40 hover:text-fg"
-        >
-          <RefreshCw size={11} className={loading ? 'animate-spin' : ''} />
-          Actualizar
-        </button>
+
+        {/* Acciones */}
+        <div className="flex flex-col items-end gap-2">
+          {/* Scan button */}
+          <div className="flex items-center gap-2">
+            {/* Selector plataforma del scan */}
+            <div className="flex items-center gap-1 p-1 bg-fg/[0.03] border border-fg/8 rounded-xl">
+              {['tiktok','instagram'].map(p => (
+                <button key={p}
+                  onClick={() => setScanPlatform(p)}
+                  disabled={scanning}
+                  className={`px-2.5 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all ${
+                    scanPlatform === p ? 'bg-fg/10 text-fg' : 'text-fg/30 hover:text-fg/60'
+                  }`}>{p}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={runTrendsScan}
+              disabled={scanning}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-[9px] font-black uppercase tracking-widest ${
+                scanning
+                  ? 'bg-[#9B72F5]/10 border-[#9B72F5]/30 text-[#9B72F5]/60 cursor-not-allowed'
+                  : 'bg-[#9B72F5]/10 border-[#9B72F5]/30 hover:bg-[#9B72F5]/20 text-[#9B72F5]'
+              }`}
+            >
+              <Zap size={11} className={scanning ? 'animate-pulse' : ''} />
+              {scanning ? `Escaneando ${scanPlatform}…` : `Escanear ${scanPlatform}`}
+            </button>
+
+            <button
+              onClick={fetchTrends}
+              disabled={loading}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-fg/[0.03] border border-fg/10 hover:bg-fg/[0.06] transition-all text-[9px] font-black uppercase tracking-widest text-fg/40 hover:text-fg"
+            >
+              <RefreshCw size={11} className={loading ? 'animate-spin' : ''} />
+            </button>
+          </div>
+
+          {/* Resultado del último scan */}
+          <AnimatePresence>
+            {scanResult && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[8px] font-black ${
+                  scanResult.ok
+                    ? 'bg-accent-lemon/5 border-accent-lemon/20 text-accent-lemon'
+                    : 'bg-accent-pink/5 border-accent-pink/20 text-accent-pink'
+                }`}
+              >
+                {scanResult.ok
+                  ? <><CheckCircle size={10} /> {scanResult.saved} trends guardados ({scanResult.fetched} posts analizados)</>
+                  : <><AlertCircle size={10} /> {scanResult.error}</>
+                }
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Filters */}
