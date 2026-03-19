@@ -1,112 +1,115 @@
-import { useState, useEffect, useRef } from 'react';
-import cloud from 'd3-cloud';
+import { motion } from 'framer-motion';
 
-const H = 500;
-
-// Color por rango de frecuencia
-const rankColor = (i, n) => {
+// Paleta por rango
+const rankStyle = (i, n) => {
   const p = i / Math.max(n - 1, 1);
-  if (p < 0.06) return '#9B72F5';
-  if (p < 0.15) return '#ffffff';
-  if (p < 0.28) return '#FF53BA';
-  if (p < 0.45) return 'rgba(255,255,255,0.80)';
-  if (p < 0.60) return '#98FFBC';
-  if (p < 0.75) return 'rgba(255,255,255,0.50)';
-  return 'rgba(255,255,255,0.28)';
-};
-
-const rankWeight = (i, n) => {
-  const p = i / Math.max(n - 1, 1);
-  if (p < 0.08) return 900;
-  if (p < 0.25) return 700;
-  if (p < 0.55) return 500;
-  return 400;
+  if (p < 0.08) return { color: '#9B72F5', weight: 900 };
+  if (p < 0.20) return { color: '#ffffff', weight: 800 };
+  if (p < 0.35) return { color: '#FF53BA', weight: 700 };
+  if (p < 0.55) return { color: '#98FFBC', weight: 600 };
+  return { color: 'rgba(255,255,255,0.42)', weight: 400 };
 };
 
 const CyberWordCloud = ({ words }) => {
-  const [placed, setPlaced]  = useState([]);
-  const [width, setWidth]    = useState(0);
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const update = () => containerRef.current && setWidth(containerRef.current.offsetWidth);
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(containerRef.current);
-    return () => ro.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!words?.length || width < 50) return;
-    setPlaced([]); // reset mientras recalcula
-
-    const sorted = [...words]
-      .sort((a, b) => (b.weight || 0) - (a.weight || 0))
-      .slice(0, 65);
-
-    const maxW = Math.max(...sorted.map(w => w.weight || 1));
-    const minW = Math.min(...sorted.map(w => w.weight || 1));
-    const span = maxW - minW || 1;
-
-    // Fuentes: 13-44px. Tamaño moderado para que d3-cloud pueda resolver el layout
-    const fontSize = ({ weight }) =>
-      13 + Math.pow((weight - minW) / span, 0.6) * 31;
-
-    cloud()
-      .size([width, H])
-      .words(sorted.map(w => ({ text: w.word, size: fontSize(w), weight: w.weight })))
-      .padding(6)
-      .rotate(() => (Math.random() < 0.28 ? 90 : 0))
-      .font("'Outfit', sans-serif")
-      .fontSize(d => d.size)
-      .spiral('archimedean')
-      .on('end', result => setPlaced(result))
-      .start();
-  }, [words, width]);
-
   if (!words?.length) return null;
 
-  const cx = width / 2;
-  const cy = H / 2;
-  const n  = placed.length;
+  const sorted = [...words]
+    .sort((a, b) => (b.weight || 0) - (a.weight || 0))
+    .slice(0, 30);
+
+  const max = sorted[0]?.weight || 1;
+
+  // Top 6 → pills grandes; resto → lista compacta
+  const topPills = sorted.slice(0, 6);
+  const rest     = sorted.slice(6);
 
   return (
-    <div className="pwa-card overflow-hidden bg-fg/[0.02] border-fg/5">
-      <div className="flex items-center gap-2 px-6 pt-5 pb-1">
+    <div className="pwa-card bg-fg/[0.02] border-fg/5 space-y-6 p-6">
+      {/* Header */}
+      <div className="flex items-center gap-2">
         <div className="w-1.5 h-1.5 bg-[#9B72F5] rounded-full" />
         <span className="text-[9px] font-black uppercase tracking-[0.25em] text-fg/40 italic">
-          Word Cloud — Términos más frecuentes
+          Términos más frecuentes
         </span>
       </div>
 
-      <div ref={containerRef} style={{ width: '100%' }}>
-        {width > 0 && (
-          <svg width={width} height={H} aria-label="Word cloud">
-            <g transform={`translate(${cx},${cy})`}>
-              {placed.map((w, i) => (
-                <text
-                  key={`${w.text}-${i}`}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  x={w.x || 0}
-                  y={w.y || 0}
-                  fontSize={w.size}
-                  fontWeight={rankWeight(i, n)}
-                  fontFamily="'Outfit', sans-serif"
-                  fontStyle={i < Math.ceil(n * 0.07) ? 'italic' : 'normal'}
-                  fill={rankColor(i, n)}
-                  transform={`rotate(${w.rotate || 0})`}
-                  style={{ cursor: 'default', userSelect: 'none' }}
-                  opacity={0.92}
+      {/* Top 6 — pills grandes con barra */}
+      <div className="space-y-2">
+        {topPills.map((w, i) => {
+          const pct   = Math.round((w.weight / max) * 100);
+          const style = rankStyle(i, sorted.length);
+          const rank  = String(i + 1).padStart(2, '0');
+
+          return (
+            <motion.div
+              key={w.word}
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.35, delay: i * 0.06 }}
+              className="group flex items-center gap-3"
+            >
+              {/* Número */}
+              <span className="text-[9px] font-black tabular-nums text-fg/15 w-5 shrink-0">{rank}</span>
+
+              {/* Palabra + barra */}
+              <div className="flex-1 space-y-1">
+                <span
+                  className="block text-sm leading-none tracking-tight uppercase"
+                  style={{ color: style.color, fontWeight: style.weight }}
                 >
-                  {(w.text || '').toUpperCase()}
-                </text>
-              ))}
-            </g>
-          </svg>
-        )}
+                  {w.word}
+                </span>
+                <div className="h-[3px] w-full bg-fg/5 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${pct}%` }}
+                    transition={{ duration: 0.7, delay: i * 0.06 + 0.1, ease: 'easeOut' }}
+                    className="h-full rounded-full"
+                    style={{ background: style.color }}
+                  />
+                </div>
+              </div>
+
+              {/* Peso */}
+              <span className="text-[9px] font-black tabular-nums text-fg/20 shrink-0">
+                {w.weight}×
+              </span>
+            </motion.div>
+          );
+        })}
       </div>
+
+      {/* Divisor */}
+      {rest.length > 0 && (
+        <div className="h-px bg-fg/5" />
+      )}
+
+      {/* Resto — chips compactos en flex-wrap */}
+      {rest.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {rest.map((w, i) => {
+            const style = rankStyle(i + 6, sorted.length);
+            const pct   = Math.round((w.weight / max) * 100);
+            // Tamaño de fuente proporcional: 9–13px
+            const fs = 9 + Math.round((pct / 100) * 4);
+
+            return (
+              <motion.span
+                key={w.word}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.25, delay: (i + 6) * 0.025 }}
+                className="px-2 py-0.5 rounded-full border border-fg/8 cursor-default
+                           hover:border-[#9B72F5]/40 hover:bg-[#9B72F5]/5 transition-all"
+                style={{ color: style.color, fontWeight: style.weight, fontSize: `${fs}px` }}
+                title={`${w.weight}×`}
+              >
+                {w.word}
+              </motion.span>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
