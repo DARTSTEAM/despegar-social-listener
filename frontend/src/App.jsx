@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
-  BarChart3, Search, Filter, Settings, Home, Youtube, TrendingUp, Sun, Moon
+  BarChart3, Search, Filter, Settings, Home, Youtube, TrendingUp, Sun, Moon, Zap
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -17,6 +17,7 @@ import ScoutBotView from './views/ScoutBotView';
 import HistoryView from './views/HistoryView';
 import SettingsView from './views/SettingsView';
 import PostsView from './views/PostsView';
+import TrendsView from './views/TrendsView';
 import ScoutProgressWidget from './components/ScoutProgressWidget';
 
 const NAV_ITEMS = [
@@ -26,6 +27,7 @@ const NAV_ITEMS = [
   { id: 'scout',    label: 'Scout Bot',    icon: Search      },
   { id: 'history',  label: 'Historial',    icon: Filter      },
   { id: 'posts',    label: 'Posts',        icon: TrendingUp  },
+  { id: 'trends',   label: 'Trends',       icon: Zap         },
   { id: 'settings', label: 'Ajustes',      icon: Settings    },
 ];
 
@@ -219,6 +221,9 @@ export default function App() {
           )}
           {activeTab === 'posts' && (
             <PostsView />
+          )}
+          {activeTab === 'trends' && (
+            <TrendsView />
           )}
           {activeTab === 'settings' && (
             <SettingsView

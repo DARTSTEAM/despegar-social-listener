@@ -732,6 +732,81 @@ registerRoute('get', '/api/admin/apify-usage', async (req, res) => {
     }
 });
 
+// ─── Endpoint: trends de TikTok/Instagram (populado por Apify) ────────────────
+// Colección: despegar_trends — cada doc es un trend/hashtag scraped por Apify
+// Keywords configuradas: travel, viajes, despegar, vuelos, hotel, vacaciones, turismo
+registerRoute('get', '/api/trends', async (req, res) => {
+    try {
+        const { platform, type, limit = 50 } = req.query;
+
+        let query = admin.firestore().collection('despegar_trends')
+            .orderBy('views', 'desc')
+            .limit(parseInt(limit));
+
+        const snap = await query.get();
+        let trends = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // Filtrar en memoria (evita índices compuestos)
+        if (platform) trends = trends.filter(t => t.platform === platform);
+        if (type)     trends = trends.filter(t => t.type     === type);
+
+        // Devuelve array vacío si no hay datos — el frontend usa mock en ese caso
+        res.json(trends);
+    } catch (e) {
+        console.error('[Trends]', e.message);
+        // 200 con array vacío para que el frontend use mock sin mostrar error
+        res.json([]);
+    }
+});
+
+// ─── Endpoint (webhook): recibir trends de Apify webhook ─────────────────────
+// Apify → Webhook → POST /api/trends/ingest
+// Configurar en Apify: Dataset > Webhooks > URL = https://<backend>/api/trends/ingest
+registerRoute('post', '/api/trends/ingest', async (req, res) => {
+    try {
+        const items = Array.isArray(req.body) ? req.body : (req.body?.items || []);
+        if (!items.length) return res.json({ ok: true, inserted: 0 });
+
+        const db = admin.firestore();
+        const batch = db.batch();
+        let count = 0;
+
+        items.forEach(item => {
+            // Normalizar campos según actor Apify
+            const doc = {
+                platform:    item.platform || (item.tiktokUrl ? 'tiktok' : 'instagram'),
+                type:        item.type || (item.hashtagName ? 'hashtag' : item.audioName ? 'audio' : 'hashtag'),
+                title:       item.hashtagName || item.audioName || item.name || item.title || '',
+                subtitle:    item.description || item.subtitle || '',
+                views:       item.viewCount   || item.views   || 0,
+                likes:       item.likesCount  || item.likes   || 0,
+                comments:    item.commentsCount || item.comments || 0,
+                shares:      item.sharesCount || item.shares  || 0,
+                posts_count: item.postsCount  || item.posts_count || 0,
+                growth_pct:  item.growthPct   || item.growth_pct || 0,
+                keywords:    item.keywords    || [],
+                top_accounts: item.topAccounts || [],
+                thumbnail:   item.thumbnailUrl || item.thumbnail || null,
+                description: item.description || '',
+                source:      'apify',
+                scraped_at:  admin.firestore.FieldValue.serverTimestamp(),
+            };
+
+            // ID estable: platform-type-title (evita duplicados del mismo scraping)
+            const docId = `${doc.platform}-${doc.type}-${doc.title.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40)}`;
+            batch.set(db.collection('despegar_trends').doc(docId), doc, { merge: true });
+            count++;
+        });
+
+        await batch.commit();
+        console.log(`[Trends] Ingested ${count} trends from Apify`);
+        res.json({ ok: true, inserted: count });
+    } catch (e) {
+        console.error('[Trends ingest]', e.message);
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // ─── Endpoint: comentarios analizados del scan más reciente de una cuenta ──────
 registerRoute('get', '/api/scan-comments', async (req, res) => {
     try {
