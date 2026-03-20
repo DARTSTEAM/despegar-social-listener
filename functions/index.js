@@ -80,19 +80,23 @@ async function runApifyActor(actorId, input, apifyKey) {
 }
 
 // ─── TikTok: perfil → últimos N videos → comentarios + metadata ─────────────
-async function scrapeTikTokComments(profileUrl, apifyKey, numVideos = 10) {
-    // PASO 1: obtener más videos de los necesarios y filtrar los de mayor interacción
-    const fetchCount = numVideos * 3; // pedir 3x para tener margen de selección
-    console.log(`[TikTok] Paso 1: obteniendo ${fetchCount} videos de ${profileUrl} para seleccionar top ${numVideos}`);
-    const videos = await runApifyActor(
-        'clockworks~free-tiktok-scraper',
-        { profiles: [profileUrl], resultsPerPage: fetchCount,
-          shouldDownloadVideos: false, shouldDownloadCovers: false },
-        apifyKey
-    );
+// ─── TikTok: perfil o video → extracción metadata (Extractor) → comentarios (Scraper) ─────
+async function scrapeTikTokComments(inputUrl, apifyKey, numVideos = 10) {
+    const isVideo = inputUrl.includes('/video/') || inputUrl.includes('vm.tiktok.com');
+    
+    // PASO 1: Usar "Free TikTok Scraper" (Data Extractor) para obtener metadata y URLs de videos
+    console.log(`[TikTok] Paso 1: Usando Data Extractor en ${inputUrl} (${isVideo ? 'Video' : 'Perfil'})`);
+    
+    const actorInput = isVideo 
+        ? { postURLs: [inputUrl], shouldDownloadVideos: false, shouldDownloadCovers: false }
+        : { profiles: [inputUrl], resultsPerPage: Math.max(numVideos * 3, 10), shouldDownloadVideos: false, shouldDownloadCovers: false };
 
-    // Construir metadata completa de todos los videos
-    const allMeta = videos.map(v => ({
+    // PASO 1: Extracción de metadata de videos
+    console.log(`[ScoutBot] TikTok Paso 1: Extrayendo información de videos de ${inputUrl}...`);
+    const rawData = await runApifyActor('clockworks~free-tiktok-scraper', actorInput, apifyKey);
+
+    // Normalizar metadata de videos/posts
+    const allMeta = rawData.map(v => ({
         url:          v.webVideoUrl || v.url || v.videoUrl || '',
         thumbnailUrl: v.coverUrl || v.thumbnail || '',
         description:  (v.desc || v.text || '').slice(0, 200),
@@ -102,112 +106,100 @@ async function scrapeTikTokComments(profileUrl, apifyKey, numVideos = 10) {
         commentCount: v.stats?.commentCount || v.commentCount || 0,
     })).filter(v => v.url && v.url.includes('tiktok.com'));
 
-    // Ordenar por interacción: priorizar videos con comentarios, luego por likes+comentarios
-    const sorted = [...allMeta].sort((a, b) => {
-        const scoreA = (a.commentCount > 0 ? 100000 : 0) + a.commentCount * 10 + a.likes;
-        const scoreB = (b.commentCount > 0 ? 100000 : 0) + b.commentCount * 10 + b.likes;
-        return scoreB - scoreA;
-    });
-
-    // Quedarnos con los top N (al menos con commentCount > 0 si hay suficientes)
-    const withComments = sorted.filter(v => v.commentCount > 0).slice(0, numVideos);
-    const videoMeta = withComments.length >= numVideos
-        ? withComments
-        : sorted.slice(0, numVideos); // fallback si pocos tienen comentarios
+    let videoMeta = [];
+    if (isVideo) {
+        videoMeta = allMeta.slice(0, 1);
+    } else {
+        // Ordenar por interacción para perfiles
+        const sorted = [...allMeta].sort((a, b) => {
+            const scoreA = (a.commentCount > 0 ? 100000 : 0) + a.commentCount * 10 + a.likes;
+            const scoreB = (b.commentCount > 0 ? 100000 : 0) + b.commentCount * 10 + b.likes;
+            return scoreB - scoreA;
+        });
+        videoMeta = sorted.filter(v => v.commentCount > 0).slice(0, numVideos);
+        if (videoMeta.length === 0) videoMeta = sorted.slice(0, numVideos);
+    }
 
     const videoUrls = videoMeta.map(v => v.url);
+    if (videoUrls.length === 0) throw new Error('No se pudo extraer información del video o perfil TikTok. Revisa la URL.');
 
-    console.log(`[TikTok] Seleccionados ${videoMeta.length} videos con mayor interacción (de ${allMeta.length} disponibles)`);
-    videoMeta.forEach((v, i) => console.log(`  [${i+1}] likes=${v.likes} comments=${v.commentCount} | ${v.url.slice(-30)}`));
-
-    if (videoUrls.length === 0) throw new Error('No se encontraron videos en el perfil TikTok');
-
-    // PASO 2: extraer comentarios de los videos seleccionados
-    console.log(`[TikTok] Paso 2: extrayendo comentarios de ${videoUrls.length} videos con más interacción`);
+    console.log(`[TikTok] Paso 2: Extrayendo comentarios con Comment Scraper de ${videoUrls.length} posts`);
+    // PASO 2: Extracción de comentarios de los videos seleccionados
+    console.log(`[ScoutBot] TikTok Paso 2: Extrayendo comentarios de ${videoUrls.length} videos...`);
     const rawComments = await runApifyActor(
         'clockworks~tiktok-comments-scraper',
-        { postURLs: videoUrls, commentsPerPost: 20, maxRepliesPerComment: 0 },
+        { postURLs: videoUrls, commentsPerPost: 30, maxRepliesPerComment: 0 },
         apifyKey
     );
 
-    // Tagear cada comentario con su video de origen
+    // Tagear comentarios con su video de origen
     const comments = rawComments.map(c => ({
         ...c,
         sourceVideoUrl: c.postUrl || c.videoUrl || videoUrls[0] || '',
     }));
 
-    console.log(`[TikTok] ${comments.length} comentarios obtenidos de ${videoUrls.length} videos`);
+    console.log(`[TikTok] ${comments.length} comentarios obtenidos exitosamente.`);
     return { comments, videoMeta };
 }
 
-// ─── Instagram: perfil → top N posts por interacción → comentarios + metadata ──
-async function scrapeInstagramComments(profileUrl, apifyKey, numPosts = 10) {
-    // PASO 1: obtener más posts de los necesarios y filtrar los de mayor interacción
-    const fetchCount = numPosts * 3;
-    console.log(`[Instagram] Paso 1: obteniendo ${fetchCount} posts de ${profileUrl} para seleccionar top ${numPosts}`);
-    const posts = await runApifyActor(
-        'apify~instagram-scraper',
-        { directUrls: [profileUrl], resultsType: 'posts', resultsLimit: fetchCount, addParentData: false },
+// ─── Instagram: perfil o post → extracción metadata (Scraper) → comentarios (Scraper) ──────
+async function scrapeInstagramComments(inputUrl, apifyKey, numPosts = 10) {
+    const isPost = inputUrl.includes('/p/') || inputUrl.includes('/reels/') || inputUrl.includes('/tv/');
+    
+    // PASO 1: Usar "Instagram Scraper" para obtener metadata y URLs
+    console.log(`[Instagram] Paso 1: Usando Scraper en ${inputUrl} (${isPost ? 'Post' : 'Perfil'})`);
+    
+    const actorInput = isPost
+        ? { directUrls: [inputUrl], resultsType: 'posts', resultsLimit: 1, addParentData: true }
+        : { directUrls: [inputUrl], resultsType: 'posts', resultsLimit: Math.max(numPosts * 3, 10), addParentData: false };
+
+    // PASO 1: Extracción de posts
+    console.log(`[ScoutBot] Instagram Paso 1: Extrayendo posts de ${inputUrl}...`);
+    const rawData = await runApifyActor('apify~instagram-scraper', actorInput, apifyKey);
+
+    const allMeta = rawData.map(p => ({
+        url:          p.url || p.directUrl || '',
+        thumbnailUrl: p.displayUrl || p.thumbnail || '',
+        description:  (p.caption || '').slice(0, 200),
+        platform:     'instagram',
+        likes:        p.likesCount || 0,
+        views:        p.videoPlayCount || 0,
+        commentCount: p.commentsCount || 0,
+    })).filter(p => p.url && p.url.includes('instagram.com'));
+
+    let videoMeta = [];
+    if (isPost) {
+        videoMeta = allMeta.slice(0, 1);
+    } else {
+        const sorted = [...allMeta].sort((a, b) => {
+            const scoreA = (a.commentCount > 0 ? 100000 : 0) + a.commentCount * 10 + a.likes;
+            const scoreB = (b.commentCount > 0 ? 100000 : 0) + b.commentCount * 10 + b.likes;
+            return scoreB - scoreA;
+        });
+        videoMeta = sorted.slice(0, numPosts);
+    }
+
+    const postUrls = videoMeta.map(v => v.url);
+    if (postUrls.length === 0) throw new Error('No se pudo extraer información del post o perfil de Instagram.');
+
+    console.log(`[Instagram] Paso 2: Extrayendo comentarios con Comment Scraper de ${postUrls.length} posts`);
+    // PASO 2: Extracción de comentarios
+    console.log(`[ScoutBot] Instagram Paso 2: Extrayendo comentarios de ${postUrls.length} posts...`);
+    const rawComments = await runApifyActor(
+        'apify~instagram-comment-scraper',
+        { directUrls: postUrls, resultsPerPost: 30 },
         apifyKey
     );
 
-    // Metadata completa de todos los posts
-    const allMeta = posts.map(p => ({
-        url:          p.url || (p.shortCode ? `https://www.instagram.com/p/${p.shortCode}/` : ''),
-        thumbnailUrl: p.displayUrl || p.thumbnailUrl || p.previewUrl || '',
-        description:  (p.caption || p.text || '').slice(0, 200),
-        platform:     'instagram',
-        likes:        p.likesCount || p.likes || 0,
-        views:        p.videoViewCount || p.videoPlayCount || 0,
-        commentCount: p.commentsCount || 0,
-    })).filter(v => v.url);
-
-    // Ordenar por interacción: priorizar posts con comentarios, luego por likes+comentarios
-    const sorted = [...allMeta].sort((a, b) => {
-        const scoreA = (a.commentCount > 0 ? 100000 : 0) + a.commentCount * 10 + a.likes;
-        const scoreB = (b.commentCount > 0 ? 100000 : 0) + b.commentCount * 10 + b.likes;
-        return scoreB - scoreA;
-    });
-
-    const withComments = sorted.filter(v => v.commentCount > 0).slice(0, numPosts);
-    const videoMeta = withComments.length >= numPosts
-        ? withComments
-        : sorted.slice(0, numPosts);
-
-    const postUrls = videoMeta.map(v => v.url);
-
-    console.log(`[Instagram] Seleccionados ${videoMeta.length} posts con mayor interacción (de ${allMeta.length} disponibles)`);
-    videoMeta.forEach((v, i) => console.log(`  [${i+1}] likes=${v.likes} comments=${v.commentCount} | ${v.url.slice(-40)}`));
-
-    if (postUrls.length === 0) throw new Error('No se encontraron posts en el perfil de Instagram');
-
-    // PASO 2: extraer comentarios de los posts seleccionados
-    console.log(`[Instagram] Paso 2: extrayendo comentarios de ${postUrls.length} posts con más interacción`);
-    let rawComments = [];
-    try {
-        rawComments = await runApifyActor(
-            'jaroslavsemanko~instagram-comment-scraper',
-            { directUrls: postUrls, resultsLimit: 20 },
-            apifyKey
-        );
-    } catch (e) {
-        console.warn(`[Instagram] jaroslavsemanko falló (${e.message}), intentando actor alternativo...`);
-        rawComments = await runApifyActor(
-            'apify~instagram-comment-scraper',
-            { directUrls: postUrls, resultsPerPost: 20 },
-            apifyKey
-        );
-    }
-
-    // Tagear cada comentario con su post de origen
     const comments = rawComments.map(c => ({
         ...c,
-        sourceVideoUrl: c.postUrl || c.ownerUrl || postUrls[0] || '',
+        sourceVideoUrl: c.postUrl || c.videoUrl || postUrls[0] || '',
     }));
 
-    console.log(`[Instagram] ${comments.length} comentarios obtenidos de ${postUrls.length} posts`);
+    console.log(`[Instagram] ${comments.length} comentarios obtenidos exitosamente.`);
     return { comments, videoMeta };
 }
+
 
 
 
@@ -313,50 +305,39 @@ registerRoute('post', '/api/scout', async (req, res) => {
 
         console.log(`[ScoutBot] Analizando ${platform}: ${url} (Brand: ${brand})`);
 
-        // --- Lógica de Detección: Perfil vs Post ---
-        // Seguimos el mismo criterio que el escaneo manual: 
-        // Si no es un post individual, lo tratamos como perfil de marca.
-        const isTikTokPost = url.includes('/video/') || url.includes('vm.tiktok.com');
-        const isInstagramPost = url.includes('/p/') || url.includes('/reels/') || url.includes('/tv/');
-        
-        const isProfile = (platform === 'tiktok' && !isTikTokPost) || 
-                          (platform === 'instagram' && !isInstagramPost);
-
         let comments = [];
+        let videoMeta = [];
 
-        if (isProfile) {
-            console.log(`[ScoutBot] Detectada CUENTA de marca. Replicando proceso de escaneo masivo...`);
-            // Usamos las mismas funciones que el डेली Scouting para asegurar compatibilidad
+        // Para TikTok e Instagram, SIEMPRE usamos el flujo unificado (Extractor -> Comment Scraper)
+        // Esto previene errores de "Invalid URLs" y asegura obtener metadata del post.
+        if (platform === 'tiktok' || platform === 'instagram') {
+            console.log(`[ScoutBot] Plataforma ${platform} detectada. Usando flujo unificado (Extractor + Scraper)...`);
             if (platform === 'tiktok') {
                 const result = await scrapeTikTokComments(url, apifyKey, 3);
                 comments = normalizeApifyItems(result.comments);
-            } else if (platform === 'instagram') {
+                videoMeta = result.videoMeta;
+            } else {
                 const result = await scrapeInstagramComments(url, apifyKey, 3);
                 comments = normalizeApifyItems(result.comments);
+                videoMeta = result.videoMeta;
             }
         } 
         else {
-            // Es un post individual o plataforma directa (Gmaps / FB)
+            // Otras plataformas (Gmaps, FB)
             let actorId = '';
             let input = {};
 
-            if (platform === 'tiktok') {
-                actorId = 'clockworks~tiktok-comments-scraper';
-                input = { postURLs: [url], commentsPerPost: 30, maxRepliesPerComment: 0 };
-            } else if (platform === 'instagram') {
-                actorId = 'apify~instagram-comment-scraper';
-                input = { directUrls: [url], resultsPerPost: 30 };
-            } else if (platform === 'google-maps') {
+            if (platform === 'google-maps') {
                 actorId = 'compass~google-maps-reviews-scraper';
                 input = { queries: [url], maxReviews: 30 };
             } else if (platform === 'facebook') {
                 actorId = 'apify~facebook-comments-scraper';
                 input = { postUrls: [url], maxComments: 30 };
             } else {
-                return res.status(400).json({ error: `Plataforma ${platform} no soportada para Scout directo.` });
+                return res.status(400).json({ error: `Plataforma ${platform} no soportada para Scout.` });
             }
 
-            console.log(`[ScoutBot] Post individual detectado/Gmaps. Ejecutando actor ${actorId}...`);
+            console.log(`[ScoutBot] Plataforma ${platform}. Ejecutando actor ${actorId}...`);
             const rawItems = await runApifyActor(actorId, input, apifyKey);
             comments = normalizeApifyItems(rawItems);
         }
