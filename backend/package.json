@@ -12,10 +12,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/bigquery": "^7.9.0",
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.13.5",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "firebase-admin": "^13.1.0",
+    "googleapis": "^171.4.0"
   }
 }

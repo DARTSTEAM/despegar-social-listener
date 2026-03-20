@@ -38,7 +38,7 @@ jobs:
       # ── Backend Functions ─────────────────────────────────────
       - name: Install functions dependencies
         run: npm ci
-        working-directory: backend/functions
+        working-directory: backend
 
       # ── Firebase Deploy ───────────────────────────────────────
       - name: Deploy to Firebase (Hosting + Functions)
