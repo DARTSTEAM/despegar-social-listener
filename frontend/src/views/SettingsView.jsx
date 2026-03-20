@@ -73,8 +73,8 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
             <div className="flex-1 space-y-3">
               <div className="flex items-center gap-3">
                 <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${isHigh ? 'bg-accent-pink shadow-[0_0_8px_rgba(255,83,186,0.6)]' : 'bg-accent-lemon shadow-[0_0_8px_rgba(152,255,188,0.5)]'}`} />
-                <span className="text-[9px] font-black uppercase tracking-widest text-fg/40">Apify — Cuota Mensual</span>
-                <span className="text-[8px] font-black uppercase text-fg/20 ml-auto">{apifyUsage.planName || 'Free'}</span>
+                <span className="text-[11px] font-black uppercase tracking-widest text-fg/40">Apify — Cuota Mensual</span>
+                <span className="text-[10px] font-black uppercase text-fg/20 ml-auto">{apifyUsage.planName || 'Free'}</span>
               </div>
               <div className="flex items-end gap-2">
                 <span className={`text-3xl font-black italic ${isHigh ? 'text-accent-pink' : 'text-accent-lemon'}`}>{pct}%</span>
@@ -89,12 +89,12 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
                 />
               </div>
               {apifyUsage.usedAcu > 0 && (
-                <p className="text-[8px] text-fg/30 font-medium">{apifyUsage.usedAcu.toFixed(3)} Actor Compute Units consumidos</p>
+                <p className="text-[10px] text-fg/30 font-medium">{apifyUsage.usedAcu.toFixed(3)} Actor Compute Units consumidos</p>
               )}
             </div>
             {apifyUsage.nextResetDate && (
               <div className="text-right flex-shrink-0">
-                <p className="text-[8px] uppercase font-black tracking-widest text-fg/20">Reset</p>
+                <p className="text-[10px] uppercase font-black tracking-widest text-fg/20">Reset</p>
                 <p className="text-sm font-black text-fg/40">{new Date(apifyUsage.nextResetDate).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}</p>
               </div>
             )}
@@ -143,24 +143,24 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
           <div className="grid grid-cols-1 gap-4 pt-2">
             <div className="flex items-center gap-2 px-3 py-2 bg-accent-lemon/10 rounded-xl border border-accent-lemon/20">
               <div className="w-1.5 h-1.5 bg-accent-lemon rounded-full animate-pulse" />
-              <span className="text-[9px] font-black uppercase text-accent-lemon tracking-widest">Gemini 2.0 Flash Active</span>
+              <span className="text-[11px] font-black uppercase text-accent-lemon tracking-widest">Gemini 2.0 Flash Active</span>
             </div>
             <div className="flex items-center gap-2 px-3 py-2 bg-accent-orange/10 rounded-xl border border-accent-orange/20">
               <div className="w-1.5 h-1.5 bg-accent-orange rounded-full" />
-              <span className="text-[9px] font-black uppercase text-accent-orange tracking-widest">Apify Scrapers Connected</span>
+              <span className="text-[11px] font-black uppercase text-accent-orange tracking-widest">Apify Scrapers Connected</span>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 pt-2">
             <div className="p-3 bg-fg/[0.03] rounded-xl border border-fg/5 text-center">
-              <p className="text-[9px] font-black text-fg/30 uppercase tracking-widest">API Quota</p>
+              <p className="text-[11px] font-black text-fg/30 uppercase tracking-widest">API Quota</p>
               <p className="text-lg font-black italic text-fg mt-1">14.2%</p>
             </div>
             <div className="p-3 bg-fg/[0.03] rounded-xl border border-fg/5 text-center">
-              <p className="text-[9px] font-black text-fg/30 uppercase tracking-widest">Report</p>
+              <p className="text-[11px] font-black text-fg/30 uppercase tracking-widest">Report</p>
               <p className="text-lg font-black italic uppercase text-fg mt-1">Semanal</p>
             </div>
             <div className="p-3 bg-fg/[0.03] rounded-xl border border-fg/5 text-center">
-              <p className="text-[9px] font-black text-fg/30 uppercase tracking-widest">Versión</p>
+              <p className="text-[11px] font-black text-fg/30 uppercase tracking-widest">Versión</p>
               <p className="text-lg font-black italic uppercase text-fg mt-1">v2.5</p>
             </div>
           </div>
@@ -174,7 +174,7 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
               <BarChart3 size={20} />
               <h3 className="text-xs font-black uppercase italic tracking-widest">Matriz de Inteligencia</h3>
               {/* Badge contador */}
-              <span className={`ml-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${
+              <span className={`ml-2 px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${
                 enabledCount === 0 ? 'bg-accent-pink/20 text-accent-pink' :
                 enabledCount === ALL_TARGETS.length ? 'bg-accent-lemon/20 text-accent-lemon' :
                 'bg-accent-orange/20 text-accent-orange'
@@ -187,7 +187,7 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
               {/* Select/Deselect all */}
               <button
                 onClick={allOn ? deselectAll : selectAll}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-fg/5 text-fg/50 border border-fg/10 text-[9px] font-black uppercase italic rounded-full hover:bg-fg/10 transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-fg/5 text-fg/50 border border-fg/10 text-[11px] font-black uppercase italic rounded-full hover:bg-fg/10 transition-all"
               >
                 {allOn ? <Square size={10} /> : <CheckSquare size={10} />}
                 {allOn ? 'Deseleccionar todo' : 'Seleccionar todo'}
@@ -207,7 +207,7 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
                     }
                   }
                 )}
-                className="px-4 py-1.5 bg-fg/5 text-fg/60 border border-fg/10 text-[9px] font-black uppercase italic rounded-full hover:bg-fg/10 transition-all"
+                className="px-4 py-1.5 bg-fg/5 text-fg/60 border border-fg/10 text-[11px] font-black uppercase italic rounded-full hover:bg-fg/10 transition-all"
               >
                 Cold Start
               </button>
@@ -216,7 +216,7 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
               <button
                 onClick={handleMassScan}
                 disabled={enabledCount === 0}
-                className={`px-5 py-1.5 font-black text-[9px] uppercase italic rounded-full transition-all ${
+                className={`px-5 py-1.5 font-black text-[11px] uppercase italic rounded-full transition-all ${
                   enabledCount === 0
                     ? 'bg-fg/10 text-fg/30 cursor-not-allowed'
                     : 'bg-accent-lemon text-black hover:scale-105 shadow-[0_0_20px_rgba(152,255,188,0.3)]'
@@ -232,16 +232,16 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
             <table className="w-full text-left border-collapse">
               <thead className="sticky top-0 bg-bg z-10 border-b border-fg/5">
                 <tr>
-                  <th className="py-4 pr-4 text-[9px] font-black uppercase tracking-widest text-fg/50 w-10">
+                  <th className="py-4 pr-4 text-[11px] font-black uppercase tracking-widest text-fg/50 w-10">
                     <span className="sr-only">Activar</span>
                   </th>
-                  <th className="py-4 text-[9px] font-black uppercase tracking-widest text-fg/50">Marca</th>
-                  <th className="py-4 text-[9px] font-black uppercase tracking-widest text-fg/50">Canal</th>
-                  <th className="py-4 text-[9px] font-black uppercase tracking-widest text-fg/50">Handle</th>
-                  <th className="py-4 text-[9px] font-black uppercase tracking-widest text-fg/50">Tipo</th>
-                  <th className="py-4 text-[9px] font-black uppercase tracking-widest text-fg/50 text-center">Último Scan</th>
-                  <th className="py-4 text-[9px] font-black uppercase tracking-widest text-fg/50 text-center">Scans</th>
-                  <th className="py-4 text-[9px] font-black uppercase tracking-widest text-fg/50 text-right">Estado</th>
+                  <th className="py-4 text-[11px] font-black uppercase tracking-widest text-fg/50">Marca</th>
+                  <th className="py-4 text-[11px] font-black uppercase tracking-widest text-fg/50">Canal</th>
+                  <th className="py-4 text-[11px] font-black uppercase tracking-widest text-fg/50">Handle</th>
+                  <th className="py-4 text-[11px] font-black uppercase tracking-widest text-fg/50">Tipo</th>
+                  <th className="py-4 text-[11px] font-black uppercase tracking-widest text-fg/50 text-center">Último Scan</th>
+                  <th className="py-4 text-[11px] font-black uppercase tracking-widest text-fg/50 text-center">Scans</th>
+                  <th className="py-4 text-[11px] font-black uppercase tracking-widest text-fg/50 text-right">Estado</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-fg/[0.02]">
@@ -278,7 +278,7 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
 
                       <td className="py-4 text-xs font-black uppercase italic text-fg">{row.brand}</td>
                       <td className="py-4">
-                        <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border ${
+                        <span className={`text-[11px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border ${
                           row.platform === 'TikTok'
                             ? 'bg-white/5 border-white/10 text-fg/60'
                             : 'bg-accent-pink/5 border-accent-pink/20 text-accent-pink/80'
@@ -288,7 +288,7 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
                       </td>
                       <td className="py-4 text-[10px] font-medium text-accent-orange italic">{row.handle}</td>
                       <td className="py-4">
-                        <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded ${
+                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${
                           row.type === 'Owned'
                             ? 'bg-accent-lemon/10 text-accent-lemon'
                             : 'bg-fg/5 text-fg/40'
@@ -296,14 +296,14 @@ const SettingsView = ({ brandsStatus, showConfirm, showAlert, onMassScanStart })
                           {row.type}
                         </span>
                       </td>
-                      <td className="py-4 text-center text-[9px] font-black uppercase italic tracking-widest opacity-40 text-fg">{dateStr}</td>
+                      <td className="py-4 text-center text-[11px] font-black uppercase italic tracking-widest opacity-40 text-fg">{dateStr}</td>
                       <td className="py-4 text-center text-[10px] font-black uppercase italic text-accent-lemon">
                         {count > 0 ? `${count} Scans` : '0'}
                       </td>
                       <td className="py-4">
                         <div className="flex items-center justify-end gap-2">
                           <div className={`w-1 h-1 rounded-full ${hasData ? 'bg-accent-lemon animate-pulse' : 'bg-fg/20'}`} />
-                          <span className="text-[9px] font-black uppercase tracking-tighter opacity-40 text-fg">
+                          <span className="text-[11px] font-black uppercase tracking-tighter opacity-40 text-fg">
                             {hasData ? 'Tracking' : 'Pending'}
                           </span>
                         </div>

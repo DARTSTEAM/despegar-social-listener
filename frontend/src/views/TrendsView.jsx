@@ -18,6 +18,7 @@ const fmt = (n) => {
 const platformStyle = {
   tiktok:    { border: 'border-[#69C9D0]/30', bg: 'bg-[#69C9D0]/5', badge: 'border-[#69C9D0]/40 text-[#69C9D0]', dot: '#69C9D0' },
   instagram: { border: 'border-[#E1306C]/30', bg: 'bg-[#E1306C]/5', badge: 'border-[#E1306C]/40 text-[#E1306C]', dot: '#E1306C' },
+  twitter:   { border: 'border-[#1DA1F2]/30', bg: 'bg-[#1DA1F2]/5', badge: 'border-[#1DA1F2]/40 text-[#1DA1F2]', dot: '#1DA1F2' },
 };
 
 // ── Mock data — reemplazar con datos de Apify cuando esté configurado ────────
@@ -131,7 +132,7 @@ const TrendCard = ({ trend, rank, onClick, selected }) => {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             {/* Rank */}
-            <span className="text-[9px] font-black tabular-nums text-fg/15 w-5 shrink-0">
+            <span className="text-[11px] font-black tabular-nums text-fg/15 w-5 shrink-0">
               {String(rank).padStart(2, '0')}
             </span>
             {/* Platform dot */}
@@ -139,7 +140,7 @@ const TrendCard = ({ trend, rank, onClick, selected }) => {
             {/* Title */}
             <div className="min-w-0">
               <p className="text-sm font-black italic truncate text-fg leading-none">{trend.title}</p>
-              <p className="text-[8px] text-fg/30 mt-0.5 uppercase tracking-widest">{trend.subtitle}</p>
+              <p className="text-[10px] text-fg/30 mt-0.5 uppercase tracking-widest">{trend.subtitle}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
@@ -164,7 +165,7 @@ const TrendCard = ({ trend, rank, onClick, selected }) => {
           ].map(({ icon: Icon, val, label }) => (
             <div key={label} className="flex items-center gap-1">
               <Icon size={9} className="text-fg/25" />
-              <span className="text-[9px] font-black text-fg/50">{val}</span>
+              <span className="text-[11px] font-black text-fg/50">{val}</span>
             </div>
           ))}
           {trend.source === 'mock' && (
@@ -212,11 +213,24 @@ const TrendDetail = ({ trend, onClose }) => {
               </span>
             </div>
             <h2 className="text-xl font-black italic text-fg leading-tight">{trend.title}</h2>
-            <p className="text-[9px] text-fg/30 uppercase tracking-widest">{trend.subtitle}</p>
+            <p className="text-[11px] text-fg/30 uppercase tracking-widest">{trend.subtitle}</p>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg bg-fg/5 hover:bg-fg/10 transition-all shrink-0">
-            <span className="text-fg/40 text-xs font-black">✕</span>
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            {trend.example_url && (
+              <a
+                href={trend.example_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-lg bg-accent-lemon/10 hover:bg-accent-lemon/20 border border-accent-lemon/30 transition-all group"
+                title="Ver contenido real"
+              >
+                <ExternalLink size={12} className="text-accent-lemon group-hover:scale-110 transition-transform" />
+              </a>
+            )}
+            <button onClick={onClose} className="p-1.5 rounded-lg bg-fg/5 hover:bg-fg/10 transition-all">
+              <span className="text-fg/40 text-xs font-black">✕</span>
+            </button>
+          </div>
         </div>
 
         {/* Growth badge */}
@@ -238,7 +252,7 @@ const TrendDetail = ({ trend, onClose }) => {
             <div key={label} className="p-3 bg-fg/[0.03] rounded-xl border border-fg/5 space-y-1">
               <div className="flex items-center gap-1.5">
                 <Icon size={10} className="text-fg/25" />
-                <span className="text-[8px] font-black uppercase tracking-widest text-fg/25">{label}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-fg/25">{label}</span>
               </div>
               <p className="text-lg font-black italic text-fg">{val}</p>
             </div>
@@ -247,16 +261,16 @@ const TrendDetail = ({ trend, onClose }) => {
 
         {/* Descripción */}
         <div className="space-y-1.5">
-          <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">¿De qué se trata?</p>
+          <p className="text-[11px] font-black uppercase tracking-widest text-fg/30">¿De qué se trata?</p>
           <p className="text-[11px] text-fg/60 leading-relaxed">{trend.description}</p>
         </div>
 
         {/* Keywords */}
         <div className="space-y-2">
-          <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">Keywords asociadas</p>
+          <p className="text-[11px] font-black uppercase tracking-widest text-fg/30">Keywords asociadas</p>
           <div className="flex flex-wrap gap-1.5">
             {trend.keywords?.map(kw => (
-              <span key={kw} className={`px-2 py-0.5 rounded-full border text-[8px] font-black uppercase ${ps.badge}`}>
+              <span key={kw} className={`px-2 py-0.5 rounded-full border text-[10px] font-black uppercase ${ps.badge}`}>
                 {kw}
               </span>
             ))}
@@ -265,11 +279,11 @@ const TrendDetail = ({ trend, onClose }) => {
 
         {/* Top accounts */}
         <div className="space-y-2">
-          <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">Top cuentas usando este trend</p>
+          <p className="text-[11px] font-black uppercase tracking-widest text-fg/30">Top cuentas usando este trend</p>
           <div className="space-y-1.5">
             {trend.top_accounts?.map((acc, i) => (
               <div key={acc} className="flex items-center gap-2 p-2 bg-fg/[0.03] rounded-xl border border-fg/5">
-                <span className="text-[8px] font-black text-fg/20 w-4">{i + 1}</span>
+                <span className="text-[10px] font-black text-fg/20 w-4">{i + 1}</span>
                 <span className="text-[10px] font-black text-fg/70">{acc}</span>
               </div>
             ))}
@@ -277,13 +291,18 @@ const TrendDetail = ({ trend, onClose }) => {
         </div>
 
         {/* Nota de fuente */}
-        {trend.source === 'mock' && (
-          <div className="p-3 bg-accent-lemon/5 border border-accent-lemon/15 rounded-xl">
-            <p className="text-[8px] text-accent-lemon/70 italic leading-snug">
-              ⚡ Datos de demostración. Conectá Apify en Ajustes → Trends para ver datos reales en tiempo real de TikTok e Instagram.
-            </p>
-          </div>
-        )}
+        <div className="p-3 bg-fg/[0.03] border border-fg/5 rounded-xl flex items-center justify-between">
+          <p className="text-[10px] text-fg/30 italic">
+            Fuente: {trend.source === 'apify' ? 'Apify Scraper (Live)' : 'Mock Data'}
+            {trend.scraped_at && ` · Sync: ${new Date(trend.scraped_at).toLocaleTimeString()}`}
+          </p>
+          {trend.source === 'apify' && (
+            <span className="flex items-center gap-1">
+              <CheckCircle size={8} className="text-accent-lemon" />
+              <span className="text-[7px] font-black uppercase text-accent-lemon">Verificado</span>
+            </span>
+          )}
+        </div>
       </div>
     </motion.div>
   );
@@ -293,14 +312,17 @@ const TrendDetail = ({ trend, onClose }) => {
 const TrendsView = () => {
   const [trends, setTrends]         = useState([]);
   const [loading, setLoading]       = useState(true);
-  const [platform, setPlatform]     = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
+  const [platform, setPlatform]     = useState('all'); // all | tiktok | instagram
+  const [typeFilter, setTypeFilter] = useState('all'); // all | hashtag | audio
+  const [categoryFilter, setCategoryFilter] = useState('all'); // all | general | related
   const [selected, setSelected]     = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [isLive, setIsLive]         = useState(false);
   const [scanning, setScanning]     = useState(false);
+  // Scan UI states
   const [scanPlatform, setScanPlatform] = useState('tiktok');
-  const [scanResult, setScanResult] = useState(null); // { ok, trends_saved, error }
+  const [scanType, setScanType]     = useState('general'); // general | related
+  const [scanResult, setScanResult] = useState(null);
 
   const runTrendsScan = async () => {
     setScanning(true);
@@ -308,10 +330,10 @@ const TrendsView = () => {
     try {
       const { data } = await axios.post(`${API_BASE}/api/trends/run`, {
         platform: scanPlatform,
-        maxItems: 25, // liviano — ajustar según cuota
+        type: scanType,
+        maxItems: scanType === 'general' ? 50 : 30,
       }, { timeout: 150000 });
-      setScanResult({ ok: true, saved: data.trends_saved, fetched: data.items_fetched });
-      // Refrescar lista después del scan
+      setScanResult({ ok: true, saved: data.saved, type: data.type });
       await fetchTrends();
     } catch (err) {
       setScanResult({ ok: false, error: err.response?.data?.error || err.message });
@@ -325,21 +347,22 @@ const TrendsView = () => {
     try {
       const params = {};
       if (platform !== 'all') params.platform = platform;
-      if (typeFilter !== 'all') params.type = typeFilter;
+      if (categoryFilter !== 'all') params.trend_type = categoryFilter;
+
+      console.log('[Trends] Fetching with params:', params);
       const { data } = await axios.get(`${API_BASE}/api/trends`, { params, timeout: 10000 });
+      
       if (Array.isArray(data) && data.length > 0) {
         setTrends(data);
-        setIsLive(data.some(t => t.source !== 'mock'));
+        setIsLive(true);
       } else {
         setTrends(MOCK_TRENDS);
         setIsLive(false);
       }
       setLastUpdated(new Date());
-    } catch {
-      // Backend no disponible — usar mock local
+    } catch (e) {
+      console.error('[Trends] Fetch error:', e.message);
       setTrends(MOCK_TRENDS);
-      setIsLive(false);
-      setLastUpdated(new Date());
     } finally {
       setLoading(false);
     }
@@ -347,12 +370,13 @@ const TrendsView = () => {
 
   useEffect(() => {
     fetchTrends();
-  }, [platform, typeFilter]);
+  }, [platform, typeFilter, categoryFilter]);
 
   // Filtrar en cliente
   const display = trends.filter(t => {
-    if (platform !== 'all' && t.platform !== platform) return false;
-    if (typeFilter !== 'all' && t.type !== typeFilter) return false;
+    if (platform !== 'all' && t.platform?.toLowerCase() !== platform.toLowerCase()) return false;
+    if (typeFilter !== 'all' && t.type?.toLowerCase() !== typeFilter.toLowerCase()) return false;
+    if (categoryFilter !== 'all' && t.trend_type?.toLowerCase() !== categoryFilter.toLowerCase()) return false;
     return true;
   });
 
@@ -370,7 +394,7 @@ const TrendsView = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <TrendingUp size={14} className="text-[#9B72F5]" />
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-fg/30 italic">
+            <span className="text-[11px] font-black uppercase tracking-[0.3em] text-fg/30 italic">
               Trends Monitor
             </span>
             {isLive ? (
@@ -386,69 +410,81 @@ const TrendsView = () => {
           </div>
           <h1 className="text-3xl font-black italic text-fg">Tendencias</h1>
           <p className="text-[10px] text-fg/30 mt-1">
-            TikTok & Instagram · Keywords: travel, viajes, despegar, vuelos, hotel
+            TikTok & Instagram · Monitorizando keywords y tendencias globales
           </p>
           {lastUpdated && (
-            <p className="text-[8px] text-fg/20 mt-0.5 italic">
+            <p className="text-[10px] text-fg/20 mt-0.5 italic">
               Actualizado {lastUpdated.toLocaleTimeString('es-AR', { hour: '2-digit', minute:'2-digit' })}
             </p>
           )}
         </div>
 
-        {/* Acciones */}
-        <div className="flex flex-col items-end gap-2">
-          {/* Scan button */}
-          <div className="flex items-center gap-2">
-            {/* Selector plataforma del scan */}
-            <div className="flex items-center gap-1 p-1 bg-fg/[0.03] border border-fg/8 rounded-xl">
-              {['tiktok','instagram'].map(p => (
-                <button key={p}
-                  onClick={() => setScanPlatform(p)}
-                  disabled={scanning}
-                  className={`px-2.5 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all ${
-                    scanPlatform === p ? 'bg-fg/10 text-fg' : 'text-fg/30 hover:text-fg/60'
-                  }`}>{p}
-                </button>
-              ))}
+        {/* Acciones de Scan */}
+        <div className="flex flex-col items-end gap-3 p-4 bg-fg/[0.02] border border-fg/5 rounded-2xl relative z-50">
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px] font-black uppercase tracking-wider text-fg/30 text-right">Lanzar nuevo escaneo Apify</p>
+            <div className="flex items-center gap-2 relative z-20">
+              {/* Scan Type */}
+              <div className="flex items-center gap-1 p-1 bg-fg/[0.03] border border-fg/8 rounded-xl shrink-0 flex-wrap">
+                {[
+                  { id: 'general', label: '🔥 General' },
+                  { id: 'related', label: '✈️ Related Travel' }
+                ].map(t => (
+                  <button key={t.id}
+                    type="button"
+                    onClick={() => { console.log('Scan Type changed:', t.id); setScanType(t.id); }}
+                    className={`px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-tight transition-all cursor-pointer ${
+                      scanType === t.id
+                        ? 'bg-[#9B72F5] text-white shadow-lg shadow-[#9B72F5]/30 ring-1 ring-[#9B72F5]/50'
+                        : 'text-fg/40 hover:text-fg hover:bg-white/5'
+                    }`}>{t.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Platform */}
+              <div className="flex items-center gap-1 p-1 bg-fg/[0.03] border border-fg/8 rounded-xl shrink-0">
+                {['tiktok','instagram'].map(p => (
+                  <button key={p}
+                    type="button"
+                    onClick={() => { console.log('Scan Platform changed:', p); setScanPlatform(p); }}
+                    disabled={scanning}
+                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer ${
+                      scanPlatform === p
+                        ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-sm'
+                        : 'text-fg/40 hover:text-fg hover:bg-white/5'
+                    }`}>{p}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={runTrendsScan}
+                disabled={scanning}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-[11px] font-black uppercase tracking-widest ${
+                  scanning
+                    ? 'bg-[#9B72F5]/10 border-[#9B72F5]/30 text-[#9B72F5]/60 cursor-not-allowed'
+                    : 'bg-[#9B72F5] border-[#9B72F5] hover:scale-[1.02] text-white shadow-xl shadow-[#9B72F5]/10'
+                }`}
+              >
+                <Zap size={11} className={scanning ? 'animate-pulse' : ''} />
+                {scanning ? 'Escaneando…' : 'Escanear'}
+              </button>
             </div>
-
-            <button
-              onClick={runTrendsScan}
-              disabled={scanning}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-[9px] font-black uppercase tracking-widest ${
-                scanning
-                  ? 'bg-[#9B72F5]/10 border-[#9B72F5]/30 text-[#9B72F5]/60 cursor-not-allowed'
-                  : 'bg-[#9B72F5]/10 border-[#9B72F5]/30 hover:bg-[#9B72F5]/20 text-[#9B72F5]'
-              }`}
-            >
-              <Zap size={11} className={scanning ? 'animate-pulse' : ''} />
-              {scanning ? `Escaneando ${scanPlatform}…` : `Escanear ${scanPlatform}`}
-            </button>
-
-            <button
-              onClick={fetchTrends}
-              disabled={loading}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-fg/[0.03] border border-fg/10 hover:bg-fg/[0.06] transition-all text-[9px] font-black uppercase tracking-widest text-fg/40 hover:text-fg"
-            >
-              <RefreshCw size={11} className={loading ? 'animate-spin' : ''} />
-            </button>
           </div>
 
-          {/* Resultado del último scan */}
           <AnimatePresence>
             {scanResult && (
               <motion.div
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[8px] font-black ${
-                  scanResult.ok
-                    ? 'bg-accent-lemon/5 border-accent-lemon/20 text-accent-lemon'
-                    : 'bg-accent-pink/5 border-accent-pink/20 text-accent-pink'
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-black ${
+                  scanResult.ok ? 'bg-accent-lemon/5 border-accent-lemon/20 text-accent-lemon' : 'bg-accent-pink/5 border-accent-pink/20 text-accent-pink'
                 }`}
               >
                 {scanResult.ok
-                  ? <><CheckCircle size={10} /> {scanResult.saved} trends guardados ({scanResult.fetched} posts analizados)</>
+                  ? <><CheckCircle size={10} /> Scan {scanResult.type} finalizado: {scanResult.saved} trends actualizados</>
                   : <><AlertCircle size={10} /> {scanResult.error}</>
                 }
               </motion.div>
@@ -457,22 +493,46 @@ const TrendsView = () => {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3">
+      {/* Main Bar Filters */}
+      <div className="flex flex-wrap items-center gap-4">
+        {/* Category: General vs Travel */}
+        <div className="flex items-center gap-1 p-1 bg-fg/[0.03] border border-fg/8 rounded-xl">
+          {[
+            { val: 'all',     label: 'Toda la data' },
+            { val: 'related', label: 'Relacionado Travel', icon: Globe },
+            { val: 'general', label: 'Trends Generales', icon: Flame },
+          ].map(opt => (
+            <button
+              key={opt.val}
+              type="button"
+              onClick={() => { setCategoryFilter(opt.val); setSelected(null); }}
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${
+                categoryFilter === opt.val
+                  ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-sm'
+                  : 'text-fg/40 hover:text-fg hover:bg-white/5'
+              }`}
+            >
+              {opt.icon && <opt.icon size={10} />}
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
         {/* Platform */}
         <div className="flex items-center gap-1 p-1 bg-fg/[0.03] border border-fg/8 rounded-xl">
           {[
-            { val: 'all',       label: 'Todas',    dot: null },
+            { val: 'all',       label: 'Todas' },
             { val: 'tiktok',    label: 'TikTok',   dot: '#69C9D0' },
             { val: 'instagram', label: 'Instagram', dot: '#E1306C' },
           ].map(opt => (
             <button
               key={opt.val}
+              type="button"
               onClick={() => { setPlatform(opt.val); setSelected(null); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${
                 platform === opt.val
-                  ? 'bg-fg/10 text-fg shadow-inner'
-                  : 'text-fg/30 hover:text-fg/60'
+                  ? 'bg-white/15 text-white ring-1 ring-white/20 shadow-sm'
+                  : 'text-fg/40 hover:text-fg hover:bg-white/5'
               }`}
             >
               {opt.dot && <span className="w-1.5 h-1.5 rounded-full" style={{ background: opt.dot }} />}
@@ -481,41 +541,27 @@ const TrendsView = () => {
           ))}
         </div>
 
-        {/* Type */}
-        <div className="flex items-center gap-1 p-1 bg-fg/[0.03] border border-fg/8 rounded-xl">
-          {[
-            { val: 'all',       label: 'Todos'    },
-            { val: 'hashtag',   label: 'Hashtags' },
-            { val: 'audio',     label: 'Audios'   },
-            { val: 'challenge', label: 'Challenges' },
-          ].map(opt => (
-            <button
-              key={opt.val}
-              onClick={() => { setTypeFilter(opt.val); setSelected(null); }}
-              className={`px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all ${
-                typeFilter === opt.val
-                  ? 'bg-fg/10 text-fg shadow-inner'
-                  : 'text-fg/30 hover:text-fg/60'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
+        <button
+          onClick={fetchTrends}
+          disabled={loading}
+          className="ml-auto p-2 rounded-xl bg-fg/5 hover:bg-fg/10 transition-all text-fg/40 hover:text-fg"
+        >
+          <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+        </button>
       </div>
 
       {/* Summary scorecards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Trends activos',  val: display.length,                            icon: Flame },
-          { label: 'Views totales',   val: fmt(display.reduce((a,t)=>a+(t.views||0),0)),  icon: Eye   },
-          { label: 'Posts asociados', val: fmt(display.reduce((a,t)=>a+(t.posts_count||0),0)), icon: Play },
-          { label: 'Mayor crecimiento', val: display.length ? `+${Math.max(...display.map(t=>t.growth_pct))}%` : '—', icon: TrendingUp },
+          { label: 'Trends detectados', val: display.length, icon: Flame },
+          { label: 'Suma de Views',    val: fmt(display.reduce((a,t)=>a+(t.views||0),0)), icon: Eye },
+          { label: 'Impacto total',    val: fmt(display.reduce((a,t)=>a+(t.likes||0),0)), icon: Heart },
+          { label: 'Consistency',      val: display.length ? `${(display.reduce((a,t)=>a+(t.posts_count||0),0)/display.length).toFixed(1)} avg` : '—', icon: Play },
         ].map(({ label, val, icon: Icon }) => (
           <div key={label} className="pwa-card p-4 border border-fg/5 space-y-1.5">
             <div className="flex items-center gap-1.5">
               <Icon size={10} className="text-[#9B72F5]" />
-              <span className="text-[8px] font-black uppercase tracking-widest text-fg/25">{label}</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-fg/25">{label}</span>
             </div>
             <p className="text-2xl font-black italic text-fg">{val}</p>
           </div>
@@ -532,14 +578,15 @@ const TrendsView = () => {
       ) : display.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
           <Globe size={32} className="text-fg/10" />
-          <p className="text-[10px] font-black uppercase tracking-widest text-fg/20">Sin trends para este filtro</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-fg/20">Sin trends en esta categoría</p>
+          <button onClick={() => setCategoryFilter('all')} className="text-[10px] font-black uppercase text-[#9B72F5] hover:underline">Ver todos</button>
         </div>
       ) : (
         <div className={`flex gap-6 items-start`}>
           {/* Lista */}
           <div className={`space-y-2 transition-all duration-300 ${selected ? 'flex-[2]' : 'flex-1'}`}>
-            <p className="text-[9px] font-black uppercase tracking-widest text-fg/20 mb-4">
-              {display.length} trends · Click para ver detalle
+            <p className="text-[11px] font-black uppercase tracking-widest text-fg/20 mb-4 flex items-center gap-2">
+              <Hash size={10} /> {display.length} items encontrados
             </p>
             {display.map((trend, i) => (
               <TrendCard
@@ -555,7 +602,7 @@ const TrendsView = () => {
           {/* Panel detalle */}
           <AnimatePresence mode="wait">
             {selected && (
-              <div key={selected.id} className="flex-[1.2] min-w-[280px] max-w-[400px]">
+              <div key={selected.id} className="flex-[1.2] min-w-[300px] max-w-[450px]">
                 <TrendDetail trend={selected} onClose={() => setSelected(null)} />
               </div>
             )}
@@ -563,29 +610,13 @@ const TrendsView = () => {
         </div>
       )}
 
-      {/* Nota configuración Apify */}
+      {/* Note */}
       {!isLive && (
-        <div className="pwa-card border border-[#9B72F5]/15 bg-[#9B72F5]/[0.03] p-5 space-y-2">
-          <div className="flex items-center gap-2">
-            <Filter size={12} className="text-[#9B72F5]/60" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-[#9B72F5]/60">
-              Configuración pendiente
-            </span>
-          </div>
-          <p className="text-[10px] text-fg/50 leading-relaxed">
-            Para ver trends reales de TikTok e Instagram, conectá <strong className="text-fg/70">Apify</strong> con los actores
-            <code className="text-[#9B72F5]/80 mx-1">apify/tiktok-hashtag-scraper</code> y
-            <code className="text-[#9B72F5]/80 mx-1">apify/instagram-hashtag-scraper</code>.
-            Una vez configurado, el endpoint <code className="text-[#9B72F5]/80">/api/trends</code> recibirá los datos
-            automáticamente y esta pantalla se actualizará en tiempo real.
+        <div className="pwa-card border border-[#9B72F5]/15 bg-[#9B72F5]/[0.03] p-5">
+          <p className="text-[10px] text-fg/50 leading-relaxed text-center">
+            Podes alternar entre <strong>Trends Generales</strong> (globales de la plataforma) y 
+            <strong> Relacionados Travel</strong> (específicos de keywords como vuelos, hotel, etc).
           </p>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {DEFAULT_KEYWORDS.map(kw => (
-              <span key={kw} className="px-2 py-0.5 rounded-full border border-[#9B72F5]/20 text-[8px] font-black text-[#9B72F5]/50 uppercase">
-                #{kw}
-              </span>
-            ))}
-          </div>
         </div>
       )}
     </section>

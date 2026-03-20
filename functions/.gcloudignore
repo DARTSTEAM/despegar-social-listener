@@ -1,0 +1,13 @@
+.git
+.gitignore
+node_modules/
+npm-debug.log
+.env
+.firebaserc
+firebase.json
+firestore.indexes.json
+frontend/
+docs/
+backend/
+*~
+*.log

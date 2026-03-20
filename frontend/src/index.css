@@ -3,21 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --bg: #050505;
-  --fg: #ffffff;
-  --accent-orange: #9B72F5;
-  --accent-blue: #0070f3;
-  --accent-pink: #ff0080;
-  --accent-lemon: #ccff00;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  /* ─── Background: slightly blue-dark instead of pure black ─── */
+  --bg: #0d0d12;
+  --fg: #f2f2f5;
+
+  /* ─── Accents: more readable on dark ─── */
+  --accent-orange:  #9b72f5;
+  --accent-blue:    #3d8ef0;
+  --accent-pink:    #f72585;   /* vivid magenta – better luminance than #ff0080 */
+  --accent-lemon:   #b5ea2e;   /* warm yellow-green – less "burnt" than #ccff00 */
+
+  /* ─── Glass: more visible surfaces ─── */
+  --glass:        rgba(255, 255, 255, 0.055);
+  --glass-border: rgba(255, 255, 255, 0.11);
+
+  /* ─── Readable text scale ─── */
+  --text-dim:     rgba(242, 242, 245, 0.55);  /* was /20–/30 ≈ 20-30% */
+  --text-muted:   rgba(242, 242, 245, 0.75);  /* was /40–/50 */
+  --text-strong:  rgba(242, 242, 245, 0.95);
 }
 
 .light {
-  --bg: #f9f9fb;
-  --fg: #121212;
-  --glass: rgba(0, 0, 0, 0.02);
-  --glass-border: rgba(0, 0, 0, 0.06);
+  --bg: #f4f4f8;
+  --fg: #111118;
+  --glass:        rgba(0, 0, 0, 0.04);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --text-dim:   rgba(17, 17, 24, 0.45);
+  --text-muted: rgba(17, 17, 24, 0.70);
+  --text-strong: rgba(17, 17, 24, 0.95);
 }
 
 body {
@@ -27,6 +40,25 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   min-height: 100vh;
+  font-size: 14px;      /* base bump: was effectively 12px in places */
+  line-height: 1.6;
+}
+
+/* ─── Global label upgrade: no more 9px labels ─────────────── */
+.label-xs {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.label-sm {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 @layer components {
@@ -44,10 +76,10 @@ body {
     width: 600px;
     height: 600px;
     background: radial-gradient(circle, var(--accent-orange) 0%, transparent 70%);
-    filter: blur(80px);
+    filter: blur(100px);
     top: -200px;
     left: -100px;
-    opacity: 0.4;
+    opacity: 0.18;           /* was 0.4 – too intense over dark */
     animation: floating 20s infinite alternate;
   }
 
@@ -56,43 +88,38 @@ body {
     width: 500px;
     height: 500px;
     background: radial-gradient(circle, var(--accent-blue) 0%, transparent 70%);
-    filter: blur(100px);
+    filter: blur(110px);
     bottom: -100px;
     right: -100px;
-    opacity: 0.3;
+    opacity: 0.15;           /* was 0.3 */
     animation: floating 25s infinite alternate-reverse;
   }
 
   @keyframes floating {
-    from {
-      transform: translate(0, 0) scale(1);
-    }
-
-    to {
-      transform: translate(100px, 50px) scale(1.1);
-    }
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(100px, 50px) scale(1.1); }
   }
 
   .pwa-card {
     background-color: var(--glass);
     backdrop-filter: blur(40px);
     border: 1px solid var(--glass-border);
-    @apply rounded-[32px] overflow-hidden transition-all duration-500;
+    @apply rounded-[24px] overflow-hidden transition-all duration-500;
   }
 
   .pwa-card:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-    background-color: rgba(255, 255, 255, 0.06);
-    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.22);
+    background-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-3px);
   }
 
   .light .pwa-card:hover {
-    border-color: rgba(0, 0, 0, 0.1);
-    background-color: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.12);
+    background-color: rgba(0, 0, 0, 0.05);
   }
 
   .pwa-btn {
-    @apply bg-black text-white dark:bg-white dark:text-black font-black uppercase tracking-widest text-[10px] px-8 py-4 rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2;
+    @apply bg-black text-white dark:bg-white dark:text-black font-black uppercase tracking-widest text-xs px-8 py-4 rounded-full transition-all hover:scale-105 active:scale-95 flex items-center gap-2;
   }
 
   .light .pwa-btn {
@@ -103,25 +130,33 @@ body {
     @apply font-black italic uppercase tracking-tighter leading-[0.85];
     font-size: clamp(2.5rem, 8vw, 5rem);
   }
+
+  /* ─── Shorthand readability classes ── */
+  .text-readable {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .text-label {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+  }
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.perspective-1000 {
-  perspective: 1000px;
-}
-
-.rotate-x-2 {
-  transform: rotateX(2deg);
-}
-
-.rotate-x-0 {
-  transform: rotateX(0deg);
-}
+.perspective-1000 { perspective: 1000px; }
+.rotate-x-2   { transform: rotateX(2deg); }
+.rotate-x-0   { transform: rotateX(0deg); }

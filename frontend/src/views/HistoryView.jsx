@@ -134,7 +134,7 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
           { label: 'Neutrales',         value: `${stats.neu}%`,  color: 'text-fg/50',        bar: stats.neu,  barColor: 'bg-fg/30'        },
         ].map(({ label, value, color, bar, barColor }) => (
           <div key={label} className="pwa-card p-5 bg-fg/[0.02] border-fg/5 space-y-3">
-            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-fg/30">{label}</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-fg/30">{label}</p>
             <p className={`text-2xl font-black italic ${color}`}>{value}</p>
             {bar !== null && bar !== undefined && (
               <div className="h-1 w-full bg-fg/5 rounded-full overflow-hidden">
@@ -178,7 +178,7 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
           {hasFilters && (
             <button
               onClick={clearAll}
-              className="ml-2 text-[9px] font-black uppercase italic tracking-widest text-fg/30 hover:text-accent-orange transition-colors"
+              className="ml-2 text-[11px] font-black uppercase italic tracking-widest text-fg/30 hover:text-accent-orange transition-colors"
             >
               ✕ Limpiar
             </button>
@@ -186,7 +186,7 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
         </div>
 
         {/* Resultado count */}
-        <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-widest text-fg/25">
+        <div className="flex items-center gap-3 text-[11px] font-black uppercase tracking-widest text-fg/25">
           <span>{filtered.length} comentarios</span>
           {hasFilters && <><span className="w-px h-3 bg-fg/10" /><span className="text-accent-orange">Filtrado de {allComments.length}</span></>}
           <span className="w-px h-3 bg-fg/10" />
@@ -199,12 +199,12 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
         <table className="w-full text-left">
           <thead className="bg-fg/5 border-b border-fg/10">
             <tr>
-              <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-fg/30">Usuario</th>
-              <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-fg/30">Comentario</th>
+              <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-fg/30">Usuario</th>
+              <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-fg/30">Comentario</th>
 
-              <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-fg/30">Canal</th>
-              <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-fg/30">Marca</th>
-              <th className="px-6 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-fg/30">Sent.</th>
+              <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-fg/30">Canal</th>
+              <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-fg/30">Marca</th>
+              <th className="px-6 py-5 text-[11px] font-black uppercase tracking-[0.2em] text-fg/30">Sent.</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-fg/[0.03] text-sm">
@@ -217,7 +217,7 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
                       : 'Sin resultados para los filtros aplicados.'}
                   </p>
                   {hasFilters && (
-                    <button onClick={clearAll} className="mt-4 text-[9px] uppercase font-black italic text-accent-orange hover:underline">
+                    <button onClick={clearAll} className="mt-4 text-[11px] uppercase font-black italic text-accent-orange hover:underline">
                       Limpiar filtros
                     </button>
                   )}
@@ -228,7 +228,7 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
                 <td className="px-6 py-4">
                   <div className="flex flex-col min-w-[90px]">
                     <span className="font-bold text-accent-orange text-[10px] tracking-tight">@{c.author || 'anónimo'}</span>
-                    <span className="text-[8px] font-black uppercase opacity-20 mt-0.5 text-fg">
+                    <span className="text-[10px] font-black uppercase opacity-20 mt-0.5 text-fg">
                       {(c.followers || 0).toLocaleString()} flw
                     </span>
                   </div>
@@ -240,7 +240,7 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
                 </td>
 
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border ${
+                  <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${
                     c.platform === 'tiktok'
                       ? 'bg-white/5 border-white/10 text-fg/40'
                       : 'bg-accent-pink/5 border-accent-pink/20 text-accent-pink/70'
@@ -248,26 +248,26 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
                     {c.platform || '—'}
                   </span>
                 </td>
-                <td className="px-6 py-4 font-black italic uppercase text-[9px] tracking-widest text-fg/50">
+                <td className="px-6 py-4 font-black italic uppercase text-[11px] tracking-widest text-fg/50">
                   {c.brand}
                 </td>
                 <td className="px-6 py-4">
                   {(c.sentLabel === 'positive' || c.sentLabel === 'very_positive') && (
                     <div className="flex items-center gap-1.5 text-accent-lemon">
                       <div className="w-1.5 h-1.5 rounded-full bg-accent-lemon shadow-[0_0_6px_rgba(152,255,188,0.6)]" />
-                      <span className="text-[8px] font-black uppercase">{c.sentLabel === 'very_positive' ? 'Muy Pos' : 'Pos'}</span>
+                      <span className="text-[10px] font-black uppercase">{c.sentLabel === 'very_positive' ? 'Muy Pos' : 'Pos'}</span>
                     </div>
                   )}
                   {(c.sentLabel === 'negative' || c.sentLabel === 'very_negative') && (
                     <div className="flex items-center gap-1.5 text-accent-pink">
                       <div className="w-1.5 h-1.5 rounded-full bg-accent-pink shadow-[0_0_6px_rgba(255,83,186,0.6)]" />
-                      <span className="text-[8px] font-black uppercase">{c.sentLabel === 'very_negative' ? 'Muy Neg' : 'Neg'}</span>
+                      <span className="text-[10px] font-black uppercase">{c.sentLabel === 'very_negative' ? 'Muy Neg' : 'Neg'}</span>
                     </div>
                   )}
                   {c.sentLabel === 'neutral' && (
                     <div className="flex items-center gap-1.5 text-fg/40">
                       <div className="w-1.5 h-1.5 rounded-full bg-fg/30" />
-                      <span className="text-[8px] font-black uppercase">Neu</span>
+                      <span className="text-[10px] font-black uppercase">Neu</span>
                     </div>
                   )}
                 </td>
@@ -282,7 +282,7 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase italic border border-fg/10 text-fg/40 hover:text-fg/80 hover:border-fg/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+              className="px-4 py-1.5 rounded-full text-[11px] font-black uppercase italic border border-fg/10 text-fg/40 hover:text-fg/80 hover:border-fg/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
             >
               ← Anterior
             </button>
@@ -300,7 +300,7 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
                   <button
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
-                    className={`w-7 h-7 rounded-full text-[9px] font-black transition-all ${
+                    className={`w-7 h-7 rounded-full text-[11px] font-black transition-all ${
                       pageNum === page
                         ? 'bg-accent-lemon text-black shadow-[0_0_10px_rgba(152,255,188,0.3)]'
                         : 'text-fg/30 hover:text-fg/70 hover:bg-fg/5'
@@ -315,7 +315,7 @@ function HistoryView({ selectedBrand, setSelectedBrand, selectedPlatform, setSel
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase italic border border-fg/10 text-fg/40 hover:text-fg/80 hover:border-fg/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+              className="px-4 py-1.5 rounded-full text-[11px] font-black uppercase italic border border-fg/10 text-fg/40 hover:text-fg/80 hover:border-fg/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
             >
               Siguiente →
             </button>

@@ -100,9 +100,9 @@ const LandingPage = ({ onEnter }) => (
                 <div className="w-2 h-2 rounded-full bg-accent-lemon" />
                 <div className="w-2 h-2 rounded-full bg-accent-orange" />
               </div>
-              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-fg/20 ml-4">Despegar Intelligence Suite</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.3em] text-fg/20 ml-4">Despegar Intelligence Suite</span>
             </div>
-            <div className="px-4 py-1.5 bg-fg/5 rounded-lg text-[8px] font-black uppercase tracking-widest text-accent-lemon border border-accent-lemon/20">
+            <div className="px-4 py-1.5 bg-fg/5 rounded-lg text-[10px] font-black uppercase tracking-widest text-accent-lemon border border-accent-lemon/20">
               Live: Data Stream Active
             </div>
           </div>
@@ -110,7 +110,7 @@ const LandingPage = ({ onEnter }) => (
           <div className="p-8 flex-1 flex flex-col gap-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="pwa-card p-6 bg-fg/[0.03] border-fg/5 space-y-3">
-                <p className="text-[9px] font-black uppercase text-fg/20 tracking-[0.2em]">Portfolio Growth</p>
+                <p className="text-[11px] font-black uppercase text-fg/20 tracking-[0.2em]">Portfolio Growth</p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-black italic">+24.8%</span>
                   <span className="text-[10px] text-accent-lemon font-bold">▲ Global</span>
@@ -120,7 +120,7 @@ const LandingPage = ({ onEnter }) => (
                 </div>
               </div>
               <div className="pwa-card p-6 bg-fg/[0.03] border-fg/5 space-y-3">
-                <p className="text-[9px] font-black uppercase text-fg/20 tracking-[0.2em]">Net Sentiment Score</p>
+                <p className="text-[11px] font-black uppercase text-fg/20 tracking-[0.2em]">Net Sentiment Score</p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-black italic text-accent-orange">8.2</span>
                   <span className="text-[10px] text-fg/40 font-bold">/ 10.0</span>
@@ -133,10 +133,10 @@ const LandingPage = ({ onEnter }) => (
               </div>
               <div className="pwa-card p-6 bg-fg/[0.03] border-fg/5 flex flex-col justify-between">
                 <div>
-                  <p className="text-[9px] font-black uppercase text-fg/20 tracking-[0.2em]">Critical Alerts</p>
+                  <p className="text-[11px] font-black uppercase text-fg/20 tracking-[0.2em]">Critical Alerts</p>
                   <p className="text-4xl font-black italic text-fg/10 uppercase">None</p>
                 </div>
-                <div className="flex items-center gap-2 text-[8px] font-black text-accent-lemon uppercase tracking-tighter">
+                <div className="flex items-center gap-2 text-[10px] font-black text-accent-lemon uppercase tracking-tighter">
                   <div className="w-1 h-1 bg-accent-lemon rounded-full animate-ping" />
                   System fully operational
                 </div>
@@ -146,7 +146,7 @@ const LandingPage = ({ onEnter }) => (
             <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 min-h-0">
               <div className="md:col-span-8 pwa-card bg-fg/[0.02] border-fg/5 p-6 relative overflow-hidden flex items-end justify-between gap-2 h-full">
                 <div className="absolute top-6 left-6">
-                  <h4 className="text-[9px] font-black uppercase tracking-widest text-fg/30">Engagement Volatility</h4>
+                  <h4 className="text-[11px] font-black uppercase tracking-widest text-fg/30">Engagement Volatility</h4>
                   <p className="text-xs font-bold text-fg/60 pt-1">Real-time aggregate mention flux</p>
                 </div>
                 {[40, 70, 45, 90, 65, 80, 50, 85, 30, 95, 60, 75].map((h, i) => (
@@ -160,7 +160,7 @@ const LandingPage = ({ onEnter }) => (
                 ))}
               </div>
               <div className="md:col-span-4 pwa-card bg-fg/[0.02] border-fg/5 p-6 space-y-4 h-full">
-                <h4 className="text-[9px] font-black uppercase tracking-widest text-fg/30">Sentiment Clusters</h4>
+                <h4 className="text-[11px] font-black uppercase tracking-widest text-fg/30">Sentiment Clusters</h4>
                 <div className="space-y-3">
                   {[
                     { label: 'Precio & Valor', val: 85, color: 'accent-lemon' },
@@ -168,7 +168,7 @@ const LandingPage = ({ onEnter }) => (
                     { label: 'Experiencia de Viaje', val: 78, color: 'accent-lemon' },
                   ].map(c => (
                     <div key={c.label} className="space-y-1">
-                      <div className="flex justify-between text-[8px] font-black uppercase tracking-tighter opacity-60 text-fg">
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-tighter opacity-60 text-fg">
                         <span>{c.label}</span>
                         <span>{c.val}%</span>
                       </div>
@@ -179,7 +179,7 @@ const LandingPage = ({ onEnter }) => (
                   ))}
                 </div>
                 <div className="pt-4 border-t border-fg/5">
-                  <p className="text-[8px] font-medium text-fg/20 italic">Clustering basado en Gemini Flash 1.5</p>
+                  <p className="text-[10px] font-medium text-fg/20 italic">Clustering basado en Gemini Flash 1.5</p>
                 </div>
               </div>
             </div>

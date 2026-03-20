@@ -164,26 +164,7 @@ export default function App() {
             ))}
           </nav>
 
-          <div className="mt-auto flex justify-center pb-8">
-            <button
-              onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-fg/[0.03] border border-fg/10 text-fg hover:bg-fg/[0.08] transition-all hover:scale-[1.05] active:scale-95 group relative overflow-hidden shadow-lg shadow-black/5"
-              title={theme === 'dark' ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'}
-            >
-              <div className="absolute inset-0 bg-accent-orange/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <motion.div
-                key={theme}
-                initial={{ scale: 0.5, opacity: 0, rotate: -90 }}
-                animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              >
-                {theme === 'dark'
-                  ? <Moon size={20} className="text-accent-orange" />
-                  : <Sun size={20} className="text-accent-orange" />
-                }
-              </motion.div>
-            </button>
-          </div>
+          {/* El botón de modo oscuro ha sido removido a pedido, la app queda fija en dark mode */}
         </aside>
 
         {/* Main content area */}

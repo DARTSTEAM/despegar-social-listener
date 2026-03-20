@@ -48,7 +48,7 @@ const impactBadge = {
 const SentimentBar = ({ label, value, color }) => (
   <div className="space-y-1.5">
     <div className="flex justify-between items-center">
-      <span className="text-[9px] font-black uppercase tracking-widest text-fg/30">{label}</span>
+      <span className="text-[11px] font-black uppercase tracking-widest text-fg/30">{label}</span>
       <span className={`text-[10px] font-black ${color}`}>{value}%</span>
     </div>
     <div className="h-1 w-full bg-fg/5 rounded-full overflow-hidden">
@@ -207,7 +207,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
           <div className="h-px flex-1 bg-[#9B72F5]/20" />
           <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#9B72F5]/30 bg-[#9B72F5]/5">
             <div className="w-1.5 h-1.5 rounded-full bg-[#9B72F5] animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-[#9B72F5]">Owned — Despegar</span>
+            <span className="text-[11px] font-black uppercase tracking-widest text-[#9B72F5]">Owned — Despegar</span>
           </div>
           <div className="h-px flex-1 bg-[#9B72F5]/20" />
         </div>
@@ -222,7 +222,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
           ].map(({ label, value, color, icon: Icon }) => (
             <div key={label} className="pwa-card p-5 bg-[#9B72F5]/[0.03] border-[#9B72F5]/10 space-y-2">
               <div className="flex items-center justify-between">
-                <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">{label}</p>
+                <p className="text-[11px] font-black uppercase tracking-widest text-fg/30">{label}</p>
                 <Icon size={12} className="text-[#9B72F5]/40" />
               </div>
               <p className={`text-2xl font-black italic ${color}`}>{value}</p>
@@ -238,7 +238,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
             <div className="space-y-4">
               {getOwnedPulse().map((item, i) => (
                 <div key={i} className="space-y-1.5">
-                  <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest">
+                  <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest">
                     <span className="text-fg/50">{item.name} <span className="text-fg/25 normal-case font-medium">{item.platform}</span></span>
                     <span className={item.score > 30 ? 'text-accent-lemon' : 'text-accent-pink'}>{item.score}%</span>
                   </div>
@@ -270,7 +270,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
                 <SentimentBar label="Muy Negativo" value={breakdown.very_negative || 0} color="text-accent-pink" />
               </div>
             ) : (
-              <p className="text-[9px] text-fg/20 italic text-center pt-4">Ejecutá un scan para ver datos reales</p>
+              <p className="text-[11px] text-fg/20 italic text-center pt-4">Ejecutá un scan para ver datos reales</p>
             )}
           </section>
 
@@ -283,15 +283,15 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
                   <div key={i} className="pwa-card p-3 bg-accent-pink/5 border-accent-pink/20 space-y-1">
                     <div className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-accent-pink rounded-full animate-pulse shrink-0" />
-                      <p className="text-[9px] font-black uppercase text-accent-pink truncate">{alert.author}</p>
+                      <p className="text-[11px] font-black uppercase text-accent-pink truncate">{alert.author}</p>
                     </div>
-                    <p className="text-[9px] text-fg/50 leading-tight line-clamp-2">{alert.message}</p>
+                    <p className="text-[11px] text-fg/50 leading-tight line-clamp-2">{alert.message}</p>
                   </div>
                 ))}
               </div>
             ) : (
               <div className="pwa-card p-4 bg-fg/[0.02] border-fg/5 text-center">
-                <p className="text-[9px] text-fg/20 italic">Sin alertas críticas</p>
+                <p className="text-[11px] text-fg/20 italic">Sin alertas críticas</p>
               </div>
             )}
           </section>
@@ -312,7 +312,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
                     <p className="text-[10px] font-black uppercase text-accent-orange">@{c.author}</p>
                     <div className="flex items-center gap-2">
                       {c.category && <span className="text-[7px] font-black uppercase px-1.5 py-0.5 bg-fg/5 border border-fg/10 rounded-full text-fg/40">{categoryLabel[c.category] || c.category}</span>}
-                      <span className="text-[8px] font-black uppercase text-[#9B72F5]/60">{c.brand}</span>
+                      <span className="text-[10px] font-black uppercase text-[#9B72F5]/60">{c.brand}</span>
                     </div>
                   </div>
                   <p className="text-[11px] text-fg/50 italic line-clamp-2">"{c.text_preview}"</p>
@@ -331,7 +331,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
                 <div key={i} className="p-4 bg-fg/[0.03] rounded-xl border border-fg/5 hover:bg-fg/[0.06] transition-all space-y-2">
                   <div className={`w-2 h-2 rounded-full ${cluster.sentiment === 'negative' ? 'bg-accent-pink shadow-[0_0_8px_rgba(255,83,186,0.4)]' : 'bg-[#9B72F5]'}`} />
                   <p className="text-sm font-bold italic text-fg tracking-tight">{cluster.label}</p>
-                  <p className="text-[9px] font-black uppercase text-fg/20">{cluster.count} menciones</p>
+                  <p className="text-[11px] font-black uppercase text-fg/20">{cluster.count} menciones</p>
                 </div>
               ))}
             </div>
@@ -346,7 +346,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
           <div className="h-px flex-1 bg-accent-pink/20" />
           <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent-pink/30 bg-accent-pink/5">
             <div className="w-1.5 h-1.5 rounded-full bg-accent-pink" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-accent-pink">Competencia</span>
+            <span className="text-[11px] font-black uppercase tracking-widest text-accent-pink">Competencia</span>
           </div>
           <div className="h-px flex-1 bg-accent-pink/20" />
         </div>
@@ -360,7 +360,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
             { label: 'Marcas',      value: compStats.brands.length || '–',                  color: 'text-fg/50'        },
           ].map(({ label, value, color }) => (
             <div key={label} className="pwa-card p-5 bg-accent-pink/[0.02] border-accent-pink/10 space-y-2">
-              <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">{label}</p>
+              <p className="text-[11px] font-black uppercase tracking-widest text-fg/30">{label}</p>
               <p className={`text-2xl font-black italic ${color}`}>{value}</p>
             </div>
           ))}
@@ -381,13 +381,13 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
               <h3 className="text-[10px] font-black uppercase tracking-widest text-accent-pink/80">Competitive Pulse</h3>
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-accent-pink rounded-full animate-pulse" />
-                <span className="text-[9px] font-black uppercase text-accent-pink tracking-widest">Live</span>
+                <span className="text-[11px] font-black uppercase text-accent-pink tracking-widest">Live</span>
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {getPulse().map((c, i) => (
                 <div key={c.name} className="space-y-1.5">
-                  <div className="flex justify-between text-[9px] font-black uppercase tracking-widest">
+                  <div className="flex justify-between text-[11px] font-black uppercase tracking-widest">
                     <span className="text-fg/40">{c.name}</span>
                     <span className={c.score > 25 ? 'text-accent-lemon' : 'text-accent-pink'}>{c.score}%</span>
                   </div>
@@ -406,10 +406,10 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
             {/* Topic Clusters competencia */}
             {compClusters.length > 0 && (
               <div className="border-t border-fg/5 pt-4 space-y-2">
-                <p className="text-[9px] font-black uppercase tracking-widest text-fg/25">Temas destacados</p>
+                <p className="text-[11px] font-black uppercase tracking-widest text-fg/25">Temas destacados</p>
                 <div className="flex flex-wrap gap-2">
                   {compClusters.map((c, i) => (
-                    <span key={i} className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase border ${
+                    <span key={i} className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase border ${
                       c.sentiment === 'negative' ? 'border-accent-pink/20 text-accent-pink/60 bg-accent-pink/5'
                         : 'border-fg/10 text-fg/30 bg-fg/5'
                     }`}>{c.label}</span>
@@ -435,9 +435,9 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
               <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
                 className="p-5 bg-fg/[0.03] rounded-xl border border-fg/5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-[9px] font-black uppercase text-accent-orange">@{r.author}</p>
+                  <p className="text-[11px] font-black uppercase text-accent-orange">@{r.author}</p>
                   {r.priority === 'high' && <span className="text-[7px] font-black uppercase px-2 py-0.5 bg-accent-pink/20 border border-accent-pink/30 text-accent-pink rounded-full">⚡ Urgente</span>}
-                  {r.brand && <span className="text-[8px] font-black uppercase text-fg/20">{r.brand}</span>}
+                  {r.brand && <span className="text-[10px] font-black uppercase text-fg/20">{r.brand}</span>}
                 </div>
                 <p className="text-[10px] text-fg/40 italic leading-relaxed">"{r.comment}"</p>
                 <div className="border-t border-fg/5 pt-3">
@@ -486,7 +486,7 @@ const DashboardView = ({ history: rawHistory, alerts: rawAlerts, report }) => {
                 {report.brandPerformance.map((bp, i) => (
                   <div key={i} className="p-4 bg-fg/[0.03] rounded-xl border border-fg/5 space-y-2">
                     <p className="text-[10px] font-black uppercase text-fg/30">{bp.brand}</p>
-                    <p className="text-sm font-black italic text-fg">{bp.status}{bp.sentiment_delta && <span className="text-[9px] ml-1 text-fg/40 normal-case">{bp.sentiment_delta}</span>}</p>
+                    <p className="text-sm font-black italic text-fg">{bp.status}{bp.sentiment_delta && <span className="text-[11px] ml-1 text-fg/40 normal-case">{bp.sentiment_delta}</span>}</p>
                     <p className="text-[11px] font-medium text-fg/60 leading-tight">{bp.keyFinding}</p>
                   </div>
                 ))}

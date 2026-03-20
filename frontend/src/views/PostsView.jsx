@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { API_BASE } from '../config';
 import CustomDropdown from '../components/CustomDropdown';
-import { X, ExternalLink, ThumbsUp, ThumbsDown, Eye, MessageCircle, Heart, TrendingUp } from 'lucide-react';
+import { X, ExternalLink, Eye, MessageCircle, Heart, TrendingUp, ThumbsUp, User } from 'lucide-react';
 
 // ── helpers ────────────────────────────────────────────────────────────────────
 const sentimentBar = (pos, neg) => {
@@ -60,7 +60,7 @@ const PostCard = ({ post, rank, type, selected, onClick }) => {
               {post.platform === 'tiktok' ? '▶' : '▫'}
             </div>
           )}
-          <div className={`absolute top-2 left-2 w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-black
+          <div className={`absolute top-2 left-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black
             ${type === 'best' ? 'bg-accent-lemon text-black' : 'bg-accent-pink text-white'}`}>
             {rank}
           </div>
@@ -70,7 +70,7 @@ const PostCard = ({ post, rank, type, selected, onClick }) => {
         <div className="flex-1 p-3 min-w-0 flex flex-col justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[8px] font-black uppercase tracking-widest text-fg/30">{post.brand}</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-fg/30">{post.brand}</span>
               <span className={`px-1.5 py-0.5 rounded text-[7px] font-black uppercase border ${platformBadge[post.platform] || 'bg-fg/10 text-fg/40 border-fg/10'}`}>
                 {post.platform}
               </span>
@@ -86,14 +86,14 @@ const PostCard = ({ post, rank, type, selected, onClick }) => {
                 <div className="h-full bg-accent-lemon" style={{ width: `${bar.pos}%` }} />
                 <div className="h-full bg-accent-pink"  style={{ width: `${bar.neg}%` }} />
               </div>
-              <span className={`text-[9px] font-black ${type === 'best' ? 'text-accent-lemon' : 'text-accent-pink'}`}>
+              <span className={`text-[11px] font-black ${type === 'best' ? 'text-accent-lemon' : 'text-accent-pink'}`}>
                 {type === 'best' ? `+${pos}%` : `-${neg}%`}
               </span>
             </div>
             <div className="flex gap-3">
-              {post.likes        > 0 && <span className="text-[8px] text-fg/30 font-bold">❤ {fmt(post.likes)}</span>}
-              {post.views        > 0 && <span className="text-[8px] text-fg/30 font-bold">▶ {fmt(post.views)}</span>}
-              {post.commentCount > 0 && <span className="text-[8px] text-fg/30 font-bold">💬 {post.commentCount}</span>}
+              {post.likes        > 0 && <span className="text-[10px] text-fg/30 font-bold">❤ {fmt(post.likes)}</span>}
+              {post.views        > 0 && <span className="text-[10px] text-fg/30 font-bold">▶ {fmt(post.views)}</span>}
+              {post.commentCount > 0 && <span className="text-[10px] text-fg/30 font-bold">💬 {post.commentCount}</span>}
             </div>
           </div>
         </div>
@@ -104,29 +104,7 @@ const PostCard = ({ post, rank, type, selected, onClick }) => {
 
 // ── PostDetail panel ───────────────────────────────────────────────────────────
 const PostDetail = ({ post, onClose }) => {
-  const [scanComments, setScanComments] = useState([]);
-  const [loadingComments, setLoadingComments] = useState(false);
-
-  // Fetch comentarios del scan correspondiente a este post (brand+platform+date)
-  useEffect(() => {
-    let cancelled = false;
-    const fetchComments = async () => {
-      setLoadingComments(true);
-      setScanComments([]);
-      try {
-        const params = { brand: post.brand, platform: post.platform };
-        if (post.date) params.date = post.date;
-        const { data } = await axios.get(`${API_BASE}/api/scan-comments`, { params });
-        if (!cancelled) setScanComments(Array.isArray(data) ? data : []);
-      } catch {
-        if (!cancelled) setScanComments([]);
-      } finally {
-        if (!cancelled) setLoadingComments(false);
-      }
-    };
-    fetchComments();
-    return () => { cancelled = true; };
-  }, [post.id, post.brand, post.platform, post.date]);
+  const realComments = Array.isArray(post.comments) ? post.comments : [];
 
   const pos  = post.sentiment?.positive      || 0;
   const neg  = post.sentiment?.negative      || 0;
@@ -135,8 +113,6 @@ const PostDetail = ({ post, onClose }) => {
   const vneg = post.sentiment?.very_negative || 0;
 
   const bar    = sentimentBar(pos, neg);
-  const topPos = scanComments.filter(c => ['positive','very_positive'].includes(c.sentiment)).slice(0, 3);
-  const topNeg = scanComments.filter(c => ['negative','very_negative'].includes(c.sentiment)).slice(0, 3);
 
   const engagementRate = post.views > 0
     ? (((post.likes || 0) + (post.commentCount || 0)) / post.views * 100).toFixed(2)
@@ -162,7 +138,7 @@ const PostDetail = ({ post, onClose }) => {
       <div className="flex items-start justify-between gap-3 p-5 pb-0">
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[8px] font-black uppercase tracking-widest text-fg/30">{post.brand}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-fg/30">{post.brand}</span>
             <span className={`px-1.5 py-0.5 rounded text-[7px] font-black uppercase border ${platformBadge[post.platform] || ''}`}>
               {post.platform}
             </span>
@@ -206,7 +182,7 @@ const PostDetail = ({ post, onClose }) => {
             <div key={label} className="p-3 bg-fg/[0.03] rounded-xl border border-fg/5 space-y-1">
               <div className="flex items-center gap-1.5">
                 <Icon size={10} className="text-fg/25" />
-                <span className="text-[8px] font-black uppercase tracking-widest text-fg/25">{label}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-fg/25">{label}</span>
               </div>
               <p className="text-lg font-black italic text-fg">{value || '—'}</p>
             </div>
@@ -217,10 +193,10 @@ const PostDetail = ({ post, onClose }) => {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">Sentiment del scan</p>
+              <p className="text-[11px] font-black uppercase tracking-widest text-fg/30">Sentiment del scan</p>
               <p className="text-[7px] text-fg/20 italic">{post.brand} · {post.platform} · {post.date || 'último scan'}</p>
             </div>
-            <span className={`text-[8px] font-black px-2 py-0.5 rounded-full border ${bar.pos > bar.neg ? 'text-accent-lemon border-accent-lemon/20 bg-accent-lemon/10' : 'text-accent-pink border-accent-pink/20 bg-accent-pink/10'}`}>
+            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${bar.pos > bar.neg ? 'text-accent-lemon border-accent-lemon/20 bg-accent-lemon/10' : 'text-accent-pink border-accent-pink/20 bg-accent-pink/10'}`}>
               {bar.pos > bar.neg ? `+${pos}% pos` : `-${neg}% neg`}
             </span>
           </div>
@@ -231,7 +207,7 @@ const PostDetail = ({ post, onClose }) => {
           <div className="space-y-2">
             {sentBars.map(({ label, value, color }) => (
               <div key={label} className="space-y-0.5">
-                <div className="flex justify-between text-[8px] font-black uppercase tracking-widest">
+                <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
                   <span className="text-fg/30">{label}</span>
                   <span className="text-fg/50">{value}%</span>
                 </div>
@@ -248,51 +224,97 @@ const PostDetail = ({ post, onClose }) => {
           </div>
         </div>
 
-        {/* Comentarios del scan */}
-        <div className="space-y-2">
-          <p className="text-[9px] font-black uppercase tracking-widest text-fg/30">
-            Comentarios del scan
-            <span className="text-fg/15 font-normal normal-case tracking-normal ml-1">({post.brand} · {post.date || 'último'})</span>
-          </p>
+        {/* ── Comentarios reales del post ────────────────────────────── */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-black uppercase tracking-widest text-fg/30">
+              Comentarios reales
+              <span className="text-fg/15 font-normal normal-case tracking-normal ml-1">
+                ({realComments.length} de la publicación)
+              </span>
+            </p>
+            {post.url && (
+              <a
+                href={post.url}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-fg/30 hover:text-fg/60 transition-colors"
+              >
+                Ver post <ExternalLink size={9} />
+              </a>
+            )}
+          </div>
 
-          {loadingComments && (
-            <div className="space-y-2">
-              {[1,2,3].map(i => <div key={i} className="h-10 rounded-xl bg-fg/[0.03] animate-pulse" />)}
+          {realComments.length === 0 ? (
+            <div className="p-4 rounded-xl bg-fg/[0.02] border border-fg/5 text-center">
+              <p className="text-[10px] text-fg/20 italic">
+                Sin comentarios disponibles para este post.
+              </p>
+              <p className="text-[9px] text-fg/15 mt-1">
+                Los comentarios se guardan en el próximo escaneo.
+              </p>
             </div>
-          )}
-
-          {!loadingComments && topPos.length > 0 && (
+          ) : (
             <div className="space-y-2">
-              <p className="text-[8px] font-black uppercase tracking-widest text-accent-lemon/60">💚 Positivos</p>
-              {topPos.map((c, i) => (
-                <div key={i} className="p-2.5 bg-accent-lemon/[0.04] border border-accent-lemon/10 rounded-xl space-y-0.5">
-                  <p className="text-[8px] font-black uppercase text-accent-lemon/50">@{c.author}</p>
-                  <p className="text-[10px] text-fg/60 italic leading-snug">"{c.text_preview || c.message}"</p>
-                </div>
+              {realComments.map((c, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.04, duration: 0.2 }}
+                  className="p-3 bg-fg/[0.03] border border-fg/[0.06] rounded-xl space-y-1.5 group"
+                >
+                  {/* Autor + likes + link */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <div className="w-5 h-5 rounded-full bg-fg/10 flex items-center justify-center shrink-0">
+                        <User size={9} className="text-fg/30" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-wide text-fg/50 truncate">
+                        @{c.author}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {c.likes > 0 && (
+                        <span className="flex items-center gap-0.5 text-[9px] text-fg/25 font-bold">
+                          <ThumbsUp size={8} />
+                          {fmt(c.likes)}
+                        </span>
+                      )}
+                      {(c.url || post.url) && (
+                        <a
+                          href={c.url || post.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded bg-fg/5 hover:bg-fg/10"
+                        >
+                          <ExternalLink size={8} className="text-fg/30" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Texto del comentario */}
+                  <p className="text-[11px] text-fg/65 leading-snug italic">
+                    "{c.text}"
+                  </p>
+
+                  {/* Fecha si existe */}
+                  {c.date && (
+                    <p className="text-[8px] text-fg/20">
+                      {new Date(c.date).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </p>
+                  )}
+                </motion.div>
               ))}
             </div>
-          )}
-
-          {!loadingComments && topNeg.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-[8px] font-black uppercase tracking-widest text-accent-pink/60">⚠ Negativos</p>
-              {topNeg.map((c, i) => (
-                <div key={i} className="p-2.5 bg-accent-pink/[0.04] border border-accent-pink/10 rounded-xl space-y-0.5">
-                  <p className="text-[8px] font-black uppercase text-accent-pink/50">@{c.author}</p>
-                  <p className="text-[10px] text-fg/60 italic leading-snug">"{c.text_preview || c.message}"</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {!loadingComments && scanComments.length === 0 && (
-            <p className="text-[9px] text-fg/20 italic text-center py-2">Sin comentarios analizados para esta cuenta</p>
           )}
         </div>
       </div>
     </motion.div>
   );
 };
+
 
 // ── PostsView ──────────────────────────────────────────────────────────────────
 
@@ -327,9 +349,10 @@ const PostsView = () => {
   useEffect(() => { fetchPosts(); }, [tab, brandFilter, platformFilter]);
   useEffect(() => { setSelected(null); }, [tab, brandFilter, platformFilter]);
 
-  const best    = posts.filter(p => (p.sentiment?.positive || 0) - (p.sentiment?.negative || 0) > 0).slice(0, 15);
-  const worst   = posts.filter(p => (p.sentiment?.negative || 0) > 0).slice(0, 15);
-  const display = tab === 'best' ? best : worst;
+  // El backend ya devuelve ordenado por sentimentScore (desc para best, asc para worst).
+  // Mostramos todos los posts recibidos — no descartamos por score para evitar perder
+  // posts con positive == negative (score=0) que son igualmente válidos.
+  const display = posts.slice(0, 15);
 
   const handleSelect = (post) => setSelected(prev => prev?.id === post.id ? null : post);
 
@@ -388,7 +411,7 @@ const PostsView = () => {
         <div className="pwa-card p-12 text-center space-y-4 bg-fg/[0.01]">
           <div className="text-4xl opacity-20">{tab === 'best' ? '🏆' : '⚠'}</div>
           <p className="text-sm font-black text-fg/20 uppercase tracking-widest">
-            {tab === 'best' ? 'No hay posts positivos aún' : 'No hay posts con sentimiento negativo'}
+            No hay posts para estos filtros
           </p>
           <p className="text-[10px] text-fg/20">
             Ejecutá el scraper masivo en Ajustes para generar datos por video/post
@@ -396,7 +419,7 @@ const PostsView = () => {
         </div>
       ) : (
         <div>
-          <p className="text-[9px] font-black uppercase tracking-widest text-fg/20 mb-4">
+          <p className="text-[11px] font-black uppercase tracking-widest text-fg/20 mb-4">
             {display.length} posts — {selected ? 'click para deseleccionar' : 'click para ver detalle'}
           </p>
 

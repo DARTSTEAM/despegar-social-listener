@@ -175,23 +175,23 @@ export default function ScoutProgressWidget({ isScanning, onScanComplete }) {
                 <div className="flex items-center gap-4">
                   <div className="text-center">
                     <p className="text-[10px] font-black text-fg">{completed}/{total}</p>
-                    <p className="text-[8px] uppercase text-fg/30 font-black">Completados</p>
+                    <p className="text-[10px] uppercase text-fg/30 font-black">Completados</p>
                   </div>
                   {failed > 0 && (
                     <div className="text-center">
                       <p className="text-[10px] font-black text-accent-pink">{failed}</p>
-                      <p className="text-[8px] uppercase text-fg/30 font-black">Errores</p>
+                      <p className="text-[10px] uppercase text-fg/30 font-black">Errores</p>
                     </div>
                   )}
                   <div className="text-center">
                     <p className="text-[10px] font-black text-fg">{progress}%</p>
-                    <p className="text-[8px] uppercase text-fg/30 font-black">Progreso</p>
+                    <p className="text-[10px] uppercase text-fg/30 font-black">Progreso</p>
                   </div>
                 </div>
                 {isRunning && (
                   <div className="text-right">
-                    <p className="text-[9px] font-black text-fg/40">{elapsedStr}</p>
-                    <p className="text-[8px] uppercase text-fg/20 font-black">Elapsed</p>
+                    <p className="text-[11px] font-black text-fg/40">{elapsedStr}</p>
+                    <p className="text-[10px] uppercase text-fg/20 font-black">Elapsed</p>
                   </div>
                 )}
               </div>
@@ -213,20 +213,20 @@ export default function ScoutProgressWidget({ isScanning, onScanComplete }) {
                   <div key={i} className="flex items-center gap-2.5 py-1.5 px-1 rounded-lg hover:bg-fg/[0.03] transition-all">
                     {STATUS_ICON[item.status] || STATUS_ICON.pending}
                     <div className="flex-1 min-w-0">
-                      <p className="text-[9px] font-black uppercase text-fg/70 truncate">
+                      <p className="text-[11px] font-black uppercase text-fg/70 truncate">
                         {platformIcon(item.platform)} {item.brand}
                         <span className="text-fg/30 ml-1 normal-case font-medium">— {item.platform}</span>
                       </p>
                     </div>
                     <div className="text-right shrink-0">
                       {item.status === 'done' && item.commentsCount > 0 && (
-                        <p className="text-[8px] font-black text-accent-lemon">{item.commentsCount} coment.</p>
+                        <p className="text-[10px] font-black text-accent-lemon">{item.commentsCount} coment.</p>
                       )}
                       {item.status === 'error' && (
-                        <p className="text-[8px] font-black text-accent-pink">Error</p>
+                        <p className="text-[10px] font-black text-accent-pink">Error</p>
                       )}
                       {(item.status === 'pending' || item.status === 'scraping' || item.status === 'analyzing' || item.status === 'gemini') && (
-                        <p className="text-[8px] text-fg/20 uppercase font-black">{STATUS_LABEL[item.status]}</p>
+                        <p className="text-[10px] text-fg/20 uppercase font-black">{STATUS_LABEL[item.status]}</p>
                       )}
                     </div>
                   </div>
@@ -236,7 +236,7 @@ export default function ScoutProgressWidget({ isScanning, onScanComplete }) {
               {/* Footer */}
               {isDone && (
                 <div className="px-4 py-2.5 border-t border-fg/[0.04] text-center">
-                  <p className="text-[9px] font-black uppercase text-accent-lemon">
+                  <p className="text-[11px] font-black uppercase text-accent-lemon">
                     ✓ Dashboard actualizado — Recargá para ver los datos nuevos
                   </p>
                 </div>

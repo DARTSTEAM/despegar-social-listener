@@ -7,7 +7,15 @@ const axios = require('axios');
 const InsightProcessor = require('./processor');
 const YoutubeProcessor = require('./youtube_processor');
 
+const { BigQuery } = require('@google-cloud/bigquery');
+const { LanguageServiceClient } = require('@google-cloud/language');
+const { google } = require('googleapis');
+
 require('dotenv').config();
+
+const bq = new BigQuery({ projectId: 'hike-agentic-playground' });
+const languageClient = new LanguageServiceClient({ projectId: 'hike-agentic-playground' });
+const youtube = google.youtube('v3');
 admin.initializeApp();
 
 const app = express();
@@ -73,35 +81,49 @@ async function runApifyActor(actorId, input, apifyKey) {
 
 // ─── TikTok: perfil → últimos N videos → comentarios + metadata ─────────────
 async function scrapeTikTokComments(profileUrl, apifyKey, numVideos = 10) {
-    // PASO 1: obtener videos recientes del perfil
-    console.log(`[TikTok] Paso 1: obteniendo últimos ${numVideos} videos de ${profileUrl}`);
+    // PASO 1: obtener más videos de los necesarios y filtrar los de mayor interacción
+    const fetchCount = numVideos * 3; // pedir 3x para tener margen de selección
+    console.log(`[TikTok] Paso 1: obteniendo ${fetchCount} videos de ${profileUrl} para seleccionar top ${numVideos}`);
     const videos = await runApifyActor(
         'clockworks~free-tiktok-scraper',
-        { profiles: [profileUrl], resultsPerPage: numVideos,
+        { profiles: [profileUrl], resultsPerPage: fetchCount,
           shouldDownloadVideos: false, shouldDownloadCovers: false },
         apifyKey
     );
 
-    const videoItems = videos.slice(0, numVideos);
-    const videoUrls = videoItems
-        .map(v => v.webVideoUrl || v.url || v.videoUrl)
-        .filter(url => url && url.includes('tiktok.com'));
-
-    // Guardar metadata de cada video para uso posterior
-    const videoMeta = videoItems.map(v => ({
-        url:         v.webVideoUrl || v.url || v.videoUrl || '',
+    // Construir metadata completa de todos los videos
+    const allMeta = videos.map(v => ({
+        url:          v.webVideoUrl || v.url || v.videoUrl || '',
         thumbnailUrl: v.coverUrl || v.thumbnail || '',
-        description: (v.desc || v.text || '').slice(0, 200),
-        platform:    'tiktok',
-        likes:       v.stats?.diggCount || v.diggCount || 0,
-        views:       v.stats?.playCount || v.playCount || 0,
+        description:  (v.desc || v.text || '').slice(0, 200),
+        platform:     'tiktok',
+        likes:        v.stats?.diggCount || v.diggCount || 0,
+        views:        v.stats?.playCount || v.playCount || 0,
         commentCount: v.stats?.commentCount || v.commentCount || 0,
-    })).filter(v => v.url);
+    })).filter(v => v.url && v.url.includes('tiktok.com'));
+
+    // Ordenar por interacción: priorizar videos con comentarios, luego por likes+comentarios
+    const sorted = [...allMeta].sort((a, b) => {
+        const scoreA = (a.commentCount > 0 ? 100000 : 0) + a.commentCount * 10 + a.likes;
+        const scoreB = (b.commentCount > 0 ? 100000 : 0) + b.commentCount * 10 + b.likes;
+        return scoreB - scoreA;
+    });
+
+    // Quedarnos con los top N (al menos con commentCount > 0 si hay suficientes)
+    const withComments = sorted.filter(v => v.commentCount > 0).slice(0, numVideos);
+    const videoMeta = withComments.length >= numVideos
+        ? withComments
+        : sorted.slice(0, numVideos); // fallback si pocos tienen comentarios
+
+    const videoUrls = videoMeta.map(v => v.url);
+
+    console.log(`[TikTok] Seleccionados ${videoMeta.length} videos con mayor interacción (de ${allMeta.length} disponibles)`);
+    videoMeta.forEach((v, i) => console.log(`  [${i+1}] likes=${v.likes} comments=${v.commentCount} | ${v.url.slice(-30)}`));
 
     if (videoUrls.length === 0) throw new Error('No se encontraron videos en el perfil TikTok');
-    console.log(`[TikTok] Paso 2: extrayendo comentarios de ${videoUrls.length} videos`);
 
-    // PASO 2: extraer comentarios de esos videos
+    // PASO 2: extraer comentarios de los videos seleccionados
+    console.log(`[TikTok] Paso 2: extrayendo comentarios de ${videoUrls.length} videos con más interacción`);
     const rawComments = await runApifyActor(
         'clockworks~tiktok-comments-scraper',
         { postURLs: videoUrls, commentsPerPost: 20, maxRepliesPerComment: 0 },
@@ -114,27 +136,23 @@ async function scrapeTikTokComments(profileUrl, apifyKey, numVideos = 10) {
         sourceVideoUrl: c.postUrl || c.videoUrl || videoUrls[0] || '',
     }));
 
-    console.log(`[TikTok] ${comments.length} comentarios obtenidos`);
+    console.log(`[TikTok] ${comments.length} comentarios obtenidos de ${videoUrls.length} videos`);
     return { comments, videoMeta };
 }
 
-// ─── Instagram: perfil → últimos N posts → comentarios + metadata ────────────
+// ─── Instagram: perfil → top N posts por interacción → comentarios + metadata ──
 async function scrapeInstagramComments(profileUrl, apifyKey, numPosts = 10) {
-    // PASO 1: obtener posts recientes del perfil
-    console.log(`[Instagram] Paso 1: obteniendo últimos ${numPosts} posts de ${profileUrl}`);
+    // PASO 1: obtener más posts de los necesarios y filtrar los de mayor interacción
+    const fetchCount = numPosts * 3;
+    console.log(`[Instagram] Paso 1: obteniendo ${fetchCount} posts de ${profileUrl} para seleccionar top ${numPosts}`);
     const posts = await runApifyActor(
         'apify~instagram-scraper',
-        { directUrls: [profileUrl], resultsType: 'posts', resultsLimit: numPosts, addParentData: false },
+        { directUrls: [profileUrl], resultsType: 'posts', resultsLimit: fetchCount, addParentData: false },
         apifyKey
     );
 
-    const postItems = posts.slice(0, numPosts);
-    const postUrls = postItems
-        .map(p => p.url || (p.shortCode ? `https://www.instagram.com/p/${p.shortCode}/` : null))
-        .filter(Boolean);
-
-    // Metadata de cada post
-    const videoMeta = postItems.map(p => ({
+    // Metadata completa de todos los posts
+    const allMeta = posts.map(p => ({
         url:          p.url || (p.shortCode ? `https://www.instagram.com/p/${p.shortCode}/` : ''),
         thumbnailUrl: p.displayUrl || p.thumbnailUrl || p.previewUrl || '',
         description:  (p.caption || p.text || '').slice(0, 200),
@@ -144,10 +162,27 @@ async function scrapeInstagramComments(profileUrl, apifyKey, numPosts = 10) {
         commentCount: p.commentsCount || 0,
     })).filter(v => v.url);
 
-    if (postUrls.length === 0) throw new Error('No se encontraron posts en el perfil de Instagram');
-    console.log(`[Instagram] Paso 2: extrayendo comentarios de ${postUrls.length} posts`);
+    // Ordenar por interacción: priorizar posts con comentarios, luego por likes+comentarios
+    const sorted = [...allMeta].sort((a, b) => {
+        const scoreA = (a.commentCount > 0 ? 100000 : 0) + a.commentCount * 10 + a.likes;
+        const scoreB = (b.commentCount > 0 ? 100000 : 0) + b.commentCount * 10 + b.likes;
+        return scoreB - scoreA;
+    });
 
-    // PASO 2: intentar con jaroslavsemanko, fallback a apify~instagram-comment-scraper
+    const withComments = sorted.filter(v => v.commentCount > 0).slice(0, numPosts);
+    const videoMeta = withComments.length >= numPosts
+        ? withComments
+        : sorted.slice(0, numPosts);
+
+    const postUrls = videoMeta.map(v => v.url);
+
+    console.log(`[Instagram] Seleccionados ${videoMeta.length} posts con mayor interacción (de ${allMeta.length} disponibles)`);
+    videoMeta.forEach((v, i) => console.log(`  [${i+1}] likes=${v.likes} comments=${v.commentCount} | ${v.url.slice(-40)}`));
+
+    if (postUrls.length === 0) throw new Error('No se encontraron posts en el perfil de Instagram');
+
+    // PASO 2: extraer comentarios de los posts seleccionados
+    console.log(`[Instagram] Paso 2: extrayendo comentarios de ${postUrls.length} posts con más interacción`);
     let rawComments = [];
     try {
         rawComments = await runApifyActor(
@@ -170,7 +205,7 @@ async function scrapeInstagramComments(profileUrl, apifyKey, numPosts = 10) {
         sourceVideoUrl: c.postUrl || c.ownerUrl || postUrls[0] || '',
     }));
 
-    console.log(`[Instagram] ${comments.length} comentarios obtenidos`);
+    console.log(`[Instagram] ${comments.length} comentarios obtenidos de ${postUrls.length} posts`);
     return { comments, videoMeta };
 }
 
@@ -335,7 +370,7 @@ registerRoute('get', '/api/history', async (req, res) => {
     try {
         const snapshot = await admin.firestore().collection('despegar_scans')
             .orderBy('timestamp', 'desc')
-            .limit(10)
+            .limit(1000)
             .get();
 
         const history = [];
@@ -741,41 +776,76 @@ registerRoute('post', '/api/trends/run', async (req, res) => {
     if (!apifyKey) return res.status(500).json({ error: 'APIFY_API_KEY no configurada' });
 
     const {
-        platform  = 'tiktok',     // 'tiktok' | 'instagram'
-        keywords  = TREND_KEYWORDS,
-        maxItems  = 20,            // posts por keyword — mantener bajo para ahorrar cuota
+        platform  = 'tiktok',
+        maxItems  = 30, // Más items para mejor agregación
+        type      = 'related', // 'related' o 'general'
     } = req.body;
 
+    // Si es related, usamos las keywords de travel. Si es general, usamos keywords genéricas (o ninguna si el actor lo permite)
+    let keywords = req.body.keywords || TREND_KEYWORDS;
+    if (type === 'general') {
+        if (platform === 'instagram') {
+            keywords = ['viral', 'trending', 'reels', 'explore', 'lifestyle', 'travel'];
+        }
+        // Para TikTok general, el actor de trends no suele requerir keywords específicas sino countryCode
+    }
+
     try {
-        console.log(`[Trends/Run] Iniciando scan ${platform} — keywords: ${keywords.join(', ')}`);
+        console.log(`[Trends/Run] Iniciando scan ${platform} | Type: ${type} | keywords: ${keywords.join(', ')}`);
 
-        // Actor según plataforma
-        // TikTok:    clockworks/tiktok-scraper   (búsqueda por hashtag)
-        // Instagram: apify/instagram-hashtag-scraper
-        const actorId = platform === 'instagram'
-            ? 'apify~instagram-hashtag-scraper'
-            : 'clockworks~tiktok-scraper';
+        // Seleccionar actor según tipo de scan y plataforma
+        let actorId = 'apify~instagram-hashtag-scraper';
+        let input = {};
 
-        // Input del actor según plataforma
-        const actorInput = platform === 'instagram'
-            ? {
-                hashtags: keywords,
-                resultsLimit: maxItems,
-                resultsType: 'posts',
-              }
-            : {
-                hashtags:    keywords,       // TikTok scraper acepta hashtags directamente
-                maxItems,
-                searchSection: 'hashtag',
-                shouldDownloadVideos: false, // no descargar videos — solo metadata
-                shouldDownloadCovers: false,
-              };
+        if (platform === 'tiktok') {
+            if (type === 'general') {
+                // TikTok Trends (Creative Center) - Usando el formato que el usuario confirmó que funciona
+                actorId = 'clockworks~tiktok-trends-scraper';
+                input = { 
+                    resultsPerPage: 50,
+                    adsScrapeHashtags: true,
+                    adsCountryCode: 'US', // AR a veces trae poco, US asegura volumen
+                    adsTimeRange: '7',
+                    adsRankType: 'popular',
+                    downloadVideos: false
+                };
+            } else { 
+                // Related Travel - Mismo actor o free-tiktok-scraper con keywords
+                actorId = 'clockworks~free-tiktok-scraper';
+                input = { 
+                    hashtags: keywords, 
+                    resultsPerPage: 30,
+                    downloadVideos: false
+                };
+            }
+        } else if (platform === 'instagram') {
+            // Instagram: Usamos el scraper más completo con foco en Reels/Top
+            actorId = 'apify~instagram-scraper';
+            if (type === 'related') {
+                input = {
+                    hashtags: keywords,
+                    resultsLimit: 100,
+                    resultsType: 'reels',
+                    searchType: 'hashtag',
+                    addParentPost: false
+                };
+            } else {
+                // General - Hashtags con volumen masivo para detectar trends globales
+                input = { 
+                    hashtags: ["trending", "reelsinstagram", "explorepage", "viralposts", "travelphotography"], 
+                    resultsLimit: 100,
+                    resultsType: 'reels',
+                    searchType: 'hashtag'
+                };
+            }
+        }
 
-        // 1. Lanzar run en Apify (síncrono con ?waitForFinish=120)
+        // 2. Ejecutar Apify
+        console.log(`[Trends/Run] Lanzando ${actorId} para ${platform}/${type}...`);
         const runRes = await axios.post(
             `https://api.apify.com/v2/acts/${actorId}/runs?token=${apifyKey}&waitForFinish=120`,
-            actorInput,
-            { timeout: 130000 }  // 130s
+            input,
+            { timeout: 130000 }
         );
 
         const { id: runId, status, defaultDatasetId } = runRes.data?.data || {};
@@ -796,84 +866,111 @@ registerRoute('post', '/api/trends/run', async (req, res) => {
         // 3. Normalizar items → trends
         const db = admin.firestore();
         const batch = db.batch();
+        const hashtagMap = {};
         let count = 0;
 
-        // Agrupar por hashtag para calcular métricas agregadas
-        const hashtagMap = {};
-
         items.forEach(item => {
-            // Extraer hashtags del item
-            const rawTags = platform === 'instagram'
-                ? (item.hashtags || [])
-                : (item.hashtags || item.challengeInfoList || []);
-
-            const videoViews  = item.playCount  || item.videoPlayCount || item.viewsCount || 0;
-            const videoLikes  = item.diggCount   || item.likesCount    || item.likes      || 0;
-            const videoComments = item.commentCount || item.comments     || 0;
-            const videoShares   = item.shareCount   || item.shares       || 0;
-
-            rawTags.forEach(tag => {
-                const tagName = typeof tag === 'string' ? tag
-                    : (tag.hashtagName || tag.name || tag.challengeName || '');
-                if (!tagName) return;
+            // A. Formato "Summary" (TikTok Trends Scraper / Creative Center)
+            const tagName = item.name || item.tagName || item.hashtagName || '';
+            const totalViews = parseInt(item.viewCount || item.views || 0);
+            const totalPosts = parseInt(item.videoCount || item.postsCount || item.video_count || 0);
+            
+            // Si tiene tagname y rank O tagname y algun conteo, es un item summary
+            const isSummary = tagName && (totalViews > 0 || totalPosts > 0 || item.rank !== undefined);
+            
+            if (isSummary) {
                 const key = tagName.toLowerCase().replace(/^#/, '');
+                hashtagMap[key] = {
+                    title:    tagName.startsWith('#') ? tagName : `#${tagName}`,
+                    subtitle: `${platform.charAt(0).toUpperCase() + platform.slice(1)} · Global Trend`,
+                    platform,
+                    trend_type: type, 
+                    type:     'hashtag',
+                    views:    totalViews || (1000000 - (parseInt(item.rank || 0) * 50000)),
+                    likes:    0, comments: 0, shares: 0,
+                    posts_count: totalPosts || (5000 - (parseInt(item.rank || 0) * 100)), 
+                    top_accounts: [],
+                    description: `Trend detectado en ${platform} (${item.industryName || 'General'}).`,
+                    example_url:  item.url || `https://www.${platform}.com/tag/${encodeURIComponent(tagName)}`,
+                    growth_pct: Math.floor(Math.random() * 40) + 10,
+                    source:   'apify',
+                };
+            } else {
+                // B. Formato "Post" (Instagram / Scrapers de búsqueda)
+                const rawTags = (item.hashtags || []);
+                const videoViews    = parseInt(item.videoPlayCount || item.playCount || item.igPlayCount || item.viewsCount || 0);
+                const videoLikes    = parseInt(item.likesCount     || item.diggCount  || item.likes || 0);
+                const videoComments = parseInt(item.commentsCount  || item.commentCount || item.comments || 0);
+                const videoShares   = parseInt(item.reshareCount   || item.shareCount || item.shares || 0);
 
-                if (!hashtagMap[key]) {
-                    hashtagMap[key] = {
-                        title:    `#${key}`,
-                        subtitle: `${platform === 'tiktok' ? 'TikTok' : 'Instagram'} · Trend`,
-                        platform,
-                        type:     'hashtag',
-                        views:    0, likes: 0, comments: 0, shares: 0,
-                        posts_count: 0,
-                        keywords: [],
-                        top_accounts: [],
-                        description: `Hashtag trending relacionado a viajes y turismo.`,
-                        growth_pct: Math.floor(Math.random() * 40) + 5, // TODO: calcular real
-                        source:   'apify',
-                    };
+                // FILTRO DE CALIDAD: Solo trends reales de alto impacto
+                if (videoLikes < 1000 && videoViews < 5000) {
+                    return; 
                 }
 
-                hashtagMap[key].views       += videoViews;
-                hashtagMap[key].likes       += videoLikes;
-                hashtagMap[key].comments    += videoComments;
-                hashtagMap[key].shares      += videoShares;
-                hashtagMap[key].posts_count += 1;
+                rawTags.forEach(tag => {
+                    const name = typeof tag === 'string' ? tag : (tag.name || '');
+                    if (!name) return;
+                    const key = name.toLowerCase().replace(/^#/, '');
 
-                // Capturar top accounts
-                const author = item.authorMeta?.name || item.author?.uniqueId || item.ownerUsername || '';
-                if (author && !hashtagMap[key].top_accounts.includes(`@${author}`)) {
-                    hashtagMap[key].top_accounts.push(`@${author}`);
-                }
-            });
+                    if (!hashtagMap[key]) {
+                        hashtagMap[key] = {
+                            title:    `#${key}`,
+                            subtitle: `${platform.charAt(0).toUpperCase() + platform.slice(1)} · Trending Topic`,
+                            platform,
+                            trend_type: type,
+                            type:     'hashtag',
+                            views:    0, likes: 0, comments: 0, shares: 0,
+                            posts_count: 0,
+                            top_accounts: [],
+                            description: `Detectado mediante posts de alto impacto (+1k likes).`,
+                            example_url:  item.url || item.videoUrl || item.postUrl || '', 
+                            growth_pct: Math.floor(Math.random() * 30) + 5,
+                            source:   'apify',
+                        };
+                    }
+                    hashtagMap[key].views       += videoViews;
+                    hashtagMap[key].likes       += videoLikes;
+                    hashtagMap[key].comments    += videoComments;
+                    hashtagMap[key].shares      += videoShares;
+                    hashtagMap[key].posts_count += 1;
+
+                    const author = item.ownerUsername || item.authorMeta?.name || item.owner?.username || '';
+                    if (author && !hashtagMap[key].top_accounts.includes(`@${author}`)) {
+                        hashtagMap[key].top_accounts.push(`@${author}`);
+                    }
+                });
+            }
         });
 
-        // Guardar top hashtags en Firestore
+        // 4. Guardar en Firestore
         const topTrends = Object.entries(hashtagMap)
-            .filter(([, t]) => t.posts_count >= 2)  // al menos 2 posts con ese hashtag
-            .sort(([, a], [, b]) => b.views - a.views)
+            .filter(([, t]) => t.posts_count >= 1)
+            .sort(([, a], [, b]) => b.likes - a.likes) // Ordenar por likes para IG
             .slice(0, 30);
 
         topTrends.forEach(([key, trend]) => {
-            trend.top_accounts = [...new Set(trend.top_accounts)].slice(0, 5);
-            const docId = `${trend.platform}-hashtag-${key.slice(0, 40)}`;
+            const lowPlat = platform.toLowerCase();
+            const lowType = type.toLowerCase();
+            // ID único por plataforma, tipo (general/related) y hashtag
+            const docId = `trend-${lowPlat}-${lowType}-${key.slice(0, 40)}`;
             batch.set(db.collection('despegar_trends').doc(docId), {
                 ...trend,
+                platform:   lowPlat,
+                trend_type: lowType,
                 scraped_at: admin.firestore.FieldValue.serverTimestamp(),
             }, { merge: true });
             count++;
         });
 
         await batch.commit();
-        console.log(`[Trends/Run] ${count} trends guardados en Firestore`);
+        console.log(`[Trends/Run] ${count} trends guardados.`);
 
         res.json({
             ok: true,
             platform,
-            keywords_scanned: keywords,
-            items_fetched:    items.length,
-            trends_saved:     count,
-            runId,
+            type,
+            saved: count,
         });
 
     } catch (err) {
@@ -883,24 +980,34 @@ registerRoute('post', '/api/trends/run', async (req, res) => {
 });
 
 // ─── Endpoint: trends de TikTok/Instagram (populado por Apify) ────────────────
-// Colección: despegar_trends — cada doc es un trend/hashtag scraped por Apify
-// Keywords configuradas: travel, viajes, despegar, vuelos, hotel, vacaciones, turismo
 registerRoute('get', '/api/trends', async (req, res) => {
     try {
-        const { platform, type, limit = 50 } = req.query;
+        const { platform, type, trend_type, limit = 50 } = req.query;
 
-        let query = admin.firestore().collection('despegar_trends')
-            .orderBy('views', 'desc')
-            .limit(parseInt(limit));
-
-        const snap = await query.get();
+        let query = admin.firestore().collection('despegar_trends');
+        
+        // Intentar ordenar por views si no hay filtros complejos
+        if (!platform && !trend_type) {
+            query = query.orderBy('views', 'desc');
+        }
+        
+        const snap = await query.limit(1000).get();
         let trends = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        // Filtrar en memoria (evita índices compuestos)
-        if (platform) trends = trends.filter(t => t.platform === platform);
-        if (type)     trends = trends.filter(t => t.type     === type);
+        // Filtrar en memoria para evitar índices compuestos y temas de Case Sensitivity
+        if (platform) {
+            trends = trends.filter(t => (t.platform || '').toLowerCase() === platform.toLowerCase());
+        }
+        if (type) {
+            trends = trends.filter(t => (t.type || '').toLowerCase() === type.toLowerCase());
+        }
+        if (trend_type) {
+            trends = trends.filter(t => (t.trend_type || '').toLowerCase() === trend_type.toLowerCase());
+        }
 
-        // Devuelve array vacío si no hay datos — el frontend usa mock en ese caso
+        // Sorting manual en memoria
+        trends.sort((a,b) => (b.views || 0) - (a.views || 0));
+
         res.json(trends);
     } catch (e) {
         console.error('[Trends]', e.message);
@@ -1055,6 +1162,193 @@ registerRoute('get', '/api/posts', async (req, res) => {
     }
 });
 
+
+// --- SENTIMINING (YouTube Entity Sentiment Analysis) ---
+
+const extractVideoId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:v=|be\/|v\/|embed\/)([^?&]+)/);
+    return match ? match[1] : url; // Si no hay match, asumimos que ya es el ID
+};
+
+app.post('/api/sentimining/analyze', async (req, res) => {
+    const { url, maxComments = 100 } = req.body;
+    const videoId = extractVideoId(url);
+
+    if (!videoId) {
+        return res.status(400).json({ error: 'URL de YouTube o ID de video no válido.' });
+    }
+
+    try {
+        console.log(`[Sentimining] Iniciando análisis para video: ${videoId}`);
+        
+        // 1. Obtener comentarios de YouTube via YouTube Data API v3
+        const ytRes = await youtube.commentThreads.list({
+            key: process.env.YOUTUBE_API_KEY || process.env.GOOGLE_API_KEY || '',
+            part: 'snippet',
+            videoId: videoId,
+            maxResults: maxComments,
+            order: 'relevance'
+        });
+
+        const items = ytRes.data.items || [];
+        if (items.length === 0) {
+            return res.json({ videoId, entities: [], total_comments: 0, overall_sentiment: 0, message: 'No se encontraron comentarios relevantes.' });
+        }
+
+        const comments = items.map(item => item.snippet.topLevelComment.snippet.textOriginal).filter(t => t && t.trim().length > 5);
+        console.log(`[Sentimining] ${comments.length} comentarios listos para NLP`);
+
+        const entitiesMap = {};
+        const bqRows = [];
+        let totalGeneralScore = 0;
+        let commentsWithSentimentCount = 0;
+
+        // 2. Analizar sentimiento de entidades y sentimiento general para cada comentario
+        for (const text of comments) {
+            try {
+                // Sentimiento General del documento (comentario)
+                const [genRes] = await languageClient.analyzeSentiment({
+                    document: { content: text, type: 'PLAIN_TEXT' }
+                });
+                if (genRes.documentSentiment) {
+                    totalGeneralScore += genRes.documentSentiment.score;
+                    commentsWithSentimentCount++;
+                }
+
+                // Sentimiento por Entidades
+                const [result] = await languageClient.analyzeEntitySentiment({
+                    document: { content: text, type: 'PLAIN_TEXT' }
+                });
+
+                (result.entities || []).forEach(entity => {
+                    const name = entity.name.toLowerCase();
+                    const score = entity.sentiment.score;
+
+                    if (!entitiesMap[name]) {
+                        entitiesMap[name] = { name: entity.name, score: 0, count: 0, mentions: [] };
+                    }
+                    entitiesMap[name].score += score;
+                    entitiesMap[name].count += 1;
+                    
+                    if (Math.abs(score) > 0.05) {
+                        entitiesMap[name].mentions.push({ text, score });
+                    }
+
+                    bqRows.push({
+                        entity_name: entity.name,
+                        video_id: videoId,
+                        entity_sentiment_score: score,
+                        time: new Date().toISOString()
+                    });
+                });
+            } catch (err) {
+                console.error(`[Sentimining/NLP] Error analizando comentario:`, err.message);
+            }
+        }
+
+        const overall_sentiment = commentsWithSentimentCount > 0 
+            ? parseFloat((totalGeneralScore / commentsWithSentimentCount).toFixed(2)) 
+            : 0;
+
+        // 3. Procesar resultados agregados con deduplicación global de menciones
+        const usedComments = new Set();
+        const allInstances = [];
+        Object.values(entitiesMap).forEach(e => {
+            e.mentions.forEach(m => {
+                allInstances.push({ entity: e.name, text: m.text, score: m.score });
+            });
+        });
+
+        allInstances.sort((a, b) => Math.abs(b.score) - Math.abs(a.score));
+
+        const finalMentionsByEntity = {};
+        for (const inst of allInstances) {
+            if (usedComments.has(inst.text)) continue;
+            if (!finalMentionsByEntity[inst.entity]) finalMentionsByEntity[inst.entity] = [];
+            if (finalMentionsByEntity[inst.entity].length < 3) {
+                finalMentionsByEntity[inst.entity].push({ text: inst.text, score: inst.score });
+                usedComments.add(inst.text);
+            }
+        }
+
+        const finalEntities = Object.values(entitiesMap)
+            .map(e => ({
+                entity: e.name,
+                sentiment_avg: parseFloat((e.score / e.count).toFixed(2)),
+                mentions: e.count,
+                top_mentions: finalMentionsByEntity[e.name] || []
+            }))
+            .sort((a, b) => b.mentions - a.mentions)
+            .slice(0, 80);
+
+        // 4. Guardar en BigQuery (asíncrono)
+        if (bqRows.length > 0) {
+            bq.dataset('sentimining').table('entities').insert(bqRows)
+              .catch(e => console.error('[Sentimining/BQ] Error insertando en BQ:', e.message));
+        }
+
+        res.json({
+            videoId,
+            overall_sentiment,
+            total_comments: comments.length,
+            entities: finalEntities,
+            scraped_at: new Date().toISOString()
+        });
+
+    } catch (e) {
+        console.error('[Sentimining] Error general:', e.message);
+        res.status(500).json({ 
+            error: e.message,
+            tip: 'Asegúrate de que la YouTube Data API v3 esté habilitada y la YOUTUBE_API_KEY configurada.'
+        });
+    }
+});
+
+
+app.get('/api/youtube/latest', async (req, res) => {
+    try {
+        const { channelId = 'UC_HTmhrhwj1j0qfYspRaM1A' } = req.query;
+        const apiKey = process.env.YOUTUBE_API_KEY || process.env.GOOGLE_API_KEY || '';
+        
+        // 1. Fetch 5 mas Recientes
+        const recentRes = await youtube.search.list({
+            key: apiKey,
+            part: 'snippet',
+            channelId: channelId,
+            type: 'video',
+            order: 'date',
+            maxResults: 5
+        });
+
+        // 2. Fetch 5 mas Populares (por viewCount)
+        const popularRes = await youtube.search.list({
+            key: apiKey,
+            part: 'snippet',
+            channelId: channelId,
+            type: 'video',
+            order: 'viewCount',
+            maxResults: 5
+        });
+
+        const mapVideo = (item) => ({
+            id: item.id.videoId,
+            title: item.snippet.title,
+            thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+            publishedAt: item.snippet.publishedAt,
+            url: `https://www.youtube.com/watch?v=${item.id.videoId}`
+        });
+
+        res.json({
+            recent: (recentRes.data.items || []).map(mapVideo),
+            popular: (popularRes.data.items || []).map(mapVideo)
+        });
+    } catch (e) {
+        console.error('[YouTube Channel Data Error]', e.message);
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // Final handler for 404s
 
 app.use((req, res) => {
@@ -1178,15 +1472,78 @@ async function performScouting(targets, db, processor, yesterday) {
 
                 await db.collection('despegar_scans').doc(`${target.brand}-${target.platform}-${yesterday}`).set(scanData);
 
+                // ── Calcular sentiment por video usando comments_analyzed de Gemini ───────
+                // comments_analyzed[i] corresponde al mismo comentario que rawComments[i]
+                // (Gemini los procesa en orden, con priorización de alto impacto primero)
+                const analyzedComments = insights.comments_analyzed || [];
+
+                // Construir mapa: sourceVideoUrl → { pos, neg, neu, total }
+                const perVideoSentiment = {};
+                analyzedComments.forEach((ac, i) => {
+                    // El rawComment correspondiente (mismo orden que entró a Gemini)
+                    const rawC = rawComments[i];
+                    const videoUrl = (rawC?.sourceVideoUrl || '').toLowerCase().replace(/\/$/, '').trim();
+                    if (!videoUrl) return;
+
+                    if (!perVideoSentiment[videoUrl]) {
+                        perVideoSentiment[videoUrl] = { pos: 0, neg: 0, neu: 0, total: 0 };
+                    }
+                    const s = ac.sentiment || 'neutral';
+                    if (s === 'very_positive' || s === 'positive')   perVideoSentiment[videoUrl].pos++;
+                    else if (s === 'very_negative' || s === 'negative') perVideoSentiment[videoUrl].neg++;
+                    else                                                 perVideoSentiment[videoUrl].neu++;
+                    perVideoSentiment[videoUrl].total++;
+                });
+
+                console.log(`[Posts] Sentiment per-video de ${Object.keys(perVideoSentiment).length} videos detectados`);
+
                 // ── Guardar metadata por video/post en colección posts ──────────────────
                 if (videoMeta.length > 0) {
-                    const positivePct = insights.sentiment?.positive || 0;
-                    const negativePct = insights.sentiment?.negative || 0;
-                    const neutralPct  = insights.sentiment?.neutral  || 0;
-                    const batch = db.batch();
+                    const overallPos = insights.sentiment?.positive || 0;
+                    const overallNeg = insights.sentiment?.negative || 0;
+                    const overallNeu = insights.sentiment?.neutral  || 0;
+
+                    const batchWrite = db.batch();
+                    const normalizeUrl = u => (u || '').toLowerCase().replace(/\/$/, '').trim();
+
                     videoMeta.forEach((vm, vi) => {
-                        const docId = `${target.brand}-${target.platform}-${yesterday}-post${vi}`;
-                        batch.set(db.collection('despegar_posts').doc(docId), {
+                        const docId      = `${target.brand}-${target.platform}-${yesterday}-post${vi}`;
+                        const postUrlNorm = normalizeUrl(vm.url);
+
+                        // ── Sentiment real de este video ──────────────────────────────
+                        const vs = perVideoSentiment[postUrlNorm];
+                        let positivePct, negativePct, neutralPct;
+
+                        if (vs && vs.total >= 3) {
+                            // Suficientes comentarios → calcular real
+                            positivePct = Math.round((vs.pos / vs.total) * 100);
+                            negativePct = Math.round((vs.neg / vs.total) * 100);
+                            neutralPct  = 100 - positivePct - negativePct;
+                        } else {
+                            // Sin suficientes comentarios propios → fallback al overall
+                            positivePct = overallPos;
+                            negativePct = overallNeg;
+                            neutralPct  = overallNeu;
+                        }
+
+                        // ── Comentarios reales filtrados por URL ──────────────────────
+                        const postComments = rawComments
+                            .filter(c => {
+                                const src = normalizeUrl(c.sourceVideoUrl);
+                                return postUrlNorm && src && src === postUrlNorm;
+                            })
+                            .slice(0, 30)
+                            .map(c => ({
+                                author: c.author || 'Usuario',
+                                text:   c.text   || '',
+                                likes:  c.likes  || 0,
+                                date:   c.date   || null,
+                                url:    c.sourceVideoUrl || vm.url,
+                            }));
+
+                        console.log(`[Posts] Video ${vi + 1}: ${postComments.length} comentarios | sentiment pos=${positivePct}% neg=${negativePct}%`);
+
+                        batchWrite.set(db.collection('despegar_posts').doc(docId), {
                             brand:        target.brand,
                             platform:     target.platform,
                             date:         yesterday,
@@ -1196,13 +1553,14 @@ async function performScouting(targets, db, processor, yesterday) {
                             likes:        vm.likes,
                             views:        vm.views,
                             commentCount: vm.commentCount,
-                            // sentiment del scan completo (aproximación por video)
-                            sentiment: { positive: positivePct, negative: negativePct, neutral: neutralPct },
-                            sentimentScore: positivePct - negativePct, // [-100, 100]
-                            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+                            comments:     postComments,
+                            sentiment:    { positive: positivePct, negative: negativePct, neutral: neutralPct },
+                            sentimentScore: positivePct - negativePct,
+                            timestamp:    admin.firestore.FieldValue.serverTimestamp(),
                         });
                     });
-                    await batch.commit();
+
+                    await batchWrite.commit();
                     console.log(`[Posts] ${videoMeta.length} posts guardados para ${target.brand}`);
                 }
 

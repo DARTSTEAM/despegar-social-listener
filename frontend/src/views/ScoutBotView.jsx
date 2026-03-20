@@ -32,7 +32,7 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
           <div className="flex gap-2">
             {['tiktok', 'instagram', 'google-maps', 'facebook'].map(p => (
               <button key={p} onClick={() => setPlatform(p)}
-                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${platform === p ? 'bg-accent-orange border-accent-orange text-white' : 'bg-fg/5 border-fg/10 text-fg/40'}`}>
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-widest border transition-all ${platform === p ? 'bg-accent-orange border-accent-orange text-white' : 'bg-fg/5 border-fg/10 text-fg/40'}`}>
                 {p}
               </button>
             ))}
@@ -47,7 +47,7 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
             </button>
           </div>
           <div className="flex flex-wrap gap-2 pt-2">
-            <span className="text-[9px] font-black uppercase text-fg/20 w-full mb-1">Quick Connect — Despegar</span>
+            <span className="text-[11px] font-black uppercase text-fg/20 w-full mb-1">Quick Connect — Despegar</span>
             {(platform === 'tiktok' ? [
               { label: 'Despegar', url: 'https://www.tiktok.com/@despegar' },
               { label: 'Turismo City', url: 'https://www.tiktok.com/@turismocity' },
@@ -59,7 +59,7 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
               { label: 'Airbnb', url: 'https://www.instagram.com/airbnb/' },
             ] : []).map(link => (
               <button key={link.label} onClick={() => { setUrl(link.url); setPlatform(platform); }}
-                className="px-3 py-1 bg-fg/5 border border-fg/10 rounded-full text-[8px] font-black uppercase tracking-widest text-fg/40 hover:text-accent-orange hover:border-accent-orange transition-all">
+                className="px-3 py-1 bg-fg/5 border border-fg/10 rounded-full text-[10px] font-black uppercase tracking-widest text-fg/40 hover:text-accent-orange hover:border-accent-orange transition-all">
                 {link.label}
               </button>
             ))}
@@ -84,7 +84,7 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
                 <div className="px-3 py-1 bg-accent-orange text-white font-black text-[10px] uppercase italic rounded-full">AI Insight</div>
                 <h2 className="text-xl font-black italic uppercase tracking-tighter text-fg">Resumen Ejecutivo</h2>
                 {insights.totalProcessed > 0 && (
-                  <span className="text-[9px] font-black uppercase text-fg/30">{insights.totalProcessed} comentarios analizados</span>
+                  <span className="text-[11px] font-black uppercase text-fg/30">{insights.totalProcessed} comentarios analizados</span>
                 )}
               </div>
               <p className="text-lg font-bold text-fg/90 leading-relaxed italic">"{insights.summary}"</p>
@@ -118,7 +118,7 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
                           className={`h-full ${color}`}
                         />
                       </div>
-                      <p className="text-[8px] font-black uppercase text-fg/20">{label}</p>
+                      <p className="text-[10px] font-black uppercase text-fg/20">{label}</p>
                     </div>
                   ))}
                 </div>
@@ -134,9 +134,9 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
                     <div key={i} className="p-4 bg-fg/5 rounded-xl border border-fg/5 flex justify-between items-start hover:bg-fg/10 transition-all">
                       <div>
                         <p className="text-sm font-bold italic tracking-tight text-fg">{cluster.label}</p>
-                        <p className="text-[9px] font-medium uppercase text-fg/20 mt-0.5">{cluster.count} menciones</p>
+                        <p className="text-[11px] font-medium uppercase text-fg/20 mt-0.5">{cluster.count} menciones</p>
                         {cluster.representative_quote && (
-                          <p className="text-[9px] text-fg/30 italic mt-1">"{cluster.representative_quote.substring(0, 55)}..."</p>
+                          <p className="text-[11px] text-fg/30 italic mt-1">"{cluster.representative_quote.substring(0, 55)}..."</p>
                         )}
                       </div>
                       <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${cluster.sentiment === 'negative' ? 'bg-accent-pink shadow-[0_0_10px_rgba(255,83,186,0.5)]' : 'bg-accent-lemon'}`} />
@@ -167,7 +167,7 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
             {insights.suggestedReplies?.length > 0 ? insights.suggestedReplies.map((r, i) => (
               <div key={i} className="p-3 bg-fg/5 rounded-lg text-xs space-y-2 border border-fg/5">
                 <div className="flex items-center justify-between">
-                  <p className="text-[9px] font-black uppercase text-accent-orange">@{r.author}</p>
+                  <p className="text-[11px] font-black uppercase text-accent-orange">@{r.author}</p>
                   {r.priority === 'high' && (
                     <span className="text-[7px] font-black uppercase px-1.5 py-0.5 bg-accent-pink/20 text-accent-pink border border-accent-pink/20 rounded">
                       ⚡ Urgente
@@ -178,7 +178,7 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
                 <p className="font-bold text-fg/80">↳ "{r.reply}"</p>
               </div>
             )) : (
-              <p className="text-[9px] text-fg/20 italic">Sin respuestas sugeridas para este scan.</p>
+              <p className="text-[11px] text-fg/20 italic">Sin respuestas sugeridas para este scan.</p>
             )}
           </div>
         </div>

@@ -28,7 +28,7 @@ const CyberWordCloud = ({ words }) => {
       {/* Header */}
       <div className="flex items-center gap-2">
         <div className="w-1.5 h-1.5 bg-[#9B72F5] rounded-full" />
-        <span className="text-[9px] font-black uppercase tracking-[0.25em] text-fg/40 italic">
+        <span className="text-[11px] font-black uppercase tracking-[0.25em] text-fg/40 italic">
           Términos más frecuentes
         </span>
       </div>
@@ -49,7 +49,7 @@ const CyberWordCloud = ({ words }) => {
               className="group flex items-center gap-3"
             >
               {/* Número */}
-              <span className="text-[9px] font-black tabular-nums text-fg/15 w-5 shrink-0">{rank}</span>
+              <span className="text-[11px] font-black tabular-nums text-fg/15 w-5 shrink-0">{rank}</span>
 
               {/* Palabra + barra */}
               <div className="flex-1 space-y-1">
@@ -71,7 +71,7 @@ const CyberWordCloud = ({ words }) => {
               </div>
 
               {/* Peso */}
-              <span className="text-[9px] font-black tabular-nums text-fg/20 shrink-0">
+              <span className="text-[11px] font-black tabular-nums text-fg/20 shrink-0">
                 {w.weight}×
               </span>
             </motion.div>

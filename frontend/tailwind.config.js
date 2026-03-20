@@ -9,10 +9,10 @@ export default {
     extend: {
       colors: {
         accent: {
-          orange: "#793fffff",
-          blue: "#0070f3",
-          pink: "#ff0080",
-          lemon: "#ccff00",
+          orange: "#9b72f5",
+          blue:   "#3d8ef0",
+          pink:   "#f72585",   /* vivid magenta */
+          lemon:  "#b5ea2e",   /* warm yellow-green */
         },
         bg: "var(--bg)",
         fg: "var(--fg)",
@@ -23,7 +23,7 @@ export default {
       keyframes: {
         floating: {
           'from': { transform: 'translate(0, 0) scale(1)' },
-          'to': { transform: 'translate(100px, 50px) scale(1.1)' },
+          'to':   { transform: 'translate(100px, 50px) scale(1.1)' },
         }
       }
     },
