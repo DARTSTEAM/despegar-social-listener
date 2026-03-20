@@ -13,8 +13,6 @@ La aplicación utiliza una arquitectura híbrida en Google Cloud para maximizar 
 2.  **Backend (Node.js/Express):** API robusta que maneja el scraping y el procesamiento de IA.
     *   **Servicio:** Cloud Run (`apiserver-despegar`).
 
----
-
 ## 📺 YouTube Sentimining (Entity Intelligence)
 
 La funcionalidad estrella integrada exclusivamente con el canal oficial de **Despegar** (`UC_HTmhrhwj1j0qfYspRaM1A`):
@@ -24,6 +22,19 @@ La funcionalidad estrella integrada exclusivamente con el canal oficial de **Des
     *   **5 Videos Tendencia:** (Los más populares por vistas).
 *   **Análisis Predictivo:** Al hacer clic en un video, se procesan los comentarios usando la **Google Natural Language API** para extraer marcas, productos y conceptos (entidades) con su sentimiento específico.
 *   **Visualización:** Gráfico de Campana de Gauss para el sentimiento general y rankings de entidades críticas.
+
+---
+
+## 🤖 Scout Bot (Análisis a Demanda)
+
+El **Scout Bot** permite realizar auditorías rápidas de cualquier URL social de interés. 
+
+*   **Inteligencia de Entrada:** El bot detecta automáticamente si la URL es un **Perfil** (ej: `@despegar`) o un **Post Individual** (ej: `/p/XXX`).
+*   **Modos de Operación:**
+    *   **Perfiles:** Escanea los 3 videos/posts con mayor interacción del perfil para obtener una visión general.
+    *   **Posts:** Extrae hasta 30 comentarios del post específico para un análisis quirúrgico.
+*   **Plataformas Soportadas:** TikTok, Instagram, Facebook y Google Maps.
+*   **Integración IA:** Procesa el sentimiento y las tendencias de los comentarios en tiempo real con **Gemini**.
 
 ---
 

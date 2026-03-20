@@ -298,43 +298,89 @@ registerRoute('post', '/api/youtube/analyze', async (req, res) => {
 
 
 registerRoute('post', '/api/scout', async (req, res) => {
-    const { url, platform, brand } = req.body;
+    let { url, platform, brand } = req.body;
     if (!url) return res.status(400).json({ error: 'URL requerida' });
 
-    const actorConfig = {
-        tiktok:        { id: 'clockworks~tiktok-comments-scraper',       input: { postURLs: [url], commentsPerPost: 25, maxRepliesPerComment: 0 } },
-        instagram:     { id: 'jaroslavsemanko~instagram-comment-scraper', input: { directUrls: [url], resultsLimit: 25 } },
-        'google-maps': { id: 'compass~google-maps-reviews-scraper',       input: { queries: [url], maxReviews: 25 } },
-        facebook:      { id: 'apify~facebook-comments-scraper',           input: { postUrls: [url], maxComments: 25 } },
-    };
-    const config = actorConfig[platform];
-    if (!config) return res.status(400).json({ error: `Plataforma no soportada: ${platform}` });
-
     try {
-        console.log(`[ScoutBot] Scraping ${platform}: ${url}`);
+        const apifyKey = getApifyKey();
+        
+        // --- Normalización Inteligente de URLs ---
+        // Si el usuario pone @cuenta lo convertimos a URL completa de TikTok/Instagram
+        if (url.startsWith('@')) {
+            if (platform === 'tiktok') url = `https://www.tiktok.com/${url}`;
+            else if (platform === 'instagram') url = `https://www.instagram.com/${url.replace('@', '')}/`;
+        }
 
-        // PASO 1: Apify — espera a que el actor termine (runApifyActor es síncrono)
-        const rawItems = await runApifyActor(config.id, config.input, getApifyKey());
-        const comments = normalizeApifyItems(rawItems).map(c => ({ ...c, platform }));
+        console.log(`[ScoutBot] Analizando ${platform}: ${url} (Brand: ${brand})`);
+
+        // --- Lógica de Detección: Perfil vs Post ---
+        // Seguimos el mismo criterio que el escaneo manual: 
+        // Si no es un post individual, lo tratamos como perfil de marca.
+        const isTikTokPost = url.includes('/video/') || url.includes('vm.tiktok.com');
+        const isInstagramPost = url.includes('/p/') || url.includes('/reels/') || url.includes('/tv/');
+        
+        const isProfile = (platform === 'tiktok' && !isTikTokPost) || 
+                          (platform === 'instagram' && !isInstagramPost);
+
+        let comments = [];
+
+        if (isProfile) {
+            console.log(`[ScoutBot] Detectada CUENTA de marca. Replicando proceso de escaneo masivo...`);
+            // Usamos las mismas funciones que el डेली Scouting para asegurar compatibilidad
+            if (platform === 'tiktok') {
+                const result = await scrapeTikTokComments(url, apifyKey, 3);
+                comments = normalizeApifyItems(result.comments);
+            } else if (platform === 'instagram') {
+                const result = await scrapeInstagramComments(url, apifyKey, 3);
+                comments = normalizeApifyItems(result.comments);
+            }
+        } 
+        else {
+            // Es un post individual o plataforma directa (Gmaps / FB)
+            let actorId = '';
+            let input = {};
+
+            if (platform === 'tiktok') {
+                actorId = 'clockworks~tiktok-comments-scraper';
+                input = { postURLs: [url], commentsPerPost: 30, maxRepliesPerComment: 0 };
+            } else if (platform === 'instagram') {
+                actorId = 'apify~instagram-comment-scraper';
+                input = { directUrls: [url], resultsPerPost: 30 };
+            } else if (platform === 'google-maps') {
+                actorId = 'compass~google-maps-reviews-scraper';
+                input = { queries: [url], maxReviews: 30 };
+            } else if (platform === 'facebook') {
+                actorId = 'apify~facebook-comments-scraper';
+                input = { postUrls: [url], maxComments: 30 };
+            } else {
+                return res.status(400).json({ error: `Plataforma ${platform} no soportada para Scout directo.` });
+            }
+
+            console.log(`[ScoutBot] Post individual detectado/Gmaps. Ejecutando actor ${actorId}...`);
+            const rawItems = await runApifyActor(actorId, input, apifyKey);
+            comments = normalizeApifyItems(rawItems);
+        }
 
         if (comments.length === 0) {
             return res.json({
                 status: 'done', comments: 0, comments_raw: [],
-                summary: 'No se encontraron comentarios para analizar.',
+                summary: 'No se encontraron comentarios para analizar en esta URL. Asegúrate de que el perfil/post sea público.',
                 sentiment: { positive: 0, negative: 0, neutral: 100 }
             });
         }
-        console.log(`[ScoutBot] ${comments.length} comentarios → Gemini`);
+
+        console.log(`[ScoutBot] ${comments.length} comentarios obtenidos. Iniciando procesamiento Gemini...`);
 
         // PASO 2: Gemini
         const insights = await processor.analyzeSentimentAndTrends(
-            comments.slice(0, 30), brand || platform, platform
+            comments.slice(0, 40), brand || platform, platform
         );
 
-        // Guardar en Firestore
+        // Guardar en Firestore para el historial de Scouts
         const docId = `scout-${platform}-${Date.now()}`;
         await admin.firestore().collection('despegar_scans').doc(docId).set({
-            brand: brand || url, platform,
+            brand: brand || url, 
+            platform,
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             commentsCount: comments.length,
             raw_comments: comments,
@@ -343,9 +389,13 @@ registerRoute('post', '/api/scout', async (req, res) => {
         });
 
         res.json({ status: 'done', comments: comments.length, comments_raw: comments, ...insights });
+
     } catch (error) {
         console.error('[ScoutBot Error]', error.message);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message,
+            detail: 'Revisa que la URL o el nombre de usuario sean correctos.'
+        });
     }
 });
 
