@@ -24,7 +24,7 @@ const NAV_ITEMS = [
   { id: 'home',     label: 'Inicio',       icon: Home        },
   { id: 'insights', label: 'Dashboard',    icon: BarChart3   },
   { id: 'youtube',  label: 'Sentimining',  icon: Youtube     },
-  { id: 'scout',    label: 'Scout Bot (WIP)', icon: Search      },
+  { id: 'scout',    label: 'Scout Bot',       icon: Search      },
   { id: 'history',  label: 'Historial',    icon: Filter      },
   { id: 'posts',    label: 'Posts',        icon: TrendingUp  },
   { id: 'trends',   label: 'Trends',       icon: Zap         },
