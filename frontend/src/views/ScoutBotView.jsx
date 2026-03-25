@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Search } from 'lucide-react';
 import SentimentPill from '../components/SentimentPill';
 
 const categoryLabel = {
@@ -23,10 +24,29 @@ const ScoutBotView = ({ platform, setPlatform, url, setUrl, handleScout, isScrap
 
   return (
     <section className="space-y-8 pb-20">
+      <div className="pwa-card bg-accent-pink/5 border-accent-pink/10 px-6 py-4 flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-700">
+        <div className="w-10 h-10 rounded-full bg-accent-pink/20 flex items-center justify-center shrink-0">
+          <Search className="text-accent-pink animate-pulse" size={20} />
+        </div>
+        <div>
+          <h4 className="text-[10px] font-black uppercase tracking-widest text-accent-pink mb-0.5 italic">✱ Módulo en Desarrollo (Work in Progress)</h4>
+          <p className="text-[11px] font-bold text-fg/40 leading-tight">El Scout Bot está siendo optimizado para mejorar la precisión del análisis masivo. Algunas funciones pueden estar limitadas temporalmente.</p>
+        </div>
+      </div>
+
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <p className="text-xs font-bold text-fg/20 uppercase tracking-widest mb-2">Social Listening Agent</p>
-          <h1 className="pwa-title text-fg leading-tight">Scout Bot <br /><span className="text-accent-orange">Extractor</span></h1>
+          <h1 className="pwa-title text-fg leading-tight">
+            Scout Bot <br />
+            <span className="text-accent-orange flex items-center gap-3">
+              Extractor
+              <span className="bg-accent-pink/20 text-accent-pink text-[10px] px-3 py-1 rounded-full border border-accent-pink/20 font-black italic uppercase tracking-tighter inline-flex items-center">
+                <span className="w-1.5 h-1.5 bg-accent-pink rounded-full mr-2 animate-pulse" />
+                Working on it
+              </span>
+            </span>
+          </h1>
         </div>
         <div className="flex flex-col flex-1 max-w-md gap-4">
           <div className="flex gap-2">
